@@ -5,8 +5,9 @@ import expressSession from "express-session";
 import { setup } from "./db";
 import { Event } from "./entities/event";
 import { User } from "./entities/user";
-import { hashPassword } from "./utils";
+import { comparePassword, hashPassword } from "./utils";
 import { sessionData } from "./types";
+import { isAuthenticated } from "./middleware";
 
 const config = require("../config.json");
 
@@ -46,15 +47,28 @@ app.get("/auth/register", (req, res) => {
     return res.render("register");
 });
 
-app.get("/auth/login", async (req, res) => {
-    const {username} = req.query;
+app.get("/auth/login", (req, res) => {
+    return res.render("login");
+});
+
+app.post("/auth/login", async (req, res) => {
+    const {username, password} = req.body;
+
+    console.log(req.body);
+
+    if(!username) return res.redirect("/auth/login");
 
     const existingUser = await User.findOne({where: {username: username?.toString()}});
-    if(!existingUser) return;
+    console.log(existingUser);
+    if(!existingUser) return res.redirect("/auth/login");
+
+    const passwordCorrect = password === existingUser.password || await comparePassword(password, existingUser.password);
+
+    if(!passwordCorrect) return res.redirect("/auth/login");
 
     (req.session as sessionData).user = {token: existingUser.token};
 
-    return res.redirect("/dashboard/home");
+    return res.redirect("/dashboard/statistics");
 });
 
 app.post("/auth/register", async (req, res) => {
@@ -69,7 +83,7 @@ app.post("/auth/register", async (req, res) => {
     const hashedPassword: string | null = await hashPassword(password);
     if(!hashedPassword) return;
 
-    const user = User.create({username, password, token: randomUUID()}); 
+    const user = User.create({username, password: hashedPassword, token: randomUUID()}); 
 
     await user.save();
 
@@ -83,9 +97,11 @@ app.get("/api/event/get", async (req, res) => {
 });
 
 app.post("/api/event/create", async (req, res) => {
-    const {username, event} = req.body;
+    const {token, event} = req.body;
 
-    const author = await User.findOne({where: {username}, relations: {events: true}});
+    if(!token) return res.json({error: "No token was provided!"});
+
+    const author = await User.findOne({where: {token}, relations: {events: true}});
     if(!author) {
         return res.json({error: "Invalid token"});
     }
@@ -101,7 +117,7 @@ app.post("/api/event/create", async (req, res) => {
     return res.json({message: "Added to the database."});
 });
 
-app.use((req, res, next) => {
+app.use(isAuthenticated, (req, res, next) => {
     res.locals.isDashboard = true;
 
     next();
