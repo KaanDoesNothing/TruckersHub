@@ -2,7 +2,9 @@
     <div class="card w-100 bg-base-100 shadow-xl m-1 text-primary-content">
         <div class="card-body">
             <h2 class="card-title">Settings</h2>
-            <p>Token: {{user.token}}</p>
+
+            <a class="btn">Download Client</a>
+            <a class="btn" id="download_config">Download Config File</a>
 
             <div class="card-actions text-center">
                 <p><b>Do not share your token with anyone!</b></p>
@@ -10,3 +12,14 @@
         </div>
     </div>
 </div>
+
+<script>
+    const configFile = JSON.stringify({
+        api: window.location.origin + "/api",
+        token: "{{user.token}}"
+    });
+
+    const downloadButton = document.querySelector("#download_config");
+    downloadButton.setAttribute("href", `data:'text/json;charset=utf-8, ${encodeURIComponent(configFile)}`);
+    downloadButton.setAttribute("download", "config.json");
+</script>

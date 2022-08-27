@@ -77,7 +77,7 @@ app.post("/auth/register", async (req, res) => {
 
     if(existingUser) return;
 
-    const hashedPassword: string | null = await hashPassword(password);
+    const hashedPassword = await hashPassword(password);
     if(!hashedPassword) return;
 
     const user = User.create({username, password: hashedPassword, token: randomUUID()}); 
