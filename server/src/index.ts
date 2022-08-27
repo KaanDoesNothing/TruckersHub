@@ -54,12 +54,9 @@ app.get("/auth/login", (req, res) => {
 app.post("/auth/login", async (req, res) => {
     const {username, password} = req.body;
 
-    console.log(req.body);
-
     if(!username) return res.redirect("/auth/login");
 
     const existingUser = await User.findOne({where: {username: username?.toString()}});
-    console.log(existingUser);
     if(!existingUser) return res.redirect("/auth/login");
 
     const passwordCorrect = password === existingUser.password || await comparePassword(password, existingUser.password);
