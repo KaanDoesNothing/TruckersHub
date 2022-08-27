@@ -1,4 +1,6 @@
 import bcrypt from "bcrypt";
+import fs from "fs/promises";
+import path from "path";
 
 export const hashPassword = async (password: string, saltRounds = 10): Promise<null | string> => {
     try {
@@ -21,3 +23,9 @@ export const comparePassword = async (password: string, hash: string) => {
 
     return false;
 };
+
+export const copyFile = async () => {
+    await fs.copyFile(path.join(__dirname, "../../", "client", "index.exe"), path.join(__dirname, "../", "static", "TruckersHub.exe"));
+
+    console.log("Copied");
+}

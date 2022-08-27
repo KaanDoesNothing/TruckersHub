@@ -5,13 +5,15 @@ import expressSession from "express-session";
 import { setup } from "./db";
 import { Event } from "./entities/event";
 import { User } from "./entities/user";
-import { comparePassword, hashPassword } from "./utils";
+import { comparePassword, copyFile, hashPassword } from "./utils";
 import { sessionData } from "./types";
 import { isAuthenticated } from "./middleware";
 
 const config = require("../config.json");
 
 setup();
+
+copyFile();
 
 const app = express();
 app.use(expressSession({
