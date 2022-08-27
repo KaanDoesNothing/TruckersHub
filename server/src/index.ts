@@ -8,6 +8,7 @@ import { User } from "./entities/user";
 import { comparePassword, copyFile, hashPassword } from "./utils";
 import { sessionData } from "./types";
 import { isAuthenticated } from "./middleware";
+import path from "path";
 
 const config = require("../config.json");
 
@@ -22,6 +23,7 @@ app.use(expressSession({
     saveUninitialized: true,
     cookie: { secure: false }
 }));
+app.use("/static/", express.static(path.join(__dirname, "../static")));
   
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
