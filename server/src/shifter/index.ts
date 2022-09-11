@@ -2,10 +2,11 @@ import SocketIO from "socket.io";
 import {presetHandler} from "./presets";
 import { GearPreset, GearPresetResult } from "./types";
 
-const server = new SocketIO.Server();
 const game_data = new Map();
 const handling = new Map();
 const sockets = new Map();
+
+let server: SocketIO.Server;
 
 const sleep = (time: number) => new Promise(r => setTimeout(r, time));;
 
@@ -93,7 +94,9 @@ async function handle({id}: {id: string}) {
     }
 }
 
-export const launchShifter = (server: SocketIO.Server) => {
+export const launchShifter = (socketServer: SocketIO.Server) => {
+    server = socketServer;
+    
     server.on("connection", (client) => {
         const id = client.id;
 
@@ -111,6 +114,7 @@ export const launchShifter = (server: SocketIO.Server) => {
                 setHandling({id, value: false});
             }
         });
+        
         console.log("Connected");
     });
 }

@@ -1,31 +1,28 @@
 import fs from "fs";
 import axios from "axios";
-
-const {api, token, shifter} = JSON.parse(fs.readFileSync("./config.json", "utf-8"));
-if(!api || !token) console.log("Invalid config file.");
-
 import SocketIO from "socket.io-client";
 import tst, {EventsJobDeliveredVerbose} from "trucksim-telemetry";
 import robotjs from "robotjs";
 import blessed from "blessed";
 import contrib from "blessed-contrib";
 
-const client = SocketIO("http://localhost:7998");
+const {api, token, shifter} = JSON.parse(fs.readFileSync("./config.json", "utf-8"));
+if(!api || !token) console.log("Invalid config file.");
 
+let cache = {
+preset_current: "Unknown"
+}
+
+let gameData: any = undefined;
+
+const screen = blessed.screen({title: "Client", smartCSR: true});
+const client = SocketIO("http://root.kaanlikescoding.me:7998");
 const tsclient = tst();
 
 tsclient.job.on("delivered", (data: EventsJobDeliveredVerbose) => {
     console.log(data);
     axios.post(`${api}/event/create`, {token, event: {type: "delivered", data}}).then(res => console.log(res.data));
 });
-
-let cache = {
-  preset_current: "Unknown"
-}
-
-let gameData: any = undefined;
-
-export const screen = blessed.screen({title: "Client", smartCSR: true});
 
 const statistics = blessed.box({
     label: "Statistics",
@@ -43,6 +40,7 @@ const log = contrib.log({
 
 screen.append(statistics);
 screen.append(log);
+screen.render();
 
 function renderStats() {
     statistics.setContent(`Engine: ${gameData.truck.engine.enabled ? "On" : "Off"}\nSpeed: ${gameData.truck.speed.kph}\nRPM: ${gameData.truck.engine.rpm.value.toFixed()}\nCurrent Pitch: ${gameData.truck.orientation.pitch}\nCurrent Gear: ${gameData.truck.transmission.gear.displayed}\nPreset: ${cache.preset_current}\nClimbing: ${gameData.truck.orientation.pitch > 0.018}`);
@@ -66,23 +64,22 @@ if(shifter) {
         log.log("Finished shifting");
     });
     
-    client.on("message", async (msg) => {
+    client.on("message", (msg) => {
+        console.log(msg);
         if(msg.type === "log") {
-        log.log(msg.content)
+            log.log(msg.content)
         }else if(msg.type === "shift_up") {
-        log.log("Has to shift up");
-        await robotjs.keyTap("up");
+            log.log("Has to shift up");
+            robotjs.keyTap("up");
         }else if(msg.type === "shift_down") {
-        log.log("Has to shift down");
-        await robotjs.keyTap("down");
+            log.log("Has to shift down");
+            robotjs.keyTap("down");
         }else if(msg.type === "preset_current") {
-        cache.preset_current = msg.content;
+            cache.preset_current = msg.content;
         }
     });
 }
 
-client.on("connection", () => {
+client.on("connect", () => {
     log.log("Connected to TruckersHub");
-})
-
-screen.render();
+});

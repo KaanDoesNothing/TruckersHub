@@ -16,7 +16,8 @@
 <script>
     const configFile = JSON.stringify({
         api: window.location.origin + "/api",
-        token: "{{user.token}}"
+        token: "{{user.token}}",
+        shifter: false
     });
 
     const downloadButton = document.querySelector("#download_config");

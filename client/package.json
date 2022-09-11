@@ -2,9 +2,16 @@
   "name": "client",
   "version": "1.0.0",
   "main": "index.js",
+  "bin": "build/index.js",
   "license": "MIT",
   "scripts": {
-    "build_executable": "pkg -t node16 build/index.js"
+    "build_executable": "tsc && pkg package.json"
+  },
+  "pkg": { 
+    "assets": "node_modules/blessed/**/*",
+    "scripts": "build/*.js",
+    "outputPath": "./",
+    "targets": ["latest-win-x64"]
   },
   "dependencies": {
     "@types/blessed": "^0.1.19",
