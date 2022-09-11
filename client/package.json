@@ -7,7 +7,12 @@
     "build_executable": "pkg -t node16 build/index.js"
   },
   "dependencies": {
+    "@types/blessed": "^0.1.19",
     "axios": "^0.27.2",
+    "blessed": "^0.1.81",
+    "blessed-contrib": "^4.11.0",
+    "robotjs": "^0.6.0",
+    "socket.io-client": "^4.5.2",
     "trucksim-telemetry": "^0.16.1"
   }
 }

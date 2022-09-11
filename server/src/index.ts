@@ -1,5 +1,7 @@
 import { randomUUID } from "crypto";
 import express from "express";
+import http from "http";
+import socketIO from "socket.io";
 import { engine } from "express-handlebars";
 import expressSession from "express-session";
 import { setup } from "./db";
@@ -9,6 +11,7 @@ import { comparePassword, copyFile, hashPassword } from "./utils";
 import { sessionData } from "./types";
 import { isAuthenticated } from "./middleware";
 import path from "path";
+import { launchShifter } from "./shifter";
 
 const config = require("../config.json");
 
@@ -17,6 +20,11 @@ setup();
 copyFile();
 
 const app = express();
+const server = http.createServer(app);
+const socket = new socketIO.Server(server);
+
+launchShifter(socket);
+
 app.use(expressSession({
     secret: config.server.secret,
     resave: false,
@@ -136,4 +144,4 @@ app.get("/dashboard/settings", async (req, res) => {
     return res.render("dashboard/settings");
 });
 
-app.listen(7998);
+server.listen(7998);
