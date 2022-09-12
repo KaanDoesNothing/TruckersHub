@@ -20,6 +20,6 @@ block body
               p Revenue: $#{event.data.event.revenue}
               p Distance: #{event.data.event.distance.km} km
               p Cargo: #{event.data.event.cargo.name}
-              p From: #{event.data.event.source.city.name} - #{event.data.source.company.name}
-              p To: #{event.data.event.destination.city.name} - #{event.data.destination.company.name}
+              p From: #{event.data.event.source.city.name} - #{event.data.event.source.company.name}
+              p To: #{event.data.event.destination.city.name} - #{event.data.event.destination.company.name}
               p Date: #{new Date(event.createdAt).toLocaleString()}
