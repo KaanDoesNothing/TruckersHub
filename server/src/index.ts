@@ -134,8 +134,8 @@ app.get("/dashboard/statistics", async (req, res) => {
     return res.render("dashboard/statistics");
 });
 
-app.get("/dashboard/logs", async (req, res) => {
-    return res.render("dashboard/logs");
+app.get("/dashboard/history", async (req, res) => {
+    return res.render("dashboard/history");
 });
 
 app.get("/dashboard/settings", async (req, res) => {

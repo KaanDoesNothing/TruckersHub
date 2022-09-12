@@ -9,22 +9,43 @@ html(lang="en")
 
         link(href="https://cdn.jsdelivr.net/npm/daisyui@2.6.0/dist/full.css", rel="stylesheet", type="text/css")
         script(src="https://cdn.tailwindcss.com")
-    body
+    body.overflow-hidden
         include ../partials/navbar
 
-        if isDashboard
-            #tab_navigator.flex.justify-center.btn-group.mt-5               
-                a.btn(href="/dashboard/statistics") Statistics          
-                a.btn(href="/dashboard/logs") Logs                
-                a.btn(href="/dashboard/settings") Settings
+        //- if isDashboard
+        //-     #tab_navigator.flex.justify-center.btn-group.mt-5               
+        //-         a.btn(href="/dashboard/statistics") Statistics          
+        //-         a.btn(href="/dashboard/logs") Logs                
+        //-         a.btn(href="/dashboard/settings") Settings
 
+        //-     script.
+        //-         const tab = location.pathname.split("/");
+        //-         document.querySelectorAll("#tab_navigator a").forEach(element => {
+        //-             if(tab[2] === element.textContent.toLowerCase().trim()) element.classList.add("btn-active");
+        //-         });
+
+        if isDashboard
+            .drawer.drawer-mobile
+                input#my-drawer-2.drawer-toggle(type="checkbox")
+                .drawer-content
+                    block body
+                .drawer-side.p-4.w-80.bg-base-200.h-screen.overflow-y-hidden
+                    label
+                        label.text-center.normal-case.text-xl General
+                        ul.menu.mt-2
+                            li
+                                a(href="/dashboard/statistics", class="rounded") Statistics
+                            li
+                                a(href="/dashboard/history", class="rounded") History
+                            li 
+                                a(href="/dashboard/settings", class="rounded") Settings
             script.
                 const tab = location.pathname.split("/");
-                document.querySelectorAll("#tab_navigator a").forEach(element => {
-                    if(tab[2] === element.textContent.toLowerCase().trim()) element.classList.add("btn-active");
+                document.querySelectorAll(".drawer-side li a").forEach(element => {
+                    if(tab[2] === element.textContent.toLowerCase().trim()) element.classList.add("active");
                 });
-
-        block body
+        else
+            block body
 
 //- <html lang="en" class="bg-gray-800">
 //-     <head>
