@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(http-equiv="X-UA-Compatible", content="IE=edge")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title TruckersHub
+
+        link(href="https://cdn.jsdelivr.net/npm/daisyui@2.6.0/dist/full.css", rel="stylesheet", type="text/css")
+        script(src="https://cdn.tailwindcss.com")
+    body
+        include ../partials/navbar
+
+        if isDashboard
+            #tab_navigator.flex.justify-center.btn-group.mt-5               
+                a.btn(href="/dashboard/statistics") Statistics          
+                a.btn(href="/dashboard/logs") Logs                
+                a.btn(href="/dashboard/settings") Settings
+
+            script.
+                const tab = location.pathname.split("/");
+                document.querySelectorAll("#tab_navigator a").forEach(element => {
+                    if(tab[2] === element.textContent.toLowerCase().trim()) element.classList.add("btn-active");
+                });
+
+        block body
+
+//- <html lang="en" class="bg-gray-800">
+//-     <head>
+//-         <meta charset="UTF-8">
+//-         <meta http-equiv="X-UA-Compatible" content="IE=edge">
+//-         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+//-         <title>TruckersHub</title>
+
+//-         <link href="https://cdn.jsdelivr.net/npm/daisyui@2.6.0/dist/full.css" rel="stylesheet" type="text/css"/>
+//-         <script src="https://cdn.tailwindcss.com"></script>
+//-     </head>
+//-     <body>
+//-         {{> navbar }}
+
+//-         <div>
+//-             {{#if isDashboard}}
+//-                 <div class="flex justify-center btn-group mt-5" id="tab_navigator">
+//-                     <a class="btn" href="/dashboard/statistics">Statistics</a>
+//-                     <a class="btn" href="/dashboard/logs">Logs</a>
+//-                     <a class="btn" href="/dashboard/settings">Settings</a>
+//-                 </div>
+//-             {{/if}}
+
+//-             {{{body}}}
+//-         </div>
+
+//-         <script>
+//-             const tab = location.pathname.split("/");
+//-             document.querySelectorAll("#tab_navigator a").forEach(element => {
+//-                 if(tab[2] === element.textContent.toLowerCase()) element.classList.add("btn-active");
+//-             });
+//-         </script>
+//-     </body>
+//- </html>

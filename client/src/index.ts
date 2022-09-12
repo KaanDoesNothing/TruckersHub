@@ -16,7 +16,7 @@ preset_current: "Unknown"
 let gameData: any = undefined;
 
 const screen = blessed.screen({title: "Client", smartCSR: true});
-const client = SocketIO("http://root.kaanlikescoding.me:7998");
+const client = SocketIO(api.replace("/api", ""));
 const tsclient = tst();
 
 tsclient.job.on("delivered", (data: EventsJobDeliveredVerbose) => {
@@ -65,7 +65,6 @@ if(shifter) {
     });
     
     client.on("message", (msg) => {
-        console.log(msg);
         if(msg.type === "log") {
             log.log(msg.content)
         }else if(msg.type === "shift_up") {

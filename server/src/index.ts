@@ -2,7 +2,6 @@ import { randomUUID } from "crypto";
 import express from "express";
 import http from "http";
 import socketIO from "socket.io";
-import { engine } from "express-handlebars";
 import expressSession from "express-session";
 import { setup } from "./db";
 import { Event } from "./entities/event";
@@ -36,8 +35,7 @@ app.use("/static/", express.static(path.join(__dirname, "../static")));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
-app.engine("handlebars", engine({layoutsDir: "./views/layouts"}));
-app.set("view engine", "handlebars");
+app.set("view engine", "pug");
 
 app.use(async (req, res, next) => {
     const session = req.session as sessionData;
