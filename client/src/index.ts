@@ -1,7 +1,7 @@
 import fs from "fs";
 import axios from "axios";
 import SocketIO from "socket.io-client";
-import tst, {EventsJobDeliveredVerbose} from "trucksim-telemetry";
+import tst, {EventFerry, EventsFine, EventsJobDeliveredVerbose, EventsRefuelPaid, EventTollgate, EventTrain, Trailer, TruckDamage} from "trucksim-telemetry";
 import robotjs from "robotjs";
 import blessed from "blessed";
 import contrib from "blessed-contrib";
@@ -19,9 +19,40 @@ const screen = blessed.screen({title: "Client", smartCSR: true});
 const client = SocketIO(api.replace("/api", ""));
 const tsclient = tst();
 
+function handleEvent({type, data}: {type: string, data: any}) {
+    axios.post(`${api}/event/create`, {token, event: {type, data: {event: data, game: tsclient.getData()}}}).then(res => console.log(res.data));
+}
+
 tsclient.job.on("delivered", (data: EventsJobDeliveredVerbose) => {
-    console.log(data);
-    axios.post(`${api}/event/create`, {token, event: {type: "delivered", data}}).then(res => console.log(res.data));
+    handleEvent({type: "delivered", data});
+});
+
+tsclient.game.on("refuel-paid", (data: EventsRefuelPaid) => {
+    handleEvent({type: "refuel-paid", data});
+});
+
+tsclient.game.on("ferry", (data: EventFerry) => {
+    handleEvent({type: "ferry", data});
+});
+
+tsclient.game.on("train", (data: EventTrain) => {
+    handleEvent({type: "train", data});
+});
+
+tsclient.game.on("fine", (data: EventsFine) => {
+    handleEvent({type: "fine", data});
+});
+
+tsclient.game.on("tollgate", (data: EventTollgate) => {
+    handleEvent({type: "tollgate", data});
+});
+
+tsclient.truck.on("damage", (current: TruckDamage, previous: TruckDamage) => {
+    handleEvent({type: "truck_damage", data: {current, previous}});
+});
+
+tsclient.trailer.on("damage", (trailerID: number, current: TruckDamage, previous: TruckDamage) => {
+    handleEvent({type: "trailer_damage", data: {trailerID, current, previous}});
 });
 
 const statistics = blessed.box({

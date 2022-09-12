@@ -3,17 +3,33 @@ extends ../layouts/main
 block body
     .flex.justify-center.mt-10
       for event in user.events
-        .card.w-80.bg-base-100.shadow-xl.m-1.text-primary-content
-          .card-body.card-event
-            h2.card-title #{event.type}
-            p Revenue: $#{event.data.revenue}
-            p Distance: #{event.data.distance.km} km
-            p Cargo: #{event.data.cargo.name}
-            p From: #{event.data.source.city.name} - #{event.data.source.company.name}
-            p To: #{event.data.destination.city.name} - #{event.data.destination.company.name}
-    script.
-      document.querySelectorAll(".card-event").forEach(element => {
-      const title = element.querySelector(".card-title");
-      console.log(title);
-      if(title.innerHTML === "delivered") title.innerHTML = "Delivery";
-      });
+        if event.type === "delivered" && !event.data.game
+          .card.w-80.bg-base-100.shadow-xl.m-1.text-primary-content
+            .card-body.card-event
+              h2.card-title Delivery
+              p Revenue: $#{event.data.revenue}
+              p Distance: #{event.data.distance.km} km
+              p Cargo: #{event.data.cargo.name}
+              p From: #{event.data.source.city.name} - #{event.data.source.company.name}
+              p To: #{event.data.destination.city.name} - #{event.data.destination.company.name}
+        if event.data.game
+          if event.type === "fine"
+            .card.w-80.bg-base-100.shadow-xl.m-1.text-primary-content
+              .card-body.card-event
+                h2.card-title Fine
+                p Reason #{event.data.event.offence.name}
+
+          if event.type === "refuel-paid"
+            .card.w-80.bg-base-100.shadow-xl.m-1.text-primary-content
+              .card-body.card-event
+                h2.card-title Refueled
+                p Amount #{Math.round(event.data.event.amount)}
+
+      script.
+        console.log(!{JSON.stringify(user.events)});
+    //- script.
+    //-   document.querySelectorAll(".card-event").forEach(element => {
+    //-   const title = element.querySelector(".card-title");
+    //-   console.log(title);
+    //-   if(title.innerHTML === "delivered") title.innerHTML = "Delivery";
+    //-   });

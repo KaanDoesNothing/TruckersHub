@@ -1,0 +1,11 @@
+extends ../../layouts/main
+
+block body
+    .flex.justify-center.mt-10
+      for event in user.events.filter(event => event.type === "refuel-paid")
+        if event.data.game
+          .card.w-80.bg-base-100.shadow-xl.m-1.text-primary-content
+              .card-body.card-event
+                h2.card-title Refuel
+                p Amount #{Math.round(event.data.event.amount)}
+                p Date: #{new Date(event.createdAt).toLocaleString()}

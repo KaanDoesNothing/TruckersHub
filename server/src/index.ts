@@ -41,7 +41,12 @@ app.use(async (req, res, next) => {
     const session = req.session as sessionData;
 
     if(session.user?.token) {
-        const existingUser = await User.findOne({where: {token: session.user.token.toString()}, relations: {events: true}});
+        let existingUser = await User.findOne({where: {token: session.user.token.toString()}, relations: {events: true}});
+        existingUser?.events.sort((previous, current) => {
+            
+            //@ts-ignore
+            return new Date(current.createdAt) - new Date(previous.createdAt);
+        });
 
         res.locals.user = existingUser;
     }
@@ -136,6 +141,26 @@ app.get("/dashboard/statistics", async (req, res) => {
 
 app.get("/dashboard/history", async (req, res) => {
     return res.render("dashboard/history");
+});
+
+app.get("/dashboard/history/deliveries", async (req, res) => {
+    return res.render("dashboard/history/deliveries");
+});
+
+app.get("/dashboard/history/fines", async (req, res) => {
+    return res.render("dashboard/history/fines");
+});
+
+app.get("/dashboard/history/transport", async (req, res) => {
+    return res.render("dashboard/history/transport");
+});
+
+app.get("/dashboard/history/tollgates", async (req, res) => {
+    return res.render("dashboard/history/tollgates");
+});
+
+app.get("/dashboard/history/fuel", async (req, res) => {
+    return res.render("dashboard/history/fuel");
 });
 
 app.get("/dashboard/settings", async (req, res) => {
