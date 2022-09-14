@@ -51,8 +51,8 @@ tsclient.truck.on("damage", (current: TruckDamage, previous: TruckDamage) => {
     handleEvent({type: "truck_damage", data: {current, previous}});
 });
 
-tsclient.trailer.on("damage", (trailerID: number, current: TruckDamage, previous: TruckDamage) => {
-    handleEvent({type: "trailer_damage", data: {trailerID, current, previous}});
+tsclient.trailer.on("damage", (current: TruckDamage, previous: TruckDamage) => {
+    handleEvent({type: "trailer_damage", data: {current, previous}});
 });
 
 const statistics = blessed.box({

@@ -44,6 +44,13 @@ html(lang="en")
                                 a(href="/dashboard/history/transport", class="rounded") Transport
                             li
                                 a(href="/dashboard/history/fuel", class="rounded") Fuel
+                            li
+                                a(href="/dashboard/history/damages", class="rounded") Damages
+
+                        label.text-center.normal-case.text-xl VTC
+                        ul.menu.mt-2
+                            li
+                                a(href="/dashboard/vtc/list", class="rounded") List
             script.
                 const tab = location.pathname.split("/");
                 document.querySelectorAll(".drawer-side li a").forEach(element => {

@@ -1,0 +1,20 @@
+extends ../../layouts/main
+
+block body
+    .grid.grid-cols-4.gap-4.p-4
+      for event in user.events.filter(event => event.type === "truck_damage" || event.type === "trailer_damage")
+        if !event.data.event.trailerID
+            .card.w-80.bg-base-100.shadow-xl.m-1.text-primary-content
+                .card-body.card-event
+                    h2.card-title #{event.type === "truck_damage" ? "Truck" : "Trailer"}
+
+                    if event.type === "truck_damage"
+                        p Vehicle: #{event.data.game.truck.make.name}
+                    else
+                        p Trailer: #{event.data.game.trailer.model.name}
+                    
+                    p Total #{Math.round(event.data.event.current.total * 100)}
+                    p Damage #{Math.round(event.data.event.current.total * 100) - Math.round(event.data.event.previous.total * 100)}
+                //- p Damage #{event.data.event.offence.name}
+                //- p Price $#{event.data.event.amount}
+                //- p Date: #{new Date(event.createdAt).toLocaleString()}

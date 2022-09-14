@@ -1,23 +1,17 @@
 import {BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
-import { Event } from "./event";
+import { User } from "./user";
 
-@Entity("user")
-export class User extends BaseEntity {
+@Entity("vtc")
+export class VTC extends BaseEntity {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
     @Column()
-    token: string;
+    name: string;
 
     @Column()
-    username: string;
-
-    @Column()
-    password: string;
+    author: string;
     
-    @OneToMany(() => Event, (event) => event.author)
-    events: Event[]
-
     @CreateDateColumn()
     createdAt: number;
 }
