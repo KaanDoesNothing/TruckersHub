@@ -6,12 +6,12 @@ import expressSession from "express-session";
 import { setup } from "./db";
 import { Event } from "./entities/event";
 import { User } from "./entities/user";
-import { closestCity, comparePassword, copyFile, hashPassword } from "./utils";
+import {comparePassword, copyFile, hashPassword } from "./utils";
 import { sessionData } from "./types";
 import { isAuthenticated } from "./middleware";
 import path from "path";
 import { launchShifter } from "./shifter";
-import { VTC } from "./entities/vtc";
+import { closestCity, fuelPrice } from "./game";
 
 const config = require("../config.json");
 
@@ -55,13 +55,14 @@ app.use(async (req, res, next) => {
                 row.data.event.current = clone.data.event.trailerID;
             }
 
-            // console.log(row.data.game.truck.position);
-            row.data.game.location = closestCity(row.data.game.truck.position);
-
             return row;
         });
 
         res.locals.user = existingUser;
+        res.locals.modules = {
+            closestCity,
+            fuelPrice
+        }
     }
 
     next();
