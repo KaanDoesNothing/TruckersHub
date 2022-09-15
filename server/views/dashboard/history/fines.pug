@@ -8,5 +8,6 @@ block body
               .card-body.card-event
                 h2.card-title Fine
                 p Reason #{event.data.event.offence.name}
+                p Location: #{event.data.game.location.realName}
                 p Price $#{event.data.event.amount}
                 p Date: #{new Date(event.createdAt).toLocaleString()}

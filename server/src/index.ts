@@ -6,7 +6,7 @@ import expressSession from "express-session";
 import { setup } from "./db";
 import { Event } from "./entities/event";
 import { User } from "./entities/user";
-import { comparePassword, copyFile, hashPassword } from "./utils";
+import { closestCity, comparePassword, copyFile, hashPassword } from "./utils";
 import { sessionData } from "./types";
 import { isAuthenticated } from "./middleware";
 import path from "path";
@@ -42,14 +42,10 @@ app.use(async (req, res, next) => {
     const session = req.session as sessionData;
 
     if(session.user?.token) {
-        let existingUser = await User.findOne({where: {token: session.user.token.toString()}, relations: {events: true}});
+        let existingUser = await User.findOne({where: {token: session.user.token.toString()}, relations: {events: true}, order: {events: {createdAt: "DESC"}}});
         if(!existingUser) return next();
         //@ts-ignore
-        existingUser.events = existingUser.events.sort((previous, current) => {
-            
-            //@ts-ignore
-            return new Date(current.createdAt) - new Date(previous.createdAt);
-        }).map((row: any) => {
+        existingUser.events = existingUser.events.map((row: any) => {
             //temporary fix for my stupid mistakes.
             if(!row.data.game) return row;
 
@@ -58,6 +54,9 @@ app.use(async (req, res, next) => {
                 row.data.event.previous = clone.data.event.current;
                 row.data.event.current = clone.data.event.trailerID;
             }
+
+            // console.log(row.data.game.truck.position);
+            row.data.game.location = closestCity(row.data.game.truck.position);
 
             return row;
         });
