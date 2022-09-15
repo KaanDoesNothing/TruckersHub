@@ -43,10 +43,23 @@ app.use(async (req, res, next) => {
 
     if(session.user?.token) {
         let existingUser = await User.findOne({where: {token: session.user.token.toString()}, relations: {events: true}});
-        existingUser?.events.sort((previous, current) => {
+        if(!existingUser) return next();
+        //@ts-ignore
+        existingUser.events = existingUser.events.sort((previous, current) => {
             
             //@ts-ignore
             return new Date(current.createdAt) - new Date(previous.createdAt);
+        }).map((row: any) => {
+            //temporary fix for my stupid mistakes.
+            if(!row.data.game) return row;
+
+            if(row.data.event.trailerID) {
+                const clone = Object.assign({}, row);
+                row.data.event.previous = clone.data.event.current;
+                row.data.event.current = clone.data.event.trailerID;
+            }
+
+            return row;
         });
 
         res.locals.user = existingUser;
