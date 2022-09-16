@@ -1,0 +1,11 @@
+extends ../../layouts/main
+
+block body
+    .grid.grid-cols-4.gap-4.p-4
+      for event in user.events.filter(event => event.type === "ferry" || event.type === "train")
+          .card.w-80.bg-base-100.shadow-xl.m-1.text-primary-content
+              .card-body.card-event
+                h2.card-title #{event.type === "ferry" ? "Ferry" : "Train"}
+                p From: #{event.data.event.source.name}
+                p To: #{event.data.event.destination.name}
+                p Price: $#{event.data.event.amount}
