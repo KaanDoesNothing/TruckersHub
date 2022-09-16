@@ -10,7 +10,7 @@ const {api, token, shifter} = JSON.parse(fs.readFileSync("./config.json", "utf-8
 if(!api || !token) console.log("Invalid config file.");
 
 let cache = {
-preset_current: "Unknown"
+    preset_current: "Unknown"
 }
 
 let gameData: any = undefined;
@@ -74,7 +74,7 @@ screen.append(log);
 screen.render();
 
 function renderStats() {
-    statistics.setContent(`Engine: ${gameData.truck.engine.enabled ? "On" : "Off"}\nSpeed: ${gameData.truck.speed.kph}\nRPM: ${gameData.truck.engine.rpm.value.toFixed()}\nCurrent Pitch: ${gameData.truck.orientation.pitch}\nCurrent Gear: ${gameData.truck.transmission.gear.displayed}\nPreset: ${cache.preset_current}\nClimbing: ${gameData.truck.orientation.pitch > 0.018}`);
+    statistics.setContent(`Engine: ${gameData.truck.engine.enabled ? "On" : "Off"}\nSpeed: ${gameData.truck.speed.kph}\nRPM: ${gameData.truck.engine.rpm.value.toFixed()}\nCurrent Pitch: ${gameData.truck.orientation.pitch}\nCurrent Gear: ${gameData.truck.transmission.gear.displayed}\nThrottle: ${gameData.controls.input.throttle}\nPreset: ${cache.preset_current}\nClimbing: ${gameData.truck.orientation.pitch > 0.018}`);
     screen.render();
 }
 
