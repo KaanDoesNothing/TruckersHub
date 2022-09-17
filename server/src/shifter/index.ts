@@ -1,20 +1,22 @@
 import SocketIO from "socket.io";
+import { User } from "../entities/user";
 import {presetHandler} from "./presets";
 import { GearPreset, GearPresetResult } from "./types";
 
-const game_data = new Map();
-const handling = new Map();
-const sockets = new Map();
+export const game_data = new Map();
+export const handling = new Map();
+export const sockets = new Map();
+export const socketSettings = new Map();
 
 let server: SocketIO.Server;
 
 const sleep = (time: number) => new Promise(r => setTimeout(r, time));;
 
-function getHandling({id}: {id: string}) {
+export function getHandling({id}: {id: string}) {
     return handling.get(id) || false;
 }
 
-function setHandling({id, value}: {id: string, value: boolean}) {
+export function setHandling({id, value}: {id: string, value: boolean}) {
     return handling.set(id, value);
 }
 
@@ -27,7 +29,7 @@ function setGameData({id, value}: {id: string, value: boolean}) {
 }
 function waitForShift({id}: {id: string}) {
     return new Promise((resolve, reject) => {
-        const client = sockets.get(id);
+        const client = sockets.get(id).client;
 
         const callback = (msg: any) => {
             if(msg.type === "gear_change") {
@@ -77,7 +79,9 @@ async function handle({id}: {id: string}) {
     if(!gameData) return;
 
     const isPaused = gameData.game.paused;
-    if(isPaused) return;
+    const isSocketPaused = sockets.get(id).paused;
+
+    if(isPaused || isSocketPaused) return;
 
     const truckData = gameData.truck;
     const gear = truckData.transmission.gear.displayed;
@@ -97,10 +101,24 @@ async function handle({id}: {id: string}) {
 export const launchShifter = (socketServer: SocketIO.Server) => {
     server = socketServer;
     
-    server.on("connection", (client) => {
+    server.on("connection", async (client) => {
+        const username: User["username"] = await new Promise((resolve) => {
+            client.once("authenticate", async (msg) => {
+                const user = await User.findOne({where: {token: msg.content}});
+
+                if(!user) return;
+
+                client.emit("authenticated", {content: true});
+
+                console.log(`${user.username} connected`);
+
+                resolve(user.username);
+            });
+        });
+
         const id = client.id;
 
-        sockets.set(id, client);
+        sockets.set(id, {client, username, paused: false});
 
         client.on("message", async (msg) => {
             if(msg.type === "game_data") {
@@ -114,7 +132,11 @@ export const launchShifter = (socketServer: SocketIO.Server) => {
                 setHandling({id, value: false});
             }
         });
+
+        client.on("disconnect", () => {
+            sockets.delete(id);
+        });
         
-        console.log("Connected");
+        // console.log("Connected");
     });
 }

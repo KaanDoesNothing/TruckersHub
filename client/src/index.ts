@@ -111,5 +111,13 @@ if(shifter) {
 }
 
 client.on("connect", () => {
-    log.log("Connected to TruckersHub");
+    client.emit("authenticate", {content: token});
+
+    log.log("Connecting to TruckersHub");
+});
+
+client.on("authenticated", (msg) => {
+    if(msg.content) {
+        log.log("Connected to TruckersHub");
+    }
 });

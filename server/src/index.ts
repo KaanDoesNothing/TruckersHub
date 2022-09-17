@@ -8,9 +8,9 @@ import { Event } from "./entities/event";
 import { User } from "./entities/user";
 import {comparePassword, copyFile, hashPassword } from "./utils";
 import { sessionData } from "./types";
-import { isAuthenticated } from "./middleware";
+import { isAdministrator, isAuthenticated } from "./middleware";
 import path from "path";
-import { launchShifter } from "./shifter";
+import { launchShifter, setHandling, sockets } from "./shifter";
 import { closestCity, fuelPrice } from "./game";
 
 const config = require("../config.json");
@@ -209,6 +209,24 @@ app.get("/dashboard/vtc/create", async (req, res) => {
 app.get("/dashboard/vtc/leave", async (req, res) => {
     const author = await User.findOne({where: {username: "kaan075"}});
 
+});
+
+app.get("/dashboard/admin/users", isAdministrator, async (req, res) => {
+    const users = await User.find({});
+
+    return res.render("dashboard/admin/users", {users, connected: sockets});
+});
+
+app.get("/dashboard/admin/users/:id/pause/:type", isAdministrator, (req, res) => {
+    sockets.forEach(socket => {
+        if(socket.username === req.params.id) {
+            socket.paused = req.params.type === "true";
+
+            sockets.set(socket.client.id, socket);
+        }
+    });
+
+    return res.json({message: "Successful"});
 });
 
 app.get("/dashboard/settings", async (req, res) => {

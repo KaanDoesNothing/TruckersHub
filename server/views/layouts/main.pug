@@ -51,6 +51,13 @@ html(lang="en")
                         ul.menu.mt-2
                             li
                                 a(href="/dashboard/vtc/list", class="rounded") List
+
+                        if user.administrator
+                            label.text-center.normal-case.text-xl Admin
+                            ul.menu.mt-2
+                                li
+                                    a(href="/dashboard/admin/users", class="rounded") Users
+
             script.
                 const tab = location.pathname.split("/");
                 document.querySelectorAll(".drawer-side li a").forEach(element => {

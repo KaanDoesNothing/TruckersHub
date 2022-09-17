@@ -8,3 +8,9 @@ export const isAuthenticated = (req: Request, res: Response, next: NextFunction)
 
     next();
 }
+
+export const isAdministrator = (req: Request, res: Response, next: NextFunction) => {
+    if(!res.locals.user.administrator) return res.json({message: "You aren't allowed to be here."});
+
+    next();
+}

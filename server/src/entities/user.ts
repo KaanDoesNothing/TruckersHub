@@ -18,6 +18,9 @@ export class User extends BaseEntity {
     @OneToMany(() => Event, (event) => event.author)
     events: Event[]
 
+    @Column()
+    administrator: boolean;
+
     @CreateDateColumn()
     createdAt: number;
 }
