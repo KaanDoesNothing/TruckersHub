@@ -6,7 +6,6 @@ import { GearPreset, GearPresetResult } from "./types";
 export const game_data = new Map();
 export const handling = new Map();
 export const sockets = new Map();
-export const socketSettings = new Map();
 
 let server: SocketIO.Server;
 
@@ -134,9 +133,9 @@ export const launchShifter = (socketServer: SocketIO.Server) => {
         });
 
         client.on("disconnect", () => {
+            game_data.delete(id);
+            handling.delete(id);
             sockets.delete(id);
         });
-        
-        // console.log("Connected");
     });
 }
