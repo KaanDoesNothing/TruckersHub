@@ -11,6 +11,14 @@ let server: SocketIO.Server;
 
 const sleep = (time: number) => new Promise(r => setTimeout(r, time));;
 
+export function getSocketByName({username}: {username: string}) {
+    const keys = sockets.entries();
+
+    for (let [key, value] of keys) {
+        if(value.username === username) return value;
+    }
+}
+
 export function getHandling({id}: {id: string}) {
     return handling.get(id) || false;
 }

@@ -11,7 +11,7 @@ block body
                     th Action
             tbody()
                 for user in users
-                    - let socket = [...connected][0].filter(socket => socket.username === user.username)[0];
+                    - let socket = getSocketByName({username: user.username});
                     tr
                         th=users.indexOf(user)
                         th=user.username

@@ -10,7 +10,7 @@ import {comparePassword, copyFile, hashPassword } from "./utils";
 import { sessionData } from "./types";
 import { isAdministrator, isAuthenticated } from "./middleware";
 import path from "path";
-import { launchShifter, setHandling, sockets } from "./shifter";
+import { launchShifter, getSocketByName, sockets } from "./shifter";
 import { closestCity, fuelPrice } from "./game";
 
 const config = require("../config.json");
@@ -214,7 +214,7 @@ app.get("/dashboard/vtc/leave", async (req, res) => {
 app.get("/dashboard/admin/users", isAdministrator, async (req, res) => {
     const users = await User.find({});
 
-    return res.render("dashboard/admin/users", {users, connected: sockets});
+    return res.render("dashboard/admin/users", {users, getSocketByName});
 });
 
 app.get("/dashboard/admin/users/:id/pause/:type", isAdministrator, (req, res) => {
