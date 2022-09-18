@@ -1,5 +1,19 @@
 extends ../../layouts/main
 
 block body
-    for vtc in vtcList
-        label=vtc.name
+    div(class="overflow-x-auto flex justify-center p-5 bg-base-100")
+        table(class="table w-full")
+            thead
+                tr
+                    th
+                    th Name
+                    th Members
+                    th Action
+            tbody()
+                for vtc in vtcList
+                    tr
+                        th=vtcList.indexOf(vtc)
+                        th=vtc.name
+                        th=vtc.members.length
+                        th
+                            a(href=`/dashboard/admin/users/${vtc.name}`) View

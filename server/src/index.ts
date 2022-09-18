@@ -12,6 +12,7 @@ import { isAdministrator, isAuthenticated } from "./middleware";
 import path from "path";
 import { launchShifter, getSocketByName, sockets } from "./shifter";
 import { closestCity, fuelPrice } from "./game";
+import { VTC } from "./entities/vtc";
 
 const config = require("../config.json");
 
@@ -42,7 +43,7 @@ app.use(async (req, res, next) => {
     const session = req.session as sessionData;
 
     if(session.user?.token) {
-        let existingUser = await User.findOne({where: {token: session.user.token.toString()}, relations: {events: true}, order: {events: {createdAt: "DESC"}}});
+        let existingUser = await User.findOne({where: {token: session.user.token.toString()}, relations: {events: true, vtc: true}, order: {events: {createdAt: "DESC"}}});
         if(!existingUser) return next();
         //@ts-ignore
         existingUser.events = existingUser.events.map((row: any) => {
@@ -182,33 +183,41 @@ app.get("/dashboard/history/damages", async (req, res) => {
 });
 
 app.get("/dashboard/vtc/list", async (req, res) => {
-    // // const vtcList = await VTC.find({relations: {members: true, author: true}});
-    
-    // console.log(vtcList);
+    const vtcList = await VTC.find({relations: {members: true, author: true}});
 
-    // return res.render("dashboard/vtc/list", {vtcList});
+    return res.render("dashboard/vtc/list", {vtcList});
 });
 
 app.get("/dashboard/vtc/create", async (req, res) => {
-    // const author = await User.findOne({where: {username: "kaan075"}});
+    if(res.locals.user.vtc) return res.render("error", {message: "You're already in a VTC."});
 
-    // if(!author) return;
-
-    // const newVTC = VTC.create({
-    //     name: "Lazy Panda's",
-    //     author: author,
-    //     members: []
-    // });
-
-    // // await newVTC.save();
-    
-    // return res.json(await newVTC.save());
-    // // return res.render("dashboard/history/fuel");
+    return res.render("dashboard/vtc/create");
 });
 
-app.get("/dashboard/vtc/leave", async (req, res) => {
-    const author = await User.findOne({where: {username: "kaan075"}});
+app.post("/dashboard/vtc/create", async (req, res) => {
+    const {name} = req.body;
 
+    if(!name) return res.render("error", {message: "No name provided!"});
+
+    if(res.locals.user.vtc) return res.render("error", {message: "You're already in a VTC."});
+
+    const vtc = await VTC.findOne({where: {name}});
+
+    if(vtc) return res.render("error", {message: "VTC Already exists!"});
+
+    const author = await User.findOne({where: {username: res.locals.user.username}});
+
+    if(!author) return;
+
+    const newVTC = VTC.create({
+        name: name,
+        author: author,
+        members: [author]
+    });
+
+    await newVTC.save();
+
+    return res.redirect(`/dashboard/vtc/${name}`);
 });
 
 app.get("/dashboard/admin/users", isAdministrator, async (req, res) => {
