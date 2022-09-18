@@ -1,4 +1,5 @@
 import SocketIO from "socket.io";
+import { Event } from "../entities/event";
 import { User } from "../entities/user";
 import {presetHandler} from "./presets";
 import { GearPreset, GearPresetResult } from "./types";
@@ -138,6 +139,25 @@ export const launchShifter = (socketServer: SocketIO.Server) => {
         
                 setHandling({id, value: false});
             }
+        });
+
+        client.on("event_create", async (data) => {
+            const {event} = data;
+        
+            const author = await User.findOne({where: {username}, relations: {events: true}});
+            if(!author) {
+                return;
+            }
+        
+            const newEvent = Event.create({type: event.type, data: event.data});
+        
+            await newEvent.save();
+        
+            author.events.push(newEvent);
+        
+            await author.save();
+        
+            client.emit("message", {type: "log", content: "Event was saved to the database!"});
         });
 
         client.on("disconnect", () => {

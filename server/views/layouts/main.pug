@@ -54,8 +54,9 @@ html(lang="en")
                                     a(href=`/dashboard/vtc/view/${user.vtc.name}`, class="rounded") View
                             li
                                 a(href="/dashboard/vtc/list", class="rounded") List
-                            li
-                                a(href="/dashboard/vtc/create", class="rounded") Create
+                            if !user.vtc
+                                li
+                                    a(href="/dashboard/vtc/create", class="rounded") Create
 
                         if user.administrator
                             label.text-center.normal-case.text-xl Admin

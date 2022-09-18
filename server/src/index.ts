@@ -10,7 +10,7 @@ import {comparePassword, copyFile, hashPassword } from "./utils";
 import { sessionData } from "./types";
 import { isAdministrator, isAuthenticated } from "./middleware";
 import path from "path";
-import { launchShifter, getSocketByName, sockets } from "./shifter";
+import { launchShifter, getSocketByName, sockets } from "./socketServer";
 import { closestCity, fuelPrice } from "./game";
 import { VTC } from "./entities/vtc";
 
@@ -115,33 +115,6 @@ app.post("/auth/register", async (req, res) => {
     await user.save();
 
     return res.redirect("/");
-});
-
-app.get("/api/event/get", async (req, res) => {
-    const author = await User.findOne({where: {username: req.query.username?.toString()}, relations: {events: true}});
-
-    return res.json(author);
-});
-
-app.post("/api/event/create", async (req, res) => {
-    const {token, event} = req.body;
-
-    if(!token) return res.json({error: "No token was provided!"});
-
-    const author = await User.findOne({where: {token}, relations: {events: true}});
-    if(!author) {
-        return res.json({error: "Invalid token"});
-    }
-
-    const newEvent = Event.create({type: event.type, data: event.data});
-
-    await newEvent.save();
-
-    author.events.push(newEvent);
-
-    await author.save();
-
-    return res.json({message: "Added to the database."});
 });
 
 app.use(isAuthenticated, (req, res, next) => {

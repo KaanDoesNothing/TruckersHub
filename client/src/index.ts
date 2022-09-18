@@ -20,7 +20,7 @@ const client = SocketIO(api.replace("/api", ""));
 const tsclient = tst();
 
 function handleEvent({type, data}: {type: string, data: any}) {
-    axios.post(`${api}/event/create`, {token, event: {type, data: {event: data, game: tsclient.getData()}}}).then(res => console.log(res.data));
+    client.emit("event_create", {token, event: {type, data: {event: data, game: tsclient.getData()}}});
 }
 
 tsclient.job.on("delivered", (data: EventsJobDeliveredVerbose) => {
