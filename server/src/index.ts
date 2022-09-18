@@ -4,9 +4,8 @@ import http from "http";
 import socketIO from "socket.io";
 import expressSession from "express-session";
 import { setup } from "./db";
-import { Event } from "./entities/event";
 import { User } from "./entities/user";
-import {comparePassword, copyFile, hashPassword } from "./utils";
+import {comparePassword, copyFile, hashPassword, capitalizeFirstLetter } from "./utils";
 import { sessionData } from "./types";
 import { isAdministrator, isAuthenticated } from "./middleware";
 import path from "path";
@@ -62,7 +61,8 @@ app.use(async (req, res, next) => {
         res.locals.user = existingUser;
         res.locals.modules = {
             closestCity,
-            fuelPrice
+            fuelPrice,
+            capitalizeFirstLetter
         }
     }
 
@@ -166,11 +166,19 @@ app.get("/dashboard/vtc/view/:name", async (req, res) => {
 
     if(!name) return res.render("error", {message: "No name provided!"});
 
-    const vtc = await VTC.findOne({where: {name}, relations: {members: {events: true}, author: true}});
+    const vtc: VTC | null = await VTC.findOne({where: {name}, relations: {members: {events: true}, author: true}});
 
     if(!vtc) return res.render("error", {message: "VTC Doesn't exist!"});
 
-    return res.render("dashboard/vtc/view", {vtc});
+    const members = vtc.members.map(member => {
+        member.events = member.events.filter(event => event.type === "delivered");
+
+        return member;
+    }).sort((a: User, b: User) => b.events.length - a.events.length);
+
+
+
+    return res.render("dashboard/vtc/view", {vtc, members});
 });
 
 app.get("/dashboard/vtc/create", async (req, res) => {

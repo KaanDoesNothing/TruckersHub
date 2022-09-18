@@ -1,16 +1,25 @@
 extends ../../layouts/main
 
 block body
-    div(class="overflow-x-auto flex justify-center p-5 bg-base-100")
-        table(class="table w-full")
-            thead
-                tr
-                    th
-                    th Name
-                    th Deliveries
-            tbody()
-                for member in vtc.members
-                    tr
-                        th=vtc.members.indexOf(member)
-                        th=member.username
-                        th=member.events.filter(event => event.type === "delivered").length
+    .card.bg-base-200.shadow-xl.m-4.text-primary-content
+        .card-body.card-event
+            label.text-center.text-2xl #{vtc.name}
+                label.text-xl  (#{modules.capitalizeFirstLetter(vtc.author.username)})
+            //- h1.text-center Owned by #{vtc.author.username}
+
+            br
+            label.text-center.text-xl Members
+            br
+            div(class="overflow-x-auto flex justify-center p-5 bg-base-100")
+                table(class="table w-full")
+                    thead
+                        tr
+                            th
+                            th Name
+                            th Deliveries
+                    tbody()
+                        for member in members
+                            tr
+                                th=members.indexOf(member)
+                                th=member.username
+                                th=member.events.length
