@@ -150,7 +150,7 @@ app.use(isAuthenticated, (req, res, next) => {
 });
 
 app.get("/dashboard/statistics", async (req, res) => {
-    return res.render("dashboard/statistics");
+    return res.render("dashboard/statistics", {getSocketByName});
 });
 
 app.get("/dashboard/history", async (req, res) => {

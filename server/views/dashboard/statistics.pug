@@ -5,4 +5,5 @@ block body
         .card.w-80.bg-base-100.shadow-xl.m-1.text-primary-content
             .card-body
                 h2.card-title Statistics
+                p Connected: #{getSocketByName({username: user.username}) ? "Yes" : "No"}
                 p Deliveries: #{user.events.length}
