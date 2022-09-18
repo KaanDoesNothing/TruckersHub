@@ -16,4 +16,7 @@ block body
                         th=vtc.name
                         th=vtc.members.length
                         th
-                            a(href=`/dashboard/admin/users/${vtc.name}`) View
+                            div(class="btn-group")
+                                a(class="btn", href=`/dashboard/vtc/view/${vtc.name}`) View
+                                if !user.vtc
+                                    a(class="btn", href=`/dashboard/vtc/join/${vtc.name}`) Join

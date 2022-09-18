@@ -1,0 +1,16 @@
+extends ../../layouts/main
+
+block body
+    div(class="overflow-x-auto flex justify-center p-5 bg-base-100")
+        table(class="table w-full")
+            thead
+                tr
+                    th
+                    th Name
+                    th Deliveries
+            tbody()
+                for member in vtc.members
+                    tr
+                        th=vtc.members.indexOf(member)
+                        th=member.username
+                        th=member.events.filter(event => event.type === "delivered").length

@@ -101,16 +101,16 @@ app.post("/auth/login", async (req, res) => {
 app.post("/auth/register", async (req, res) => {
     const {username, password} = req.body;
 
-    if(!username || !password) return;
+    if(!username || !password) return res.render("error", {message: "You didn't provide a username or password!"});
 
     const existingUser = await User.findOne({where: {username}});
 
-    if(existingUser) return;
+    if(existingUser) return res.render("error", {message: "User already exists!"});
 
     const hashedPassword = await hashPassword(password);
     if(!hashedPassword) return;
 
-    const user = User.create({username, password: hashedPassword, token: randomUUID()}); 
+    const user = User.create({username, password: hashedPassword, token: randomUUID(), administrator: false}); 
 
     await user.save();
 
@@ -161,6 +161,18 @@ app.get("/dashboard/vtc/list", async (req, res) => {
     return res.render("dashboard/vtc/list", {vtcList});
 });
 
+app.get("/dashboard/vtc/view/:name", async (req, res) => {
+    const {name} = req.params;
+
+    if(!name) return res.render("error", {message: "No name provided!"});
+
+    const vtc = await VTC.findOne({where: {name}, relations: {members: {events: true}, author: true}});
+
+    if(!vtc) return res.render("error", {message: "VTC Doesn't exist!"});
+
+    return res.render("dashboard/vtc/view", {vtc});
+});
+
 app.get("/dashboard/vtc/create", async (req, res) => {
     if(res.locals.user.vtc) return res.render("error", {message: "You're already in a VTC."});
 
@@ -191,6 +203,27 @@ app.post("/dashboard/vtc/create", async (req, res) => {
     await newVTC.save();
 
     return res.redirect(`/dashboard/vtc/${name}`);
+});
+
+app.get("/dashboard/vtc/join/:name", async (req, res) => {
+    const {name} = req.params;
+    if(!name) return res.render("error", {message: "Missing parameters."});
+
+    if(res.locals.user.vtc) return res.render("error", {message: "You're already in a VTC."});
+
+    const vtc = await VTC.findOne({where: {name}, relations: {members: true}});
+
+    if(!vtc) return res.render("error", {message: "VTC Doesn't exist!"});
+
+    const user = await User.findOne({where: {username: res.locals.user.username}});
+
+    if(!user) return;
+
+    vtc.members.push(user);
+
+    vtc.save();
+
+    return res.redirect("/dashboard/vtc/list");
 });
 
 app.get("/dashboard/admin/users", isAdministrator, async (req, res) => {
