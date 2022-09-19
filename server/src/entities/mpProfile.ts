@@ -7,7 +7,7 @@ export class mpProfile extends BaseEntity {
     id: string;
 
     @Column("simple-json", {default: null})
-    data: string;
+    data: any;
 
     @CreateDateColumn()
     createdAt: number;

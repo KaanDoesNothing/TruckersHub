@@ -1,6 +1,7 @@
 import { Application } from "express"
 import { User } from "../../entities/user";
 import { VTC } from "../../entities/vtc";
+import Axios from "axios";
 
 export const routes = (app: Application) => {
     app.get("/dashboard/vtc/list", async (req, res) => {
@@ -14,8 +15,15 @@ export const routes = (app: Application) => {
     
         if(!name) return res.render("error", {message: "No name provided!"});
     
-        const vtc: VTC | null = await VTC.findOne({where: {name}, relations: {members: {events: true}, author: true}});
-    
+        const vtc: VTC | null = await VTC.findOne({where: {name}, relations: {members: {events: true, truckersmp: true}, author: {truckersmp: true}}});
+        let vtcData: any;
+
+        if(vtc?.author.truckersmp.data.vtc) {
+            const profile = await Axios.get(`https://api.truckersmp.com/v2/vtc/${vtc.author.truckersmp.data.vtc.id}`);
+
+            if(!profile.data.error) vtcData = profile.data.response;
+        }
+
         if(!vtc) return res.render("error", {message: "VTC Doesn't exist!"});
     
         const members = vtc.members.map(member => {
@@ -26,7 +34,7 @@ export const routes = (app: Application) => {
     
     
     
-        return res.render("dashboard/vtc/view", {vtc, members});
+        return res.render("dashboard/vtc/view", {vtc, members, vtcData});
     });
     
     app.get("/dashboard/vtc/create", async (req, res) => {

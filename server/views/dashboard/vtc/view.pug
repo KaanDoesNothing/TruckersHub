@@ -5,6 +5,10 @@ block body
         .card-body.card-event
             label.text-center.text-2xl #{vtc.name}
                 label.text-xl  (#{modules.capitalizeFirstLetter(vtc.author.username)})
+            if vtcData
+                .avatar.flex.justify-center
+                    div(class="w-40 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2")
+                        img(src=vtcData.logo)
             //- h1.text-center Owned by #{vtc.author.username}
 
             br
