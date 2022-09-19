@@ -5,6 +5,7 @@ block body
     .card.w-100.bg-base-100.shadow-xl.m-1.text-primary-content
       .card-body
         h2.card-title Settings
+        a.btn(class=`${user.steam_id ? "btn-disabled" : ""}`, href="/auth/steam/link") Link your steam account
         a.btn(href="/static/TruckersHub.exe") Download Client
         a#download_config.btn Download Config File
         .card-actions.text-center
