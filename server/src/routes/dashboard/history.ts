@@ -31,6 +31,19 @@ export const routes = (app: Application) => {
     });
     
     app.get("/dashboard/history/damages", async (req, res) => {
+        res.locals.user.events = res.locals.user.events.map((row: any) => {
+            //temporary fix for my stupid mistakes.
+            if(!row.data.game) return row;
+
+            if(row.data.event.trailerID) {
+                const clone = Object.assign({}, row);
+                row.data.event.previous = clone.data.event.current;
+                row.data.event.current = clone.data.event.trailerID;
+            }
+
+            return row;
+        });
+        
         return res.render("dashboard/history/damages");
     });
 }

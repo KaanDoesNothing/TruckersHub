@@ -45,19 +45,6 @@ app.use(async (req, res, next) => {
     if(session.user?.token) {
         let existingUser = await User.findOne({where: {token: session.user.token.toString()}, relations: {events: true, vtc: true}, order: {events: {createdAt: "DESC"}}});
         if(!existingUser) return next();
-        //@ts-ignore
-        existingUser.events = existingUser.events.map((row: any) => {
-            //temporary fix for my stupid mistakes.
-            if(!row.data.game) return row;
-
-            if(row.data.event.trailerID) {
-                const clone = Object.assign({}, row);
-                row.data.event.previous = clone.data.event.current;
-                row.data.event.current = clone.data.event.trailerID;
-            }
-
-            return row;
-        });
 
         res.locals.user = existingUser;
         res.locals.modules = {
