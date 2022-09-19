@@ -1,6 +1,9 @@
 import fs from "fs";
 
 const cities = JSON.parse(fs.readFileSync("./cities.json", "utf-8")).citiesList;
+const citiesPromods = JSON.parse(fs.readFileSync("./cities_promods.json", "utf-8")).citiesList;
+citiesPromods.forEach((row: any) => cities.push(row));
+
 const fuelPrices = {
     austria: 2.02,
     belgium: 1.90,
