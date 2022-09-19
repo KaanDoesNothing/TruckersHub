@@ -52,6 +52,8 @@ app.use(async (req, res, next) => {
             fuelPrice,
             capitalizeFirstLetter
         }
+
+        res.locals.query = req.query;
     }
 
     next();
