@@ -17,52 +17,7 @@ html(lang="en")
         include ../partials/navbar
         
         if isDashboard
-            .drawer.drawer-mobile
-                input#my-drawer-2.drawer-toggle(type="checkbox")
-                .drawer-content
-                    block body
-                .drawer-side.p-4.w-80.bg-base-200.h-screen.overflow-y-hidden
-                    label
-                        label.text-center.normal-case.text-xl General
-                        ul.menu.mt-2
-                            li
-                                a(href="/dashboard/statistics", class="rounded") Statistics
-                            //- li
-                            //-     a(href="/dashboard/history", class="rounded") History
-                            li 
-                                a(href="/dashboard/settings", class="rounded") Settings
-
-                        label.text-center.normal-case.text-xl History
-                        ul.menu.mt-2
-                            li
-                                a(href="/dashboard/history/deliveries", class="rounded") Deliveries
-                            li
-                                a(href="/dashboard/history/fines", class="rounded") Fines
-                            li
-                                a(href="/dashboard/history/tollgates", class="rounded") Tollgates
-                            li
-                                a(href="/dashboard/history/transport", class="rounded") Transport
-                            li
-                                a(href="/dashboard/history/fuel", class="rounded") Fuel
-                            li
-                                a(href="/dashboard/history/damages", class="rounded") Damages
-
-                        label.text-center.normal-case.text-xl VTC
-                        ul.menu.mt-2
-                            if user.vtc
-                                li
-                                    a(href=`/dashboard/vtc/view/${user.vtc.name}`, class="rounded") View
-                            li
-                                a(href="/dashboard/vtc/list", class="rounded") List
-                            if !user.vtc
-                                li
-                                    a(href="/dashboard/vtc/create", class="rounded") Create
-
-                        if user.administrator
-                            label.text-center.normal-case.text-xl Admin
-                            ul.menu.mt-2
-                                li
-                                    a(href="/dashboard/admin/users", class="rounded") Users
+            include ../partials/sidebar
 
             script.
                 const tab = location.pathname.split("/");
