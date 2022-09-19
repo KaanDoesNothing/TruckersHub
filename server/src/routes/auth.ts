@@ -26,7 +26,7 @@ export const routes = (app: Application) => {
     
         if(!username) return res.redirect("/auth/login");
     
-        const existingUser = await User.findOne({where: {username: username?.toString()}});
+        const existingUser = await User.findOne({where: {username: username?.toString()}, relations: {truckersmp: true}});
         if(!existingUser) return res.redirect("/auth/login");
 
         if(!existingUser.truckersmp && existingUser.steam_id || existingUser.truckersmp) {
