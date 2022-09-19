@@ -29,7 +29,7 @@ export const routes = (app: Application) => {
         const existingUser = await User.findOne({where: {username: username?.toString()}, relations: {truckersmp: true}});
         if(!existingUser) return res.redirect("/auth/login");
 
-        if(!existingUser.truckersmp && existingUser.steam_id || existingUser.truckersmp) {
+        if(!existingUser.truckersmp && existingUser.steam_id) {
             const profile = await Axios.get(`https://api.truckersmp.com/v2/player/${existingUser.steam_id}`);
             if(!profile.data.error) {
                 const newProfile = mpProfile.create({data: profile.data.response});
