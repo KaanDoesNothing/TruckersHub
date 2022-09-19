@@ -9,7 +9,7 @@ import { sessionData } from "./types";
 import { isAuthenticated } from "./middleware";
 import path from "path";
 import { launchShifter } from "./socketServer";
-import { closestCity, fuelPrice } from "./game";
+import { closestCity, fuelPrice, truckersMPClient } from "./game";
 import * as dashboard from "./routes/dashboard";
 import * as auth from "./routes/auth";
 

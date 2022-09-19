@@ -5,6 +5,8 @@ import { sessionData } from "../types";
 import { randomUUID } from "crypto";
 import SteamAuth from "node-steam-openid";
 import { isAuthenticated } from "../middleware";
+import Axios from "axios";
+import { mpProfile } from "../entities/mpProfile";
 
 const config = require("../../config.json");
 
@@ -26,6 +28,17 @@ export const routes = (app: Application) => {
     
         const existingUser = await User.findOne({where: {username: username?.toString()}});
         if(!existingUser) return res.redirect("/auth/login");
+
+        if(!existingUser.truckersmp && existingUser.steam_id || existingUser.truckersmp) {
+            const profile = await Axios.get(`https://api.truckersmp.com/v2/player/${existingUser.steam_id}`);
+            if(!profile.data.error) {
+                const newProfile = mpProfile.create({data: profile.data.response});
+                await newProfile.save();
+
+                existingUser.truckersmp = newProfile;
+                await existingUser.save();
+            }
+        }
     
         const passwordCorrect = password === existingUser.password || await comparePassword(password, existingUser.password);
     

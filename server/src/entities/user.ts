@@ -1,5 +1,6 @@
-import {BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 import { Event } from "./event";
+import { mpProfile } from "./mpProfile";
 import { VTC } from "./vtc";
 
 @Entity("user")
@@ -24,6 +25,10 @@ export class User extends BaseEntity {
 
     @ManyToOne(() => VTC, (vtc) => vtc.members, {onDelete: "SET NULL"})
     vtc: VTC;
+
+    @OneToOne(() => mpProfile)
+    @JoinColumn()
+    truckersmp: mpProfile;
 
     @Column()
     administrator: boolean;

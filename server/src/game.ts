@@ -1,4 +1,5 @@
 import fs from "fs";
+import {Client} from "truckersmp";
 
 const cities = JSON.parse(fs.readFileSync("./cities.json", "utf-8")).citiesList;
 const citiesPromods = JSON.parse(fs.readFileSync("./cities_promods.json", "utf-8")).citiesList;
@@ -50,3 +51,5 @@ export const fuelPrice = (country: string) => {
     //@ts-ignore
     return fuelPrices[country] || 0;
 }
+
+export const truckersMPClient = new Client();
