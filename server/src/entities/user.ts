@@ -7,6 +7,9 @@ export class User extends BaseEntity {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
+    @Column({nullable: true})
+    steam_id: string;
+
     @Column()
     token: string;
 

@@ -3,6 +3,12 @@ import { comparePassword, hashPassword } from "../utils";
 import { User } from "../entities/user";
 import { sessionData } from "../types";
 import { randomUUID } from "crypto";
+import SteamAuth from "node-steam-openid";
+import { isAuthenticated } from "../middleware";
+
+const config = require("../../config.json");
+
+const steam = new SteamAuth(config.server.steam);
 
 export const routes = (app: Application) => {
     app.get("/auth/register", (req, res) => {
@@ -48,5 +54,24 @@ export const routes = (app: Application) => {
     
         return res.redirect("/");
     });
-    
+
+    app.get("/auth/steam/link", async (req, res) => {
+        const redirectUrl = await steam.getRedirectUrl();
+        return res.redirect(redirectUrl);
+    });
+
+    app.get("/auth/steam/authenticate", isAuthenticated, async (req, res) => {
+        const fetchedUser = await steam.authenticate(req);
+
+        if(!fetchedUser.steamid) return;
+
+        const user = await User.findOne({where: {username: res.locals.user.username}});
+        if(!user) return;
+
+        user.steam_id = fetchedUser.steamid;
+
+        await user.save();
+
+        return res.redirect("/dashboard/settings");
+    });
 }
