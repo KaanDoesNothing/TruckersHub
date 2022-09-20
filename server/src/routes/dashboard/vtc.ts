@@ -89,4 +89,14 @@ export const routes = (app: Application) => {
     
         return res.redirect("/dashboard/vtc/list");
     });
+
+    app.post("/dashboard/vtc/avatar/:name", async (req, res) => {
+        const {name} = req.params;
+
+        console.log(req.body);
+
+        // const vtc = await VTC.findOne({where: {name}, relations: {members: true}});
+    
+        // if(!vtc) return res.render("error", {message: "VTC Doesn't exist!"});
+    });
 }

@@ -10,7 +10,15 @@ block body
                     div(class="w-40 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2")
                         img(src=vtcData.logo)
             //- h1.text-center Owned by #{vtc.author.username}
-
+            //- if vtc.author.username === user.username
+            //-     if !vtc.avatar
+            //-         form(action=`/dashboard/vtc/avatar/${vtc.name}`, method="post")
+            //-             input(type="file", name="avatar", accept="image/*")
+            //-         button(type="submit", onclick="submit") Upload
+            //-         script.
+            //-             function submit() {
+            //-                 const file = document.querySelector("input[type='file']");
+            //-             }
             br
             label.text-center.text-xl Members
             br

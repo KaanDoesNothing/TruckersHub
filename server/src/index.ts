@@ -12,6 +12,7 @@ import { launchShifter } from "./socketServer";
 import { closestCity, fuelPrice, truckersMPClient } from "./game";
 import * as dashboard from "./routes/dashboard";
 import * as auth from "./routes/auth";
+import { Avatar } from "./entities/avatar";
 
 const config = require("../config.json");
 
@@ -61,6 +62,15 @@ app.use(async (req, res, next) => {
 
 app.get("/", (req, res) => {
     return res.render("home");
+});
+
+app.get("/avatar/:id", async (req, res) => {
+    const {id} = req.params;
+    const file = await Avatar.findOne({where: {id}});
+
+    if(!file) return res.sendStatus(404);
+    
+    return res.send(file.data);
 });
 
 auth.routes(app);
