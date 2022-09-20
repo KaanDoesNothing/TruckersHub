@@ -47,7 +47,7 @@ app.use(async (req, res, next) => {
     const session = req.session as sessionData;
 
     if(session.user?.token) {
-        let existingUser = await User.findOne({where: {token: session.user.token.toString()}, relations: {events: true, vtc: true}, order: {events: {createdAt: "DESC"}}});
+        let existingUser = await User.findOne({where: {token: session.user.token.toString()}, relations: {events: true, vtc: true, truckersmp: true}, order: {events: {createdAt: "DESC"}}});
         if(!existingUser) return next();
 
         res.locals.user = existingUser;
