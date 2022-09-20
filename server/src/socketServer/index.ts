@@ -7,6 +7,7 @@ import { GearPreset, GearPresetResult } from "./types";
 export const game_data = new Map();
 export const handling = new Map();
 export const sockets = new Map();
+export const lastGear = new Map();
 
 let server: SocketIO.Server;
 
@@ -28,6 +29,14 @@ export function setHandling({id, value}: {id: string, value: boolean}) {
     return handling.set(id, value);
 }
 
+export function getLastGear({id}: {id: string}) {
+    return lastGear.get(id) || false;
+}
+
+export function setLastGear({id, value}: {id: string, value: boolean}) {
+    return lastGear.set(id, value);
+}
+
 function getGameData({id}: {id: string}) {
     return game_data.get(id) || false;
 }
@@ -35,6 +44,7 @@ function getGameData({id}: {id: string}) {
 function setGameData({id, value}: {id: string, value: boolean}) {
     return game_data.set(id, value);
 }
+
 function waitForShift({id}: {id: string}) {
     return new Promise((resolve, reject) => {
         const client = sockets.get(id).client;

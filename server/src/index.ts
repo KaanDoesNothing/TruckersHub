@@ -12,6 +12,7 @@ import { launchShifter } from "./socketServer";
 import { closestCity, fuelPrice, truckersMPClient } from "./game";
 import * as dashboard from "./routes/dashboard";
 import * as auth from "./routes/auth";
+import * as api from "./routes/api";
 import { Avatar } from "./entities/avatar";
 
 const config = require("../config.json");
@@ -34,6 +35,8 @@ app.use(expressSession({
 }));
 
 app.use("/static/", express.static(path.join(__dirname, "../static")));
+
+app.use("/", express.static(path.join(__dirname, "../../frontend/dist")));
   
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -54,11 +57,28 @@ app.use(async (req, res, next) => {
             capitalizeFirstLetter
         }
 
+        res.locals.user.events = res.locals.user.events.map((row: any) => {
+            //temporary fix for my stupid mistakes.
+            if(!row.data.game) return row;
+
+            row.data.location = closestCity(row.data.game.truck.position).realName;
+
+            if(row.data.event.trailerID) {
+                const clone = Object.assign({}, row);
+                row.data.event.previous = clone.data.event.current;
+                row.data.event.current = clone.data.event.trailerID;
+            }
+
+            return row;
+        });
+
         res.locals.query = req.query;
     }
 
     next();
 });
+
+api.routes(app);
 
 app.get("/", (req, res) => {
     return res.render("home");
@@ -74,6 +94,10 @@ app.get("/avatar/:id", async (req, res) => {
 });
 
 auth.routes(app);
+
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../../frontend/dist/index.html"));
+});
 
 app.use(isAuthenticated, (req, res, next) => {
     res.locals.isDashboard = true;
