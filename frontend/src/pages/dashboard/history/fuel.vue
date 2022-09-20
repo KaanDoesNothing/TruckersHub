@@ -5,7 +5,7 @@
                 <label class="card-title">Refuel</label>
                 <p>Location: {{event.data.location}}</p>
                 <p>Amount: {{Math.round(event.data.event.amount)}}</p>
-                <p>Price: ${{event.data.event.amount}}</p>
+                <p>Price: ${{Math.round(event.data.event.amount)}}</p>
                 <p>Date: {{new Date(event.createdAt).toLocaleString()}}</p>
             </div>
         </div>
