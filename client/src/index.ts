@@ -100,10 +100,14 @@ if(shifter) {
             log.log(msg.content)
         }else if(msg.type === "shift_up") {
             log.log("Has to shift up");
-            robotjs.keyTap("up");
+            for (let i = 0; i < msg.amount; i++) {
+                robotjs.keyTap("down");
+            }
         }else if(msg.type === "shift_down") {
             log.log("Has to shift down");
-            robotjs.keyTap("down");
+            for (let i = 0; i < msg.amount; i++) {
+                robotjs.keyTap("down");
+            }
         }else if(msg.type === "preset_current") {
             cache.preset_current = msg.content;
         }

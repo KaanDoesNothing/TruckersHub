@@ -75,18 +75,23 @@ async function ensureGear({id, gear}: {id: string, gear: number}) {
     server.sockets.to(id).emit("message", {type: "log", content: `Shifting ${fixedNumber} Gears.`});
 
     if(gearsToShift > 0) {
-        for (let i = 0; i < gearsToShift; i++) {
-            server.sockets.to(id).emit("message", {type: "log", content: `Shifting Down to ${currentGear - i - 1}th gear.`});
-            server.sockets.to(id).emit("message", {type: "shift_down"});
-        }
+        server.sockets.to(id).emit("message", {type: "shift_down", amount: gearsToShift});
+        // for (let i = 0; i < gearsToShift; i++) {
+        //     server.sockets.to(id).emit("message", {type: "log", content: `Shifting Down to ${currentGear - i - 1}th gear.`});
+        //     server.sockets.to(id).emit("message", {type: "shift_down"});
+        // }
     }else {
-        for (let i = 0; i < fixedNumber; i++) {
-            if(pitch > 0.018 || gameData.controls.input.throttle < 0.75) {
-                return;
-            }
-            server.sockets.to(id).emit("message", {type: "log", content: `Shifting Up to ${currentGear + i - 1}th gear.`});
-            server.sockets.to(id).emit("message", {type: "shift_up"});
+        if(pitch > 0.018 || gameData.controls.input.throttle < 0.75) {
+            return;
         }
+        server.sockets.to(id).emit("message", {type: "shift_up", amount: gearsToShift});
+        // for (let i = 0; i < fixedNumber; i++) {
+        //     if(pitch > 0.018 || gameData.controls.input.throttle < 0.75) {
+        //         return;
+        //     }
+        //     server.sockets.to(id).emit("message", {type: "log", content: `Shifting Up to ${currentGear + i - 1}th gear.`});
+        //     server.sockets.to(id).emit("message", {type: "shift_up"});
+        // }
     }
 
     await Promise.race([waitForShift({id}), sleep(2000)]);
