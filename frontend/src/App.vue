@@ -57,7 +57,7 @@ export default defineComponent({
       </div>
   </div>
 
-  <!-- <template v-if="!path.startsWith('/dashboard')">
+  <template v-if="!path.startsWith('/dashboard')">
     <router-view></router-view>
-  </template> -->
+  </template>
 </template>

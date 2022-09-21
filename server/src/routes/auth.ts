@@ -13,13 +13,13 @@ const config = require("../../config.json");
 const steam = new SteamAuth(config.server.steam);
 
 export const routes = (app: Application) => {
-    app.get("/auth/register", (req, res) => {
-        return res.render("register");
-    });
+    // app.get("/auth/register", (req, res) => {
+    //     return res.render("register");
+    // });
     
-    app.get("/auth/login", (req, res) => {
-        return res.render("login");
-    });
+    // app.get("/auth/login", (req, res) => {
+    //     return res.render("login");
+    // });
     
     app.post("/auth/login", async (req, res) => {
         const {username, password} = req.body;

@@ -9,9 +9,20 @@ import Tollgates from "./pages/dashboard/history/tollgates.vue";
 import Transport from "./pages/dashboard/history/transport.vue";
 import vtcList from "./pages/dashboard/vtc/list.vue";
 import vtcView from "./pages/dashboard/vtc/view.vue";
-
+import login from "./pages/auth/login.vue";
+import register from "./pages/auth/register.vue";
 
 const routes = [
+    {
+        path: "/auth/login",
+        name: "Login",
+        component: login
+    },
+    {
+        path: "/auth/register",
+        name: "Register",
+        component: register
+    },
     {
         path: "/dashboard/statistics",
         name: "Statistics",

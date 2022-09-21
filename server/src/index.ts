@@ -45,19 +45,6 @@ app.set("view engine", "pug");
 
 api.routes(app);
 
-app.get("/", (req, res) => {
-    return res.render("home");
-});
-
-app.get("/avatar/:id", async (req, res) => {
-    const {id} = req.params;
-    const file = await Avatar.findOne({where: {id}});
-
-    if(!file) return res.sendStatus(404);
-    
-    return res.send(file.data);
-});
-
 auth.routes(app);
 
 app.get("*", (req, res) => {
@@ -71,5 +58,18 @@ app.use(isAuthenticated, (req, res, next) => {
 });
 
 dashboard.routes(app);
+
+// app.get("/", (req, res) => {
+//     return res.render("home");
+// });
+
+// app.get("/avatar/:id", async (req, res) => {
+//     const {id} = req.params;
+//     const file = await Avatar.findOne({where: {id}});
+
+//     if(!file) return res.sendStatus(404);
+    
+//     return res.send(file.data);
+// });
 
 server.listen(7998);
