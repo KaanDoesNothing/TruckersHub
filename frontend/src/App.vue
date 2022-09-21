@@ -48,6 +48,11 @@ export default defineComponent({
               <li><router-link class="rounded" to="/dashboard/history/fuel">Fuel</router-link></li>
               <li><router-link class="rounded" to="/dashboard/history/damages">Damages</router-link></li>
             </ul>
+            <label class="text-center normal-case text-xl">VTC</label>
+            <ul class="menu mt-2">
+              <li><router-link class="rounded" :to="`/dashboard/vtc/view/${state.user.truckersmp.data.vtc.name}`" v-if="state.user?.truckersmp?.data?.vtc.inVTC">View</router-link></li>
+              <li><router-link class="rounded" to="/dashboard/vtc/list">List</router-link></li>
+            </ul>
         </label>
       </div>
   </div>

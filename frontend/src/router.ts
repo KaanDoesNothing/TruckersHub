@@ -7,6 +7,8 @@ import Fines from "./pages/dashboard/history/fines.vue";
 import Fuel from "./pages/dashboard/history/fuel.vue";
 import Tollgates from "./pages/dashboard/history/tollgates.vue";
 import Transport from "./pages/dashboard/history/transport.vue";
+import vtcList from "./pages/dashboard/vtc/list.vue";
+import vtcView from "./pages/dashboard/vtc/view.vue";
 
 
 const routes = [
@@ -49,6 +51,16 @@ const routes = [
         path: "/dashboard/history/damages",
         name: "Damages",
         component: Damages
+    },
+    {
+        path: "/dashboard/vtc/list",
+        name: "List",
+        component: vtcList
+    },
+    {
+        path: "/dashboard/vtc/view/:id",
+        name: "View",
+        component: vtcView
     }
 ]
 

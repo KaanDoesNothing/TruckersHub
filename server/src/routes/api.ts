@@ -1,4 +1,7 @@
+import Axios from "axios";
 import { Application } from "express";
+import { mpProfile } from "../entities/mpProfile";
+import { User } from "../entities/user";
 
 export const routes = (app: Application) => {
     app.get("/api/session", async (req, res) => {
@@ -7,5 +10,36 @@ export const routes = (app: Application) => {
         }else {
             return res.json({error: true});
         }
+    });
+
+    app.get("/api/vtc/list", async (req, res) => {
+        const rawlist = await mpProfile.createQueryBuilder("profile").where("JSON_EXTRACT(profile.data, '$.vtc.inVTC') = 'true'").select(`DISTINCT TRIM(BOTH '"' FROM JSON_EXTRACT(profile.data, '$.vtc.name')) as vtc_name`).getRawMany();
+        const list = await Promise.all(rawlist.map(async row => {
+            row.memberCount = await mpProfile.createQueryBuilder("profile").where(`JSON_EXTRACT(profile.data, '$.vtc.name') = '${row.vtc_name}'`).getCount();
+
+            return row;
+        }));
+
+        return res.json({data: list});
+    });
+
+    app.get("/api/vtc/:id", async (req, res) => {
+        const rawVTC = await mpProfile.createQueryBuilder("profile").where(`JSON_EXTRACT(profile.data, '$.vtc.name') = '${req.params.id}'`).getOne();
+        if(!rawVTC) return;
+
+        const fetchedVTC = await (await Axios.get(`https://api.truckersmp.com/v2/vtc/${rawVTC.data.vtc.id}`)).data.response;
+        const fetchedMembers = (await Axios.get(`https://api.truckersmp.com/v2/vtc/${rawVTC.data.vtc.id}/members`)).data.response.members;
+
+        const members: any = [];
+
+        await Promise.all(fetchedMembers.map(async (member: any) => {
+            const user = await User.findOne({where: {steam_id: member.steam_id}, relations: {events: true}});
+
+            if(user) {
+                members.push({...member, deliveryCount: user.events.filter(row => row.type === "delivered").length});
+            }
+        }));
+
+        return res.json({data: {vtc: fetchedVTC, members: members}});
     });
 }

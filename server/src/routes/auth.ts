@@ -38,6 +38,12 @@ export const routes = (app: Application) => {
                 existingUser.truckersmp = newProfile;
                 await existingUser.save();
             }
+        }else if(existingUser.truckersmp) {
+            const profile = await Axios.get(`https://api.truckersmp.com/v2/player/${existingUser.steam_id}`);
+            if(!profile.data.error) {
+                existingUser.truckersmp.data = profile.data.response;
+                existingUser.save();
+            }
         }
     
         const passwordCorrect = password === existingUser.password || await comparePassword(password, existingUser.password);
