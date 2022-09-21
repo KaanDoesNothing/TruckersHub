@@ -101,7 +101,7 @@ if(shifter) {
         }else if(msg.type === "shift_up") {
             log.log("Has to shift up");
             for (let i = 0; i < msg.amount; i++) {
-                robotjs.keyTap("down");
+                robotjs.keyTap("up");
             }
         }else if(msg.type === "shift_down") {
             log.log("Has to shift down");
