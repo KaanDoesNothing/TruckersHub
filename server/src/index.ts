@@ -43,41 +43,6 @@ app.use(express.urlencoded({extended: true}));
 
 app.set("view engine", "pug");
 
-app.use(async (req, res, next) => {
-    const session = req.session as sessionData;
-
-    if(session.user?.token) {
-        let existingUser = await User.findOne({where: {token: session.user.token.toString()}, relations: {events: true, vtc: true, truckersmp: true}, order: {events: {createdAt: "DESC"}}});
-        if(!existingUser) return next();
-
-        res.locals.user = existingUser;
-        res.locals.modules = {
-            closestCity,
-            fuelPrice,
-            capitalizeFirstLetter
-        }
-
-        res.locals.user.events = res.locals.user.events.map((row: any) => {
-            //temporary fix for my stupid mistakes.
-            if(!row.data.game) return row;
-
-            row.data.location = closestCity(row.data.game.truck.position).realName;
-
-            if(row.data.event.trailerID) {
-                const clone = Object.assign({}, row);
-                row.data.event.previous = clone.data.event.current;
-                row.data.event.current = clone.data.event.trailerID;
-            }
-
-            return row;
-        });
-
-        res.locals.query = req.query;
-    }
-
-    next();
-});
-
 api.routes(app);
 
 app.get("/", (req, res) => {

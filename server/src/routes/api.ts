@@ -2,9 +2,10 @@ import Axios from "axios";
 import { Application } from "express";
 import { mpProfile } from "../entities/mpProfile";
 import { User } from "../entities/user";
+import { isAuthenticated, requiresUser } from "../middleware";
 
 export const routes = (app: Application) => {
-    app.get("/api/session", async (req, res) => {
+    app.get("/api/session", requiresUser, async (req, res) => {
         if(res.locals.user) {
             return res.json(res.locals.user);
         }else {
