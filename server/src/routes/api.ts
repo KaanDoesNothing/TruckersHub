@@ -27,16 +27,16 @@ export const routes = (app: Application) => {
         const rawVTC = await mpProfile.createQueryBuilder("profile").where(`JSON_EXTRACT(profile.data, '$.vtc.name') = '${req.params.id}'`).getOne();
         if(!rawVTC) return;
 
-        const fetchedVTC = await (await Axios.get(`https://api.truckersmp.com/v2/vtc/${rawVTC.data.vtc.id}`)).data.response;
-        const fetchedMembers = (await Axios.get(`https://api.truckersmp.com/v2/vtc/${rawVTC.data.vtc.id}/members`)).data.response.members;
-
+        const fetched = await Promise.all([await (await Axios.get(`https://api.truckersmp.com/v2/vtc/${rawVTC.data.vtc.id}`)).data.response, (await Axios.get(`https://api.truckersmp.com/v2/vtc/${rawVTC.data.vtc.id}/members`)).data.response.members]);
+        const fetchedVTC = fetched[0];
+        const fetchedMembers = fetched[1];
         const members: any = [];
 
         await Promise.all(fetchedMembers.map(async (member: any) => {
-            const user = await User.findOne({where: {steam_id: member.steam_id}, relations: {events: true}});
+            const user = await User.findOne({where: {steam_id: member.steam_id, events: {type: "delivered"}}, relations: {events: true}});
 
             if(user) {
-                members.push({...member, deliveryCount: user.events.filter(row => row.type === "delivered").length});
+                members.push({...member, deliveryCount: user.events.length});
             }
         }));
 
