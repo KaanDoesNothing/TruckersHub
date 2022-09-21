@@ -84,7 +84,7 @@ async function ensureGear({id, gear}: {id: string, gear: number}) {
         if(pitch > 0.018 || gameData.controls.input.throttle < 0.75) {
             return;
         }
-        server.sockets.to(id).emit("message", {type: "shift_up", amount: gearsToShift});
+        server.sockets.to(id).emit("message", {type: "shift_up", amount: fixedNumber});
         // for (let i = 0; i < fixedNumber; i++) {
         //     if(pitch > 0.018 || gameData.controls.input.throttle < 0.75) {
         //         return;
