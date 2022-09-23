@@ -2,7 +2,7 @@ import SocketIO from "socket.io";
 import { Event } from "../entities/event";
 import { User } from "../entities/user";
 import {presetHandler} from "./presets";
-import { GearPreset, GearPresetResult } from "./types";
+import { GearPreset, GearPresetResult, GetMap, SetBooleanMap } from "./types";
 
 export const game_data = new Map();
 export const handling = new Map();
@@ -21,27 +21,27 @@ export function getSocketByName({username}: {username: string}) {
     }
 }
 
-export function getHandling({id}: {id: string}) {
+export function getHandling({id}: GetMap) {
     return handling.get(id) || false;
 }
 
-export function setHandling({id, value}: {id: string, value: boolean}) {
+export function setHandling({id, value}: SetBooleanMap) {
     return handling.set(id, value);
 }
 
-export function getLastGear({id}: {id: string}) {
+export function getLastGear({id}: GetMap) {
     return lastGear.get(id) || false;
 }
 
-export function setLastGear({id, value}: {id: string, value: boolean}) {
+export function setLastGear({id, value}: SetBooleanMap) {
     return lastGear.set(id, value);
 }
 
-function getGameData({id}: {id: string}) {
+function getGameData({id}: GetMap) {
     return game_data.get(id) || false;
 }
 
-function setGameData({id, value}: {id: string, value: boolean}) {
+function setGameData({id, value}: {id: string, value: any}) {
     return game_data.set(id, value);
 }
 
@@ -69,29 +69,18 @@ async function ensureGear({id, gear}: {id: string, gear: number}) {
     const gearsToShift = currentGear - gear;
     const fixedNumber = parseInt(gearsToShift.toString().replace("-", ""));
 
-    if(fixedNumber === 0) return;
-    if(gearsToShift === 0) return;
+    if(fixedNumber === 0 || gearsToShift === 0) return;
 
     server.sockets.to(id).emit("message", {type: "log", content: `Shifting ${fixedNumber} Gears.`});
 
     if(gearsToShift > 0) {
         server.sockets.to(id).emit("message", {type: "shift_down", amount: gearsToShift});
-        // for (let i = 0; i < gearsToShift; i++) {
-        //     server.sockets.to(id).emit("message", {type: "log", content: `Shifting Down to ${currentGear - i - 1}th gear.`});
-        //     server.sockets.to(id).emit("message", {type: "shift_down"});
-        // }
     }else {
         if(pitch > 0.018 || gameData.controls.input.throttle < 0.75) {
             return;
         }
+        
         server.sockets.to(id).emit("message", {type: "shift_up", amount: fixedNumber});
-        // for (let i = 0; i < fixedNumber; i++) {
-        //     if(pitch > 0.018 || gameData.controls.input.throttle < 0.75) {
-        //         return;
-        //     }
-        //     server.sockets.to(id).emit("message", {type: "log", content: `Shifting Up to ${currentGear + i - 1}th gear.`});
-        //     server.sockets.to(id).emit("message", {type: "shift_up"});
-        // }
     }
 
     await Promise.race([waitForShift({id}), sleep(2000)]);
