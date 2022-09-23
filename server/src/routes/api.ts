@@ -50,7 +50,22 @@ export const routes = (app: Application) => {
             const user = await User.findOne({where: {steam_id: member.steam_id, events: {type: "delivered"}}, relations: {events: true}});
 
             if(user) {
-                members.push({...member, deliveryCount: user.events.length});
+                let distance = 0;
+
+                for (let i in user.events) {
+                    const event = user.events[i];
+
+                    //@ts-ignore
+                    if(event.data.game) {
+                        //@ts-ignore
+                        distance += event.data.event.distance.km;
+                    }else {
+                        //@ts-ignore
+                        distance += event.data.distance.km
+                    }
+                }
+
+                members.push({...member, deliveryCount: user.events.length, distanceTraveled: distance});
             }
         }));
 

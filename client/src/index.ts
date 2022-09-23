@@ -1,7 +1,6 @@
 import fs from "fs";
-import axios from "axios";
 import SocketIO from "socket.io-client";
-import tst, {EventFerry, EventsFine, EventsJobDeliveredVerbose, EventsRefuelPaid, EventTollgate, EventTrain, Trailer, TruckDamage} from "trucksim-telemetry";
+import tst, {EventFerry, EventsFine, EventsJobDeliveredVerbose, EventsRefuelPaid, EventTollgate, EventTrain, TruckDamage} from "trucksim-telemetry";
 import robotjs from "robotjs";
 import blessed from "blessed";
 import contrib from "blessed-contrib";
