@@ -62,6 +62,7 @@ function waitForShift({id}: {id: string}) {
 
 async function ensureGear({id, gear}: {id: string, gear: number}) {
     const gameData = getGameData({id});
+    const socketSettings = sockets.get(id).settings;
 
     const currentGear = gameData.truck.transmission.gear.displayed;
     const pitch = gameData.truck.orientation.pitch;
@@ -76,7 +77,7 @@ async function ensureGear({id, gear}: {id: string, gear: number}) {
     if(gearsToShift > 0) {
         server.sockets.to(id).emit("message", {type: "shift_down", amount: gearsToShift});
     }else {
-        if(pitch > 0.018 || gameData.controls.input.throttle < 0.75) {
+        if(pitch > 0.018 && socketSettings.hill_detection || gameData.controls.input.throttle < 0.75 && socketSettings.hold_gear) {
             return;
         }
         
@@ -91,7 +92,7 @@ async function handle({id}: {id: string}) {
     if(!gameData) return;
 
     const isPaused = gameData.game.paused;
-    const isSocketPaused = sockets.get(id).paused;
+    const isSocketPaused = sockets.get(id).settings.paused;
 
     if(isPaused || isSocketPaused) return;
 
@@ -113,7 +114,7 @@ async function handle({id}: {id: string}) {
 export const launchShifter = (socketServer: SocketIO.Server) => {
     server = socketServer;
     
-    server.on("connection", async (client) => {
+    server.of("/client").on("connection", async (client) => {
         const username: User["username"] = await new Promise((resolve) => {
             client.once("authenticate", async (msg) => {
                 const user = await User.findOne({where: {token: msg.content}});
@@ -130,7 +131,7 @@ export const launchShifter = (socketServer: SocketIO.Server) => {
 
         const id = client.id;
 
-        sockets.set(id, {client, username, paused: false});
+        sockets.set(id, {client, username, settings: {paused: false, hill_detection: true, hold_gear: true}});
 
         client.on("message", async (msg) => {
             if(msg.type === "game_data") {

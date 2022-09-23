@@ -3,11 +3,24 @@ import { Application } from "express";
 import { mpProfile } from "../entities/mpProfile";
 import { User } from "../entities/user";
 import { isAuthenticated, requiresUser } from "../middleware";
+import { getSocketByName } from "../socketServer";
 
 export const routes = (app: Application) => {
     app.get("/api/session", requiresUser, async (req, res) => {
         if(res.locals.user) {
             return res.json(res.locals.user);
+        }else {
+            return res.json({error: true});
+        }
+    });
+
+    app.get("/api/socket/settings", requiresUser, async (req, res) => {
+        if(res.locals.user) {
+            const socket = getSocketByName({username: res.locals.user.username});
+
+            if(socket) return res.json({data: socket.settings});
+
+            return res.json({error: "Client isn't connected."});
         }else {
             return res.json({error: true});
         }

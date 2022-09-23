@@ -16,7 +16,7 @@ let cache = {
 let gameData: any = undefined;
 
 const screen = blessed.screen({title: "Client", smartCSR: true});
-const client = SocketIO(api.replace("/api", ""));
+const client = SocketIO(api.replace("/api", "/client"));
 const tsclient = tst();
 
 function handleEvent({type, data}: {type: string, data: any}) {
