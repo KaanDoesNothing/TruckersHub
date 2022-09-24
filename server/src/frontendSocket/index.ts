@@ -15,7 +15,7 @@ export const launchFrontEndSocket = (server: Server) => {
 
                 client.emit("authenticated", {content: true});
 
-                console.log(`${user.username} connected`);
+                console.log(`${user.username} connected via frontend`);
 
                 resolve(user.username);
             });

@@ -9,7 +9,7 @@ export const handling = new Map();
 export const sockets = new Map();
 export const lastGear = new Map();
 
-let server: SocketIO.Server;
+let server: SocketIO.Namespace;
 
 const sleep = (time: number) => new Promise(r => setTimeout(r, time));;
 
@@ -72,16 +72,18 @@ async function ensureGear({id, gear}: {id: string, gear: number}) {
 
     if(fixedNumber === 0 || gearsToShift === 0) return;
 
-    server.sockets.to(id).emit("message", {type: "log", content: `Shifting ${fixedNumber} Gears.`});
+    server.sockets.get(id)?.emit("message", {type: "log", content: `Shifting ${fixedNumber} Gears.`});
+
+    console.log(gearsToShift, fixedNumber);
 
     if(gearsToShift > 0) {
-        server.sockets.to(id).emit("message", {type: "shift_down", amount: gearsToShift});
+        server.sockets.get(id)?.emit("message", {type: "shift_down", amount: gearsToShift});
     }else {
         if(pitch > 0.018 && socketSettings.hill_detection || gameData.controls.input.throttle < 0.75 && socketSettings.hold_gear) {
             return;
         }
         
-        server.sockets.to(id).emit("message", {type: "shift_up", amount: fixedNumber});
+        server.sockets.get(id)?.emit("message", {type: "shift_up", amount: fixedNumber});
     }
 
     await Promise.race([waitForShift({id}), sleep(2000)]);
@@ -107,14 +109,14 @@ async function handle({id}: {id: string}) {
 
     if(gearToShift) {
         await ensureGear({id, gear: gearToShift});
-        server.sockets.to(id).emit("message", {type: "preset_current", content: preset.name});
+        server.sockets.get(id)?.emit("message", {type: "preset_current", content: preset.name});
     }
 }
 
 export const launchShifter = (socketServer: SocketIO.Server) => {
-    server = socketServer;
+    server = socketServer.of("/client");
     
-    server.of("/client").on("connection", async (client) => {
+    server.on("connection", async (client) => {
         const username: User["username"] = await new Promise((resolve) => {
             client.once("authenticate", async (msg) => {
                 const user = await User.findOne({where: {token: msg.content}});
@@ -123,7 +125,7 @@ export const launchShifter = (socketServer: SocketIO.Server) => {
 
                 client.emit("authenticated", {content: true});
 
-                console.log(`${user.username} connected`);
+                console.log(`${user.username} connected via client`);
 
                 resolve(user.username);
             });
