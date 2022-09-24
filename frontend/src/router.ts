@@ -1,6 +1,7 @@
 import { createWebHistory, createRouter } from "vue-router";
 import Statistics from "./pages/dashboard/statistics.vue";
 import Settings from "./pages/dashboard/settings.vue";
+import GameSettings from "./pages/dashboard/settings_game.vue";
 import Deliveries from "./pages/dashboard/history/deliveries.vue";
 import Damages from "./pages/dashboard/history/damages.vue";
 import Fines from "./pages/dashboard/history/fines.vue";
@@ -32,6 +33,11 @@ const routes = [
         path: "/dashboard/settings",
         name: "Settings",
         component: Settings
+    },
+    {
+        path: "/dashboard/settings_game",
+        name: "Game Settings",
+        component: GameSettings
     },
     {
         path: "/dashboard/history/deliveries",

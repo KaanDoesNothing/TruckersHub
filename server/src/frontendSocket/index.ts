@@ -1,5 +1,5 @@
 import {Server} from "socket.io";
-import { getSocketByName } from "../clientSocket";
+import { getSocketByName, sockets } from "../clientSocket";
 import { User } from "../entities/user";
 
 export const socketNames = new Map();
@@ -23,10 +23,24 @@ export const launchFrontEndSocket = (server: Server) => {
         
         socketNames.set(username, client.id);
 
+        client.on("client_settings_update", (data) => {
+            let clientSocket = getSocketByName({username});
+
+            clientSocket.settings = data;
+
+            sockets.set(clientSocket.client.id, clientSocket);
+        });
+
         (() => {
             const clientSocket = getSocketByName({username});
 
             if(clientSocket) client.emit("client_settings", clientSocket.settings);
         })();
+
+        client.on("client_settings", () => {
+            const clientSocket = getSocketByName({username});
+
+            client.emit("client_settings", client.emit("client_settings", clientSocket.settings));
+        });
     });
 } 
