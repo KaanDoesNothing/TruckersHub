@@ -8,12 +8,13 @@ import {copyFile, capitalizeFirstLetter } from "./utils";
 import { sessionData } from "./types";
 import { isAuthenticated } from "./middleware";
 import path from "path";
-import { launchShifter } from "./socketServer";
+import { launchShifter } from "./clientSocket";
 import { closestCity, fuelPrice, truckersMPClient } from "./game";
 import * as dashboard from "./routes/dashboard";
 import * as auth from "./routes/auth";
 import * as api from "./routes/api";
 import { Avatar } from "./entities/avatar";
+import { launchFrontEndSocket } from "./frontendSocket";
 
 const config = require("../config.json");
 
@@ -26,6 +27,7 @@ const server = http.createServer(app);
 const socket = new socketIO.Server(server);
 
 launchShifter(socket);
+launchFrontEndSocket(socket);
 
 app.use(expressSession({
     secret: config.server.secret,

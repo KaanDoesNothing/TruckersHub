@@ -24,7 +24,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="member in data.members.sort((a, b) => b.deliveryCount - a.deliveryCount)" :key="member.steam_id">
+                <tr v-for="member in data.members" :key="member.steam_id">
                     <th>{{data.members.indexOf(member)}}</th>
                     <th>{{member.username}}</th>
                     <th>{{member.distanceTraveled}}km</th>
@@ -48,14 +48,14 @@ export default {
         async function init() {
             const res = await(await fetch(`/api/vtc/${route.params.id}`)).json();
 
+            res.data.members = res.data.members.sort((a: any, b: any) => b.deliveryCount - a.deliveryCount);
+
             data.value = res.data;
         }
 
         init();
 
         return {data};
-
-        // console.log(route.params.id);
     },
 }
 </script>

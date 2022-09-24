@@ -3,6 +3,7 @@ import { defineComponent, computed } from "vue";
 import Navbar from "./components/Navbar.vue";
 import {useUserStore} from "./store";
 import {useRoute} from "vue-router";
+import {io} from "./socket";
 
 export default defineComponent({
   components: {Navbar},
@@ -10,15 +11,25 @@ export default defineComponent({
     const user = useUserStore();
     const route = useRoute();
 
-    async function init() {
+    async function fetchSession() {
       const res = await (await fetch("/api/session")).json();
 
       if(!res.error) {
         user.$patch({user: res});
+
+        io.emit("authenticate", {content: res.token});
       }
     }
 
-    init();
+    io.once("authenticated", () => {
+        // fetchSocket();
+    });
+
+    io.on("client_settings", (data) => {
+      user.$patch({socket: {settings: data}});
+    });
+
+    fetchSession();
 
     return {state: user, path: computed(() => route.path)};
   }
@@ -38,6 +49,7 @@ export default defineComponent({
             <ul class="menu mt-2">
               <li><router-link class="rounded" to="/dashboard/statistics">Statistics</router-link></li>
               <li> <router-link class="rounded" to="/dashboard/settings">Settings</router-link></li>
+              <li> <router-link class="rounded" to="/dashboard/settings_game" v-if="state.socket.settings">Game Settings</router-link></li>
             </ul>
             <label class="text-center normal-case text-xl">History</label>
             <ul class="menu mt-2">

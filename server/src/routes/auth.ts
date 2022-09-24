@@ -20,6 +20,36 @@ export const routes = (app: Application) => {
     // app.get("/auth/login", (req, res) => {
     //     return res.render("login");
     // });
+
+    app.get("/auth/login/:token", async (req, res) => {
+        const {token} = req.params;
+    
+        if(!token) return res.redirect("/auth/login");
+    
+        const existingUser = await User.findOne({where: {token: token.toString()}, relations: {truckersmp: true}});
+        if(!existingUser) return res.redirect("/auth/login");
+
+        if(!existingUser.truckersmp && existingUser.steam_id) {
+            const profile = await Axios.get(`https://api.truckersmp.com/v2/player/${existingUser.steam_id}`);
+            if(!profile.data.error) {
+                const newProfile = mpProfile.create({data: profile.data.response});
+                await newProfile.save();
+
+                existingUser.truckersmp = newProfile;
+                await existingUser.save();
+            }
+        }else if(existingUser.truckersmp) {
+            const profile = await Axios.get(`https://api.truckersmp.com/v2/player/${existingUser.steam_id}`);
+            if(!profile.data.error) {
+                existingUser.truckersmp.data = profile.data.response;
+                existingUser.save();
+            }
+        }
+    
+        (req.session as sessionData).user = {token: existingUser.token};
+    
+        return res.redirect("/dashboard/statistics");
+    });
     
     app.post("/auth/login", async (req, res) => {
         const {username, password} = req.body;

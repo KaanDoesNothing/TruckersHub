@@ -2,7 +2,7 @@ import {defineStore} from "pinia";
 
 export const useUserStore = defineStore("user", {
     state: (): userStore => {
-        return {user: undefined}
+        return {user: undefined, socket: {settings: undefined}}
     },
     actions: {
     }
@@ -10,4 +10,5 @@ export const useUserStore = defineStore("user", {
 
 export interface userStore {
     user: any;
+    socket: any
 }

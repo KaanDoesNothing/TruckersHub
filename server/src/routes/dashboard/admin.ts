@@ -1,7 +1,7 @@
 import { Application } from "express";
 import { isAdministrator } from "../../middleware";
-import { getSocketByName } from "../../socketServer";
-import { sockets } from "../../socketServer";
+import { getSocketByName } from "../../clientSocket";
+import { sockets } from "../../clientSocket";
 import { User } from "../../entities/user";
 
 export const routes = (app: Application) => {

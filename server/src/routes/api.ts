@@ -3,7 +3,7 @@ import { Application } from "express";
 import { mpProfile } from "../entities/mpProfile";
 import { User } from "../entities/user";
 import { isAuthenticated, requiresUser } from "../middleware";
-import { getSocketByName } from "../socketServer";
+import { getSocketByName } from "../clientSocket";
 
 export const routes = (app: Application) => {
     app.get("/api/session", requiresUser, async (req, res) => {

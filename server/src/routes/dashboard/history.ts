@@ -1,5 +1,5 @@
 import { Application } from "express";
-import { getSocketByName } from "../../socketServer";
+import { getSocketByName } from "../../clientSocket";
 
 export const routes = (app: Application) => {
     app.get("/dashboard/statistics", async (req, res) => {
