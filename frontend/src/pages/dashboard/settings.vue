@@ -4,7 +4,7 @@
             <div class="card-body">
             <h2 class="card-title">Settings</h2>
             <a class="btn" href="/auth/steam/link" :class="{'btn-disabled': state.user.steam_id}">Link your steam account</a>
-            <a class="btn" href="/static/TruckersHub.exe">Download Client</a>
+            <a class="btn" href="/static/TruckersHub.zip">Download Client</a>
             <a class="btn" :href="download.href" download="config.json">Download Config File</a>
             <div class="card-actions text-center">
                 <p><b>Do not share your token with anyone!</b></p>

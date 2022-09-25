@@ -37,7 +37,7 @@ export function setLastGear({id, value}: SetBooleanMap) {
     return lastGear.set(id, value);
 }
 
-function getGameData({id}: GetMap) {
+export function getGameData({id}: GetMap) {
     return game_data.get(id) || false;
 }
 
@@ -73,8 +73,6 @@ async function ensureGear({id, gear}: {id: string, gear: number}) {
     if(fixedNumber === 0 || gearsToShift === 0) return;
 
     server.sockets.get(id)?.emit("message", {type: "log", content: `Shifting ${fixedNumber} Gears.`});
-
-    console.log(gearsToShift, fixedNumber);
 
     if(gearsToShift > 0) {
         server.sockets.get(id)?.emit("message", {type: "shift_down", amount: gearsToShift});

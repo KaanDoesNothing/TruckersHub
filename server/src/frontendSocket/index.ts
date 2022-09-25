@@ -1,5 +1,5 @@
 import {Server} from "socket.io";
-import { getSocketByName, sockets } from "../clientSocket";
+import { getSocketByName, sockets, getGameData } from "../clientSocket";
 import { User } from "../entities/user";
 
 export const socketNames = new Map();
@@ -42,5 +42,17 @@ export const launchFrontEndSocket = (server: Server) => {
 
             client.emit("client_settings", client.emit("client_settings", clientSocket.settings));
         });
+
+        client.on("game_data", () => {
+            const clientSocket = getSocketByName({username});
+
+            if(!clientSocket) return;
+
+            const gameData = getGameData({id: clientSocket.client.id});
+
+            if(!gameData) return;
+
+            client.emit("game_data", gameData);
+        })
     });
 } 

@@ -25,9 +25,9 @@ export const comparePassword = async (password: string, hash: string) => {
 };
 
 export const copyFile = async () => {
-    await fs.copyFile(path.join(__dirname, "../../", "client", "client.exe"), path.join(__dirname, "../", "static", "TruckersHub.exe"));
+    // await fs.copyFile(path.join(__dirname, "../../", "client", "client.exe"), path.join(__dirname, "../", "static", "TruckersHub.exe"));
 
-    console.log("Copied");
+    // console.log("Copied");
 }
 
 export function capitalizeFirstLetter(string: string) {
