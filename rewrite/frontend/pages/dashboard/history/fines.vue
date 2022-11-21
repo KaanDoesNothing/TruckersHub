@@ -1,6 +1,6 @@
 <template>
   <Loader v-if="events.length < 1"></Loader>
-  <div class="grid grid-cols-4 gap-4 p-4">
+  <div class="grid flex justify-center md:grid-cols-4 md:gap-4 md:p-4">
       <div class="card w-80 bg-base-100 shadow-xl m-1 text-primary-content" v-for="event in events">
           <div class="card-body card-event" v-if="event.data.game">
               <label class="card-title">Fine</label>

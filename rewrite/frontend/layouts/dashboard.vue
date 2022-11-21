@@ -6,24 +6,34 @@ const layout = "dashboard";
 const state = useGlobalStore();
 
 const authenticate = async () => {
+    if(!localStorage) return;
     const token = localStorage.getItem("token");
 
     if(token) state.$patch({token});
     await state.fetchUser();
 }
 
+if(process.client) {
+    state.$patch({phone: window?.innerWidth < 1080});
+}
+
 authenticate();
 </script>
 
 <template>
+    <head>
+        <title>TruckersHub - Dashboard</title>
+    </head>
+
     <div v-if="state.user">
         <div class="drawer drawer-mobile">
-            <input class="drawer-toggle" id="my-drawer-2" type="checkbox">
-            <div class="drawer-content">
+            <input id="my-drawer-3" type="checkbox" class="drawer-toggle" /> 
+            <div class="drawer-content flex flex-col">
                 <slot></slot>
             </div>
-            <div class="drawer-side p-4 w-80 bg-base-200 h-screen overflow-y-hidden">
-                <label>
+            <div class="drawer-side h-screen overflow-y-hidden">
+                <label for="my-drawer-3" class="drawer-overlay"></label> 
+                <label class="bg-base-200 p-4 w-80">
                     <label class="text-center normal-case text-xl">General</label>
                     <ul class="menu mt-2">
                     <li><RouterLink class="rounded" to="/dashboard/statistics">Statistics</RouterLink></li>
