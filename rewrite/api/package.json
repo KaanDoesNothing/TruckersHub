@@ -18,6 +18,7 @@
     "koa-bodyparser": "^4.3.0",
     "koa-router": "^12.0.0",
     "mysql2": "^2.3.3",
+    "socket.io": "^4.5.3",
     "typeorm": "^0.3.10"
   }
 }
