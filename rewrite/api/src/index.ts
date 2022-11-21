@@ -1,6 +1,6 @@
 import koa from "koa";
 import koaBody from "koa-bodyparser";
-import koaCors from "koa-cors";
+import koaCors from "@koa/cors";
 import { authentication } from "./routers/authentication";
 import { main } from "./routers/main";
 
