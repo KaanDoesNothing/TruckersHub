@@ -100,7 +100,42 @@ async function handle({id}: {id: string}) {
     const gear = truckData.transmission.gear.displayed;
     const speed = truckData.speed.kph;
 
+    // console.log(gameData.truck.brakes.parking);
+
+    if(gameData.controls.input.throttle === 1 && gameData.truck.brakes.parking && gear < 0) {
+        let socket = sockets.get(id);
+
+        socket.settings.rpm_shift = !socket.settings.rpm_shift;
+
+        sockets.set(id, socket);
+
+        await sleep(2000);
+
+        console.log(socket.settings.rpm_shift);
+    } 
+
     if(gear < 0) return;
+
+    let socket = sockets.get(id);
+
+    if(socket.settings.rpm_shift) {
+        let gearToShift;
+
+        // console.log(truckData.engine.rpm)
+
+        if(truckData.engine.rpm.value < 1000) {
+            gearToShift = gear - 1;
+        }else if(truckData.engine.rpm.value > 1600) {
+            gearToShift = gear + 1;
+        }
+
+        if(gearToShift) {
+            await ensureGear({id, gear: gearToShift});
+            server.sockets.get(id)?.emit("message", {type: "preset_current", content: "RPM SHIFT"});
+        }
+        
+        return;
+    }
 
     const preset: GearPreset = presetHandler(gameData);
     const gearToShift: GearPresetResult = preset(speed);
@@ -131,7 +166,7 @@ export const launchShifter = (socketServer: SocketIO.Server) => {
 
         const id = client.id;
 
-        sockets.set(id, {client, username, settings: {paused: false, hill_detection: true, hold_gear: true}});
+        sockets.set(id, {client, username, settings: {paused: false, hill_detection: true, hold_gear: true, rpm_shift: false}});
 
         client.on("message", async (msg) => {
             if(msg.type === "game_data") {

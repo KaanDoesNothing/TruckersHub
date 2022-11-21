@@ -15,3 +15,7 @@ desktop/yarn-error.log
 desktop/yarn.lock
 desktop/config.json
 nwdesktop/
+rewrite/*/node_modules/
+rewrite/*/build/
+rewrite/*/yarn.lock
+rewrite/frontend/constants.ts
