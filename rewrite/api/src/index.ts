@@ -3,8 +3,11 @@ import koaBody from "koa-bodyparser";
 import koaCors from "@koa/cors";
 import { authentication } from "./routers/authentication";
 import { main } from "./routers/main";
+import { setup } from "./db";
 
 const app = new koa();
+
+setup();
 
 app.use(koaCors());
 app.use(koaBody());
