@@ -40,7 +40,7 @@ router.afterEach((to, from) => {
                     </svg>
                 </label>
             </template>
-            <template v-if="!isDashboard && isPhone">
+            <template v-if="!isDashboard && !isPhone || !isDashboard && isPhone">
                 <RouterLink class="btn" v-if="state.token" to="/dashboard/statistics">Dashboard</RouterLink>
             </template>
             <template v-if="!state.token">
