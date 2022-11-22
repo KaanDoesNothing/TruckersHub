@@ -23,7 +23,6 @@
 </template>
 
 <script setup lang="ts">
-import Axios from "axios";
 import { ref } from "vue";
 import { API } from "@/constants";
 
@@ -33,8 +32,8 @@ definePageMeta({
 
 const list = ref();
 
-const fetchedList = await Axios.get(`${API}/vtc/list`);
-if(fetchedList.data.data) {
-    list.value = fetchedList.data.data;
+const fetchedList: any = await $fetch(`${API}/vtc/list`);
+if(fetchedList.data) {
+    list.value = fetchedList.data;
 }
 </script>

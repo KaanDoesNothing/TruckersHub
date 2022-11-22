@@ -38,7 +38,6 @@
 </template>
 
 <script setup lang="ts">
-import Axios from "axios";
 import { ref } from "vue";
 import { useRoute } from "vue-router";
 import { API } from "@/constants";
@@ -51,10 +50,8 @@ const route = useRoute();
 
 const data = ref();
 
-(async() => {
-    let fetchedVtc = (await Axios.post(`${API}/vtc`, {id: route.params.vtc})).data;
+let fetchedVtc: any = await $fetch(`${API}/vtc`, {method: "POST", body: {id: route.params.vtc}});
 
-    fetchedVtc.data.members = fetchedVtc.data.members.sort((a: any, b: any) => b.deliveryCount - a.deliveryCount);
-    data.value = fetchedVtc.data;
-})();
+fetchedVtc.data.members = fetchedVtc.data.members.sort((a: any, b: any) => b.deliveryCount - a.deliveryCount);
+data.value = fetchedVtc.data;
 </script>

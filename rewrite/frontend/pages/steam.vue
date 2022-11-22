@@ -4,7 +4,6 @@
 
 <script setup lang="ts">
 import { useGlobalStore } from "@/stores/global";
-import Axios from "axios";
 import { API } from "@/constants";
 
 const route = useRoute();
@@ -14,9 +13,9 @@ const state = useGlobalStore();
 const url = route.query["openid.identity"];
 
 if(url && state.token) {
-    const res = await Axios.post(`${API}/socials/steam/authenticate`, {token: state.token, url});
+    const res: any = await $fetch(`${API}/socials/steam/authenticate`, {body: {token: state.token, url}, method: "POST"});
 
-    if(res.data.data) {
+    if(res.data) {
         router.push("/");
     }
 }

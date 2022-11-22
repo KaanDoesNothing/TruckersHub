@@ -17,7 +17,6 @@
 <script setup lang="ts">
 import {useGlobalStore} from "@/stores/global";
 import { API, SOCKET_API, CDN } from "@/constants";
-import Axios from "axios";
 
 definePageMeta({
   layout: "dashboard"
@@ -25,7 +24,7 @@ definePageMeta({
 
 const state = useGlobalStore();
 
-const steam_info = (await Axios.get(`${API}/socials/steam/info`)).data;
+const steam_info: any = await $fetch(`${API}/socials/steam/info`);
 
 const configFile = JSON.stringify({
   api: SOCKET_API + "/api",

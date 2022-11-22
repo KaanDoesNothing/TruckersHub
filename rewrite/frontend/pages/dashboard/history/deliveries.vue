@@ -27,7 +27,6 @@
 
 <script setup lang="ts">
 import { useGlobalStore } from "@/stores/global";
-import Axios from "axios";
 import { API } from "@/constants";
 
 definePageMeta({
@@ -38,5 +37,7 @@ const state = useGlobalStore();
 
 const events: any = ref([]);
 
-Axios.post(`${API}/events`, {token: state.token, type: "delivered"}).then(res => events.value = res.data.data);
+(async () => {
+    events.value = (await $fetch(`${API}/events`, {body: {token: state.token, type: "delivered"}, method: "POST"}) as any).data;
+})();
 </script>

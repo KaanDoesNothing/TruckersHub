@@ -22,7 +22,6 @@
 </template>
 
 <script setup lang="ts">
-import Axios from "axios";
 import {API} from "@/constants";
 import { useGlobalStore } from "@/stores/global";
 
@@ -41,10 +40,10 @@ const tokenCookie = useCookie("token");
 console.log("Token", tokenCookie.value);
 
 const authenticateWithToken = async (token: string) => {
-    const res = await Axios.post(`${API}/token_valid`, {token});
+    const res: any = await $fetch(`${API}/token_valid`, {body: {token}, method: "POST"});
 
-    if(res.data.error) {
-        error.value = res.data.error;
+    if(res.error) {
+        error.value = res.error;
     }else {
         tokenCookie.value = token;
         
@@ -57,14 +56,14 @@ const authenticateWithToken = async (token: string) => {
 }
 
 const authenticate = async () => {
-    const res = await Axios.post(`${API}/auth/login`, {username: username.value, password: password.value});
+    const res: any = await $fetch(`${API}/auth/login`, {body: {username: username.value, password: password.value}, method: "POST"});
 
-    if(res.data.error) {
-        error.value = res.data.error;
+    if(res.error) {
+        error.value = res.error;
     }else {
-        tokenCookie.value = res.data.data;
+        tokenCookie.value = res.data;
         
-        state.$patch({token: res.data.data});
+        state.$patch({token: res.data});
 
         await state.fetchUser();
 

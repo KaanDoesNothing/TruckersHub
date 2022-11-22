@@ -1,4 +1,3 @@
-import Axios from "axios";
 import {defineStore} from "pinia";
 import { API } from "@/constants";
 
@@ -8,10 +7,10 @@ export const useGlobalStore = defineStore("global", {
     },
     actions: {
         async fetchUser() {
-            const res = await Axios.post(`${API}/user`, {token: this.token});
+            const res: any = await $fetch(`${API}/user`, {body: {token: this.token}, method: "POST"});
 
-            if(res.data.data) {
-                this.user = res.data.data;
+            if(res.data) {
+                this.user = res.data;
             }
         }
     }
