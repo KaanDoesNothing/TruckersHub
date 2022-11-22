@@ -10,7 +10,7 @@ authentication.post("/auth/login", async (ctx) => {
 
     if(!username || !password) return ctx.body = {error: "Provide your username and password!"};
 
-    const user = await User.findOne({where: {username, password}, relations: {truckersmp: true}});
+    const user = await User.findOne({where: {username}, relations: {truckersmp: true}});
     if(!user) return ctx.body = {error: "User doesn't exist!"};
 
     const passwordCorrect = password === user.password || await comparePassword(password, user.password);
