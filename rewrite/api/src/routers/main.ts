@@ -68,8 +68,11 @@ main.get("/vtc/list", async (ctx) => {
     return ctx.body = {data: list};
 });
 
-main.get("/vtc/:id", async (ctx) => {
-    const rawVTC = await mpProfile.createQueryBuilder("profile").where(`JSON_EXTRACT(profile.data, '$.vtc.name') = '${ctx.params.id}'`).getOne();
+main.post("/vtc", async (ctx) => {
+    const {id} = ctx.request.body as {id?: string};
+    if(!id) return ctx.body = {error: "No vtc id provided!"};
+
+    const rawVTC = await mpProfile.createQueryBuilder("profile").where(`JSON_EXTRACT(profile.data, '$.vtc.name') = '${id}'`).getOne();
     if(!rawVTC) return;
 
     const fetched = await Promise.all([await (await (await fetch(`${TRUCKERSMP_API}/vtc/${rawVTC.data.vtc.id}`)).json()).response, (await (await (await fetch(`${TRUCKERSMP_API}/vtc/${rawVTC.data.vtc.id}/members`)).json())).response.members]);

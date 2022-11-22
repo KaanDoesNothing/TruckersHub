@@ -52,7 +52,7 @@ const route = useRoute();
 const data = ref();
 
 (async() => {
-    let fetchedVtc = (await Axios.get(`${API}/vtc/${route.params.vtc}`)).data;
+    let fetchedVtc = (await Axios.post(`${API}/vtc`, {id: route.params.vtc})).data;
 
     console.log(fetchedVtc);
 
