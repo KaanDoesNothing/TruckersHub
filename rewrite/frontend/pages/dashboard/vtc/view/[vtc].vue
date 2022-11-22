@@ -50,8 +50,10 @@ const route = useRoute();
 
 const data = ref();
 
-let fetchedVtc: any = await $fetch(`${API}/vtc`, {method: "POST", body: {id: route.params.vtc}});
+(async () => {
+    let fetchedVtc: any = await $fetch(`${API}/vtc`, {method: "POST", body: {id: route.params.vtc}});
 
-fetchedVtc.data.members = fetchedVtc.data.members.sort((a: any, b: any) => b.deliveryCount - a.deliveryCount);
-data.value = fetchedVtc.data;
+    fetchedVtc.data.members = fetchedVtc.data.members.sort((a: any, b: any) => b.deliveryCount - a.deliveryCount);
+    data.value = fetchedVtc.data;
+});
 </script>
