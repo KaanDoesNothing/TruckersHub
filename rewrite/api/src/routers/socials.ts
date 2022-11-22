@@ -29,7 +29,7 @@ socials.post("/socials/steam/authenticate", isUser, async (ctx) => {
 
     if(!steam_id) return ctx.body = {error: "Invalid steam_id"};
 
-    const user = await User.findOne({where: {token}});
+    const user = await User.findOne({where: {token}, relations: {truckersmp: true}});
 
     if(!user) return ctx.body = {error: "Invalid token"};
 

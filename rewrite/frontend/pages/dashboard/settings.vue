@@ -3,7 +3,7 @@
         <div class="card w-100 bg-base-100 shadow-xl m-1 text-primary-content">
             <div class="card-body">
             <h2 class="card-title">Settings</h2>
-            <!-- <a class="btn" href="/auth/steam/link" :class="{'btn-disabled': state.user.steam_id}">Link your steam account</a> -->
+            <a class="btn" :href="steam_info.url" :class="{'btn-disabled': state.user.steam_id}">Link your steam account</a>
             <a class="btn" :href="`${CDN}/TruckersHub.zip`">Download Client</a>
             <a class="btn" :href="download.href" download="config.json">Download Config File</a>
             <div class="card-actions text-center">
@@ -14,32 +14,27 @@
     </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
 import {useGlobalStore} from "@/stores/global";
-import { API, CDN } from "@/constants";
+import { API, SOCKET_API, CDN } from "@/constants";
+import Axios from "axios";
 
 definePageMeta({
   layout: "dashboard"
 });
 
-export default defineComponent({
-  setup() {
-    const state = useGlobalStore();
+const state = useGlobalStore();
 
-    const configFile = JSON.stringify({
-      api: API + "/api",
-      token: state.token,
-      shifter: false
-    });
+const steam_info = (await Axios.get(`${API}/socials/steam/info`)).data;
+console.log(steam_info);
 
-    return {
-        state,
-        download: {
-            href: `data:'text/json;charset=utf-8, ${encodeURIComponent(configFile)}`
-        },
-        CDN
-    }
-  }
+const configFile = JSON.stringify({
+  api: SOCKET_API + "/api",
+  token: state.token,
+  shifter: false
 });
+
+const download = {
+  href: `data:'text/json;charset=utf-8, ${encodeURIComponent(configFile)}`
+}
 </script>

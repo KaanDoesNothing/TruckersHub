@@ -1,0 +1,1 @@
+export const TRUCKERSMP_API = "https://api.truckersmp.com/v2";
