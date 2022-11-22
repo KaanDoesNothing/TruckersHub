@@ -46,7 +46,7 @@ const authenticateWithToken = async (token: string) => {
     if(res.data.error) {
         error.value = res.data.error;
     }else {
-        tokenCookie.value = res.data.data;
+        tokenCookie.value = token;
         
         state.$patch({token});
 
