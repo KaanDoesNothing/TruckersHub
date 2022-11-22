@@ -1,6 +1,7 @@
 import { Next } from "koa";
 import koaRouter, { RouterContext } from "koa-router";
 import { User } from "../db/entities/user";
+import { closestCity } from "../game";
 
 export const main = new koaRouter();
 
@@ -37,5 +38,19 @@ main.post("/events", isUser, async (ctx) => {
 
     if(!user) return ctx.body = {error: "Invalid token!"};
 
-    ctx.body = {data: user.events};
+    const events = user.events.map((row: any) => {
+        if(!row.data.game) return row;
+
+        row.data.location = closestCity(row.data.game.truck.position).realName;
+
+        if(row.data.event.trailerID) {
+            const clone = Object.assign({}, row);
+            row.data.event.previous = clone.data.event.current;
+            row.data.event.current = clone.data.event.trailerID;
+        }
+
+        return row;
+    }).filter(row => row);
+
+    ctx.body = {data: events};
 })
