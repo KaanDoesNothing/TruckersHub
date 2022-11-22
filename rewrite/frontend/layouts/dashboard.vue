@@ -52,11 +52,11 @@ authenticate();
                     <li><RouterLink class="rounded" to="/dashboard/history/fuel">Fuel</RouterLink></li>
                     <!-- <li><RouterLink class="rounded" to="/dashboard/history/damages">Damages</RouterLink></li> -->
                     </ul>
-                    <!-- <label class="text-center normal-case text-xl">VTC</label>
+                    <label class="text-center normal-case text-xl">VTC</label>
                     <ul class="menu mt-2">
-                    <li><RouterLink class="rounded" :to="`/dashboard/vtc/view/${state.user.truckersmp.data.vtc.name}`" v-if="state.user?.truckersmp?.data?.vtc.inVTC">View</RouterLink></li>
-                    <li><RouterLink class="rounded" to="/dashboard/vtc/list">List</RouterLink></li>
-                    </ul> -->
+                        <li><RouterLink class="rounded" :to="`/dashboard/vtc/view/${state.user.truckersmp.data.vtc.name}`" v-if="state.user?.truckersmp?.data?.vtc.inVTC">View</RouterLink></li>
+                        <li><RouterLink class="rounded" to="/dashboard/vtc/list">List</RouterLink></li>
+                    </ul>
                 </label>
             </div>
         </div>

@@ -1,4 +1,5 @@
 <template>
+    <Loader v-if="!data"></Loader>
     <div class="card bg-base-200 shadow-xl m-4 text-primary-content" v-if="data">
         <div class="card-body card-event">
             <label class="text-center text-2xl">{{data.vtc.name}}
@@ -36,26 +37,26 @@
     </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import Axios from "axios";
 import { ref } from "vue";
 import { useRoute } from "vue-router";
-export default {
-    setup() {
-        const route = useRoute();
+import { API } from "@/constants";
 
-        const data = ref();
+definePageMeta({
+  layout: "dashboard"
+});
 
-        async function init() {
-            const res = await(await fetch(`/api/vtc/${route.params.id}`)).json();
+const route = useRoute();
 
-            res.data.members = res.data.members.sort((a: any, b: any) => b.deliveryCount - a.deliveryCount);
+const data = ref();
 
-            data.value = res.data;
-        }
+(async() => {
+    let fetchedVtc = (await Axios.get(`${API}/vtc/${route.params.vtc}`)).data;
 
-        init();
+    console.log(fetchedVtc);
 
-        return {data};
-    },
-}
+    fetchedVtc.data.members = fetchedVtc.data.members.sort((a: any, b: any) => b.deliveryCount - a.deliveryCount);
+    data.value = fetchedVtc.data;
+})();
 </script>

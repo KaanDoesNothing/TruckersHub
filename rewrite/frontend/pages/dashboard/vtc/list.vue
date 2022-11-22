@@ -1,5 +1,6 @@
 <template>
-    <div class="overflow-x-auto flex justify-center p-5 bg-base-100">
+    <Loader v-if="!list"></Loader>
+    <div class="overflow-x-auto flex justify-center p-5 bg-base-100" v-if="list">
         <table class="table w-full">
             <thead>
                 <tr>
@@ -21,22 +22,19 @@
     </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from "vue";
+<script setup lang="ts">
+import Axios from "axios";
 import { ref } from "vue";
+import { API } from "@/constants";
 
-export default defineComponent({
-    setup() {
-        const list = ref();
+definePageMeta({
+  layout: "dashboard"
+});
 
-        async function init() {
-            const res = await ((await fetch("/api/vtc/list")).json());
-            list.value = res.data;
-        }
+const list = ref();
 
-        init();
-
-        return {list: computed(() => list.value)};
-    },
-})
+const fetchedList = await Axios.get(`${API}/vtc/list`);
+if(fetchedList.data.data) {
+    list.value = fetchedList.data.data;
+}
 </script>
