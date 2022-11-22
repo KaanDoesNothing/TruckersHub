@@ -55,5 +55,5 @@ const data = ref();
 
     fetchedVtc.data.members = fetchedVtc.data.members.sort((a: any, b: any) => b.deliveryCount - a.deliveryCount);
     data.value = fetchedVtc.data;
-});
+})();
 </script>
