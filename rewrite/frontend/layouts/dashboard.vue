@@ -4,13 +4,15 @@ import { useGlobalStore } from "@/stores/global";
 const layout = "dashboard";
 
 const state = useGlobalStore();
+const router = useRouter();
 
 const tokenCookie = useCookie("token");
 
 const authenticate = async () => {
     const token = tokenCookie.value;
 
-    if(token) state.$patch({token});
+    if(!token) return router.push("/auth/login");
+    state.$patch({token});
     await state.fetchUser();
 }
 
