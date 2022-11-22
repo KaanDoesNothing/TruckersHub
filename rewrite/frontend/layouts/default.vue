@@ -5,9 +5,10 @@ const layout = "default";
 
 const state = useGlobalStore();
 
+const tokenCookie = useCookie("token");
+
 const authenticate = async () => {
-    if(!localStorage) return;
-    const token = localStorage.getItem("token");
+    const token = tokenCookie.value;
 
     if(token) state.$patch({token});
     await state.fetchUser();

@@ -36,13 +36,17 @@ const username = ref("");
 const password = ref("");
 const isTokenLogin = ref(false);
 
+const tokenCookie = useCookie("token");
+
+console.log("Token", tokenCookie.value);
+
 const authenticateWithToken = async (token: string) => {
     const res = await Axios.post(`${API}/token_valid`, {token});
 
     if(res.data.error) {
         error.value = res.data.error;
     }else {
-        localStorage.setItem("token", token);
+        tokenCookie.value = res.data.data;
         
         state.$patch({token});
 
@@ -58,7 +62,7 @@ const authenticate = async () => {
     if(res.data.error) {
         error.value = res.data.error;
     }else {
-        localStorage.setItem("token", res.data.data);
+        tokenCookie.value = res.data.data;
         
         state.$patch({token: res.data.data});
 
