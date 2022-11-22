@@ -54,8 +54,6 @@ const data = ref();
 (async() => {
     let fetchedVtc = (await Axios.post(`${API}/vtc`, {id: route.params.vtc})).data;
 
-    console.log(fetchedVtc);
-
     fetchedVtc.data.members = fetchedVtc.data.members.sort((a: any, b: any) => b.deliveryCount - a.deliveryCount);
     data.value = fetchedVtc.data;
 })();
