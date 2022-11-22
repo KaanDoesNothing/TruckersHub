@@ -57,17 +57,6 @@ main.post("/events", isUser, async (ctx) => {
     ctx.body = {data: events};
 });
 
-main.get("/vtc/list", async (ctx) => {
-    const rawlist = await mpProfile.createQueryBuilder("profile").where("JSON_EXTRACT(profile.data, '$.vtc.inVTC') = 'true'").select(`DISTINCT TRIM(BOTH '"' FROM JSON_EXTRACT(profile.data, '$.vtc.name')) as vtc_name`).getRawMany();
-    const list = await Promise.all(rawlist.map(async row => {
-        row.memberCount = await mpProfile.createQueryBuilder("profile").where(`JSON_EXTRACT(profile.data, '$.vtc.name') = '${row.vtc_name}'`).getCount();
-
-        return row;
-    }));
-
-    return ctx.body = {data: list};
-});
-
 main.post("/vtc", async (ctx) => {
     const {id} = ctx.request.body as {id?: string};
     if(!id) return ctx.body = {error: "No vtc id provided!"};
@@ -104,4 +93,15 @@ main.post("/vtc", async (ctx) => {
     }));
 
     return ctx.body = {data: {vtc: fetchedVTC, members: members}};
+});
+
+main.get("/vtc/list", async (ctx) => {
+    const rawlist = await mpProfile.createQueryBuilder("profile").where("JSON_EXTRACT(profile.data, '$.vtc.inVTC') = 'true'").select(`DISTINCT TRIM(BOTH '"' FROM JSON_EXTRACT(profile.data, '$.vtc.name')) as vtc_name`).getRawMany();
+    const list = await Promise.all(rawlist.map(async row => {
+        row.memberCount = await mpProfile.createQueryBuilder("profile").where(`JSON_EXTRACT(profile.data, '$.vtc.name') = '${row.vtc_name}'`).getCount();
+
+        return row;
+    }));
+
+    return ctx.body = {data: list};
 });
