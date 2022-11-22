@@ -1,6 +1,8 @@
 import koaRouter from "koa-router";
 import SteamAuth from "node-steam-openid";
+import { User } from "../db/entities/user";
 import { getConfig } from "../utils";
+import { isUser } from "./main";
 
 export const socials = new koaRouter();
 
@@ -12,16 +14,27 @@ const getSteamInstance = async () => {
     return steam;
 }
 
-socials.get("/steam/info", async (ctx) => {
+socials.get("/socials/steam/info", async (ctx) => {
     const steam = await getSteamInstance();
 
     return ctx.body = {url: await steam.getRedirectUrl()};
 });
 
-socials.post("/steam/authenticate", async (ctx) => {
-    const steam = await getSteamInstance();
+socials.post("/socials/steam/authenticate", isUser, async (ctx) => {
+    const {token, url} = ctx.request.body as {token: string, url?: string};
 
-    const fetchedUser = await steam.authenticate(ctx.request);
+    if(!url) return ctx.body = {error: "No url was provided"};
 
-    console.log(fetchedUser);
+    const steam_id = parseInt(url.replace("https://steamcommunity.com/openid/id/", ""));
+
+    if(!steam_id) return ctx.body = {error: "Invalid steam_id"};
+
+    const user = await User.findOne({where: {token}});
+
+    if(!user) return ctx.body = {error: "Invalid token"};
+
+    user.steam_id = steam_id.toString();
+    await user.save();
+
+    ctx.body = {data: true};
 });

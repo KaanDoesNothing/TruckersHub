@@ -4,6 +4,7 @@ import koaCors from "@koa/cors";
 import { authentication } from "./routers/authentication";
 import { main } from "./routers/main";
 import { setup } from "./db";
+import { socials } from "./routers/socials";
 
 const app = new koa();
 
@@ -13,5 +14,6 @@ app.use(koaCors());
 app.use(koaBody());
 app.use(main.routes()).use(main.allowedMethods());
 app.use(authentication.routes()).use(authentication.allowedMethods());
+app.use(socials.routes()).use(socials.allowedMethods());
 
 app.listen(5050);

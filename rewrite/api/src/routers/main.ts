@@ -5,7 +5,7 @@ import { closestCity } from "../game";
 
 export const main = new koaRouter();
 
-const isUser = async (ctx: RouterContext, next: Next) => {
+export const isUser = async (ctx: RouterContext, next: Next) => {
     const {token} = ctx.request.body as {token?: string};
     if(!token) return ctx.body = {error: "No token was provided!"};
     await next();
