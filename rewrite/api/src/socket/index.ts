@@ -37,7 +37,9 @@ async function getGameData({id}: GetMap) {
 }
 
 async function setGameData({id, value}: {id: string, value: any}) {
-    return await redis.set(`gamedata_${sockets.get(id).user.username}`, JSON.stringify(value));
+    const keyname = `gamedata_${sockets.get(id).user.username}`;
+    await redis.set(keyname, JSON.stringify(value));
+    await redis.expireat(`gamedata_${sockets.get(id).user.username}`, 60000);
 }
 
 function waitForShift({id}: {id: string}) {
