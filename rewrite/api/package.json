@@ -14,6 +14,7 @@
     "@types/node-steam-openid": "^1.0.0",
     "bcrypt": "^5.1.0",
     "crypto": "^1.0.1",
+    "ioredis": "^5.2.4",
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.13.4",
     "koa-bodyparser": "^4.3.0",

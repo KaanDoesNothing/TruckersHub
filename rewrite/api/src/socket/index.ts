@@ -4,10 +4,14 @@ import { User } from "../db/entities/user";
 import {presetHandler} from "./presets";
 import { GearPreset, GearPresetResult, GetMap, SetBooleanMap } from "./types";
 
+import ioredis from "ioredis";
+
+const redis = new ioredis();
+redis.flushall();
+
 export const game_data = new Map();
 export const handling = new Map();
 export const sockets = new Map();
-export const lastGear = new Map();
 
 let server: SocketIO.Namespace;
 
@@ -29,20 +33,13 @@ export function setHandling({id, value}: SetBooleanMap) {
     return handling.set(id, value);
 }
 
-export function getLastGear({id}: GetMap) {
-    return lastGear.get(id) || false;
+async function getGameData({id}: GetMap) {
+    const data = await redis.get(`gamedata_${id}`);
+    if(data) return JSON.parse(data as string);
 }
 
-export function setLastGear({id, value}: SetBooleanMap) {
-    return lastGear.set(id, value);
-}
-
-export function getGameData({id}: GetMap) {
-    return game_data.get(id) || false;
-}
-
-function setGameData({id, value}: {id: string, value: any}) {
-    return game_data.set(id, value);
+async function setGameData({id, value}: {id: string, value: any}) {
+    return await redis.set(`gamedata_${id}`, JSON.stringify(value));
 }
 
 function waitForShift({id}: {id: string}) {
@@ -61,7 +58,8 @@ function waitForShift({id}: {id: string}) {
 }
 
 async function ensureGear({id, gear}: {id: string, gear: number}) {
-    const gameData = getGameData({id});
+    const gameData = await getGameData({id});
+    if(!gameData) return;
     const socketSettings = sockets.get(id).settings;
 
     const currentGear = gameData.truck.transmission.gear.displayed;
@@ -88,7 +86,7 @@ async function ensureGear({id, gear}: {id: string, gear: number}) {
 }
 
 async function handle({id}: {id: string}) {
-    const gameData = getGameData({id});
+    const gameData = await getGameData({id});
     if(!gameData) return;
 
     const isPaused = gameData.game.paused;
