@@ -26,8 +26,8 @@
             </thead>
             <tbody>
                 <tr v-for="member in data.members" :key="member.steam_id">
-                    <th>{{data.members.indexOf(member)}}</th>
-                    <th>{{member.username}}</th>
+                    <th>{{data.members.indexOf(member) + 1}}</th>
+                    <th>{{member.username}} {{member.online ? `(Online)`: ""}} </th>
                     <th>{{member.distanceTraveled.toFixed(0)}}km</th>
                     <th>{{member.deliveryCount}}</th>
                 </tr>

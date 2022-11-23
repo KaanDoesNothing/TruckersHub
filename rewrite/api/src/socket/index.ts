@@ -1,12 +1,10 @@
 import SocketIO from "socket.io";
+import { redis } from "../cache";
 import { Event } from "../db/entities/event";
 import { User } from "../db/entities/user";
 import {presetHandler} from "./presets";
 import { GearPreset, GearPresetResult, GetMap, SetBooleanMap } from "./types";
 
-import ioredis from "ioredis";
-
-const redis = new ioredis();
 redis.flushall();
 
 export const game_data = new Map();
@@ -21,7 +19,7 @@ export function getSocketByName({username}: {username: string}) {
     const keys = sockets.entries();
 
     for (let [key, value] of keys) {
-        if(value.username === username) return value;
+        if(value.user.username === username) return value;
     }
 }
 
@@ -34,12 +32,12 @@ export function setHandling({id, value}: SetBooleanMap) {
 }
 
 async function getGameData({id}: GetMap) {
-    const data = await redis.get(`gamedata_${id}`);
+    const data = await redis.get(`gamedata_${sockets.get(id).user.username}`);
     if(data) return JSON.parse(data as string);
 }
 
 async function setGameData({id, value}: {id: string, value: any}) {
-    return await redis.set(`gamedata_${id}`, JSON.stringify(value));
+    return await redis.set(`gamedata_${sockets.get(id).user.username}`, JSON.stringify(value));
 }
 
 function waitForShift({id}: {id: string}) {
@@ -148,7 +146,7 @@ export const launchShifter = (socketServer: SocketIO.Server) => {
     server = socketServer.of("/client");
     
     server.on("connection", async (client) => {
-        const username: User["username"] = await new Promise((resolve) => {
+        const userData: User = await new Promise((resolve) => {
             client.once("authenticate", async (msg) => {
                 const user = await User.findOne({where: {token: msg.content}});
 
@@ -158,13 +156,13 @@ export const launchShifter = (socketServer: SocketIO.Server) => {
 
                 console.log(`${user.username} connected via client`);
 
-                resolve(user.username);
+                resolve(user);
             });
         });
 
         const id = client.id;
 
-        sockets.set(id, {client, username, settings: {paused: false, hill_detection: true, hold_gear: true, rpm_shift: false}});
+        sockets.set(id, {client, user: userData, settings: {paused: false, hill_detection: true, hold_gear: true, rpm_shift: false}});
 
         client.on("message", async (msg) => {
             if(msg.type === "game_data") {
@@ -182,7 +180,7 @@ export const launchShifter = (socketServer: SocketIO.Server) => {
         client.on("event_create", async (data) => {
             const {event} = data;
         
-            const author = await User.findOne({where: {username}, relations: {events: true}});
+            const author = await User.findOne({where: {username: userData.username}, relations: {events: true}});
             if(!author) {
                 return;
             }

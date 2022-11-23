@@ -1,5 +1,6 @@
 import { Next } from "koa";
 import koaRouter, { RouterContext } from "koa-router";
+import { redis } from "../cache";
 import { TRUCKERSMP_API } from "../constants";
 import { mpProfile } from "../db/entities/mpProfile";
 import { User } from "../db/entities/user";
@@ -87,6 +88,8 @@ main.post("/vtc", async (ctx) => {
                     distance += event.data.distance.km
                 }
             }
+
+            member.online = (await redis.exists(`gamedata_${user.username}`)) === 1;
 
             members.push({...member, deliveryCount: user.events.length, distanceTraveled: distance});
         }
