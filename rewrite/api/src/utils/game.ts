@@ -84,7 +84,11 @@ export const getPlayerServer = async (username: string) => {
             player: {
                 username: isOnline.Name,
                 id: isOnline.MpId,
-                game_id: isOnline.PlayerId
+                game_id: isOnline.PlayerId,
+                location: {
+                    x: isOnline.X,
+                    y: isOnline.Y
+                }
             },
             server: {
                 ...server
