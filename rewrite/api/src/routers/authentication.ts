@@ -18,25 +18,6 @@ authentication.post("/auth/login", async (ctx) => {
 
     if(!passwordCorrect) return ctx.body = {error: "Incorrect password!"};
 
-    if(user.steam_id) {
-        try {
-            const profile = await (await fetch(`https://api.truckersmp.com/v2/player/${user.steam_id}`)).json();
-
-            if(!profile.data.error) {
-                if (user.truckersmp) {
-                    user.truckersmp.data = profile.response;
-                }else {
-                    const newProfile = mpProfile.create({data: profile.data.response});
-
-                    user.truckersmp = newProfile;
-                }
-                await user.save();
-            }
-        }catch(err) {
-            console.log("Failed to update user");
-        }
-    }
-
     return ctx.body = {data: user.token};
 });
 
