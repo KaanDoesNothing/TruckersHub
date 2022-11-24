@@ -4,7 +4,7 @@ import { redis } from "../cache";
 import { TRUCKERSMP_API } from "../constants";
 import { mpProfile } from "../db/entities/mpProfile";
 import { User } from "../db/entities/user";
-import { closestCity } from "../game";
+import { closestCity, getPlayerServer } from "../game";
 
 export const main = new koaRouter();
 
@@ -71,7 +71,7 @@ main.post("/vtc", async (ctx) => {
     const members: any = [];
 
     await Promise.all(fetchedMembers.map(async (member: any) => {
-        const user = await User.findOne({where: {steam_id: member.steam_id, events: {type: "delivered"}}, relations: {events: true}});
+        const user = await User.findOne({where: {steam_id: member.steam_id, events: {type: "delivered"}}, relations: {events: true, truckersmp: true}});
 
         if(user) {
             let distance = 0;
@@ -88,6 +88,8 @@ main.post("/vtc", async (ctx) => {
                     distance += event.data.distance.km
                 }
             }
+
+            member.online = await getPlayerServer(user.truckersmp.data.username);
 
             members.push({...member, deliveryCount: user.events.length, distanceTraveled: distance});
         }
