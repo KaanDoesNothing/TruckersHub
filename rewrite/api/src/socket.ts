@@ -1,9 +1,9 @@
 import { Server } from "socket.io";
 import { setup } from "./db";
-import { launchShifter } from "./socket/index";
+import { launchSocket } from "./socket/index";
 
 const io = new Server({});
-launchShifter(io);
+launchSocket(io);
 
 setup();
 

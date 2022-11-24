@@ -60,6 +60,7 @@ function waitForShift({id}: {id: string}) {
 async function ensureGear({id, gear}: {id: string, gear: number}) {
     const gameData = await getGameData({id});
     if(!gameData) return;
+    
     const socketSettings = sockets.get(id).settings;
 
     const currentGear = gameData.truck.transmission.gear.displayed;
@@ -98,19 +99,17 @@ async function handle({id}: {id: string}) {
     const gear = truckData.transmission.gear.displayed;
     const speed = truckData.speed.kph;
 
-    // console.log(gameData.truck.brakes.parking);
+    // if(gameData.controls.input.throttle === 1 && gameData.truck.brakes.parking && gear < 0) {
+    //     let socket = sockets.get(id);
 
-    if(gameData.controls.input.throttle === 1 && gameData.truck.brakes.parking && gear < 0) {
-        let socket = sockets.get(id);
+    //     socket.settings.rpm_shift = !socket.settings.rpm_shift;
 
-        socket.settings.rpm_shift = !socket.settings.rpm_shift;
+    //     sockets.set(id, socket);
 
-        sockets.set(id, socket);
+    //     await sleep(2000);
 
-        await sleep(2000);
-
-        console.log(socket.settings.rpm_shift);
-    } 
+    //     console.log(socket.settings.rpm_shift);
+    // } 
 
     if(gear < 0) return;
 
@@ -118,8 +117,6 @@ async function handle({id}: {id: string}) {
 
     if(socket.settings.rpm_shift) {
         let gearToShift;
-
-        // console.log(truckData.engine.rpm)
 
         if(truckData.engine.rpm.value < 1000) {
             gearToShift = gear - 1;
@@ -144,7 +141,7 @@ async function handle({id}: {id: string}) {
     }
 }
 
-export const launchShifter = (socketServer: SocketIO.Server) => {
+export const launchSocket = (socketServer: SocketIO.Server) => {
     server = socketServer.of("/client");
     
     server.on("connection", async (client) => {
