@@ -33,11 +33,8 @@ const route = useRoute();
 const error = ref(undefined);
 const username = ref("");
 const password = ref("");
-const isTokenLogin = ref(false);
 
 const tokenCookie = useCookie("token");
-
-console.log("Token", tokenCookie.value);
 
 const authenticateWithToken = async (token: string) => {
     const res: any = await $fetch(`${API}/token_valid`, {body: {token}, method: "POST"});
@@ -72,7 +69,6 @@ const authenticate = async () => {
 }
 
 if(route.params.token) {
-    isTokenLogin.value = true;
     authenticateWithToken(route.params.token as string);
 }
 

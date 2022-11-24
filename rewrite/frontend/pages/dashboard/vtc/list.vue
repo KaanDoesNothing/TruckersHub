@@ -12,7 +12,7 @@
             </thead>
             <tbody>
                 <tr v-for="vtc in list" :key="vtc.vtc_name">
-                    <th>{{list.indexOf(vtc)}}</th>
+                    <th>{{list.indexOf(vtc) + 1}}</th>
                     <th>{{vtc.vtc_name}}</th>
                     <th>{{vtc.memberCount}}</th>
                     <th><router-link class="btn" :to="`/dashboard/vtc/view/${vtc.vtc_name}`">View</router-link></th>

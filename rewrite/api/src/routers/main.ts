@@ -1,6 +1,5 @@
 import { Next } from "koa";
 import koaRouter, { RouterContext } from "koa-router";
-import { redis } from "../cache";
 import { TRUCKERSMP_API } from "../constants";
 import { mpProfile } from "../db/entities/mpProfile";
 import { User } from "../db/entities/user";
