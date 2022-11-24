@@ -1,5 +1,6 @@
 import SocketIO from "socket.io";
 import { redis } from "../cache";
+import { CacheExpireDate } from "../constants";
 import { Event } from "../db/entities/event";
 import { User } from "../db/entities/user";
 import {presetHandler} from "./presets";
@@ -39,7 +40,7 @@ async function getGameData({id}: GetMap) {
 async function setGameData({id, value}: {id: string, value: any}) {
     const keyname = `gamedata_${sockets.get(id).user.username}`;
     await redis.set(keyname, JSON.stringify(value));
-    await redis.expireat(`gamedata_${sockets.get(id).user.username}`, 60000);
+    await redis.expireat(`gamedata_${sockets.get(id).user.username}`, Date.now() + CacheExpireDate);
 }
 
 function waitForShift({id}: {id: string}) {
@@ -115,22 +116,22 @@ async function handle({id}: {id: string}) {
 
     let socket = sockets.get(id);
 
-    if(socket.settings.rpm_shift) {
-        let gearToShift;
+    // if(socket.settings.rpm_shift) {
+    //     let gearToShift;
 
-        if(truckData.engine.rpm.value < 1000) {
-            gearToShift = gear - 1;
-        }else if(truckData.engine.rpm.value > 1600) {
-            gearToShift = gear + 1;
-        }
+    //     if(truckData.engine.rpm.value < 1000) {
+    //         gearToShift = gear - 1;
+    //     }else if(truckData.engine.rpm.value > 1600) {
+    //         gearToShift = gear + 1;
+    //     }
 
-        if(gearToShift) {
-            await ensureGear({id, gear: gearToShift});
-            server.sockets.get(id)?.emit("message", {type: "preset_current", content: "RPM SHIFT"});
-        }
+    //     if(gearToShift) {
+    //         await ensureGear({id, gear: gearToShift});
+    //         server.sockets.get(id)?.emit("message", {type: "preset_current", content: "RPM SHIFT"});
+    //     }
         
-        return;
-    }
+    //     return;
+    // }
 
     const preset: GearPreset = presetHandler(gameData);
     const gearToShift: GearPresetResult = preset(speed);
@@ -167,9 +168,9 @@ export const launchSocket = (socketServer: SocketIO.Server) => {
             if(msg.type === "game_data") {
                 if(getHandling({id})) return;
         
-                setGameData({id, value: msg.content});
                 setHandling({id, value: true});
-        
+    
+                await setGameData({id, value: msg.content});
                 await handle({id});
         
                 setHandling({id, value: false});
