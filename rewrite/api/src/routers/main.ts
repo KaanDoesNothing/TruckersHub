@@ -89,7 +89,7 @@ main.post("/vtc", async (ctx) => {
                 }
             }
 
-            member.online = await getPlayerServer(user.truckersmp.data.username);
+            member.online = await getPlayerServer(user.truckersmp.data.name);
 
             members.push({...member, deliveryCount: user.events.length, distanceTraveled: distance});
         }
