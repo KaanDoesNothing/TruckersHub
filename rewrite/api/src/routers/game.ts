@@ -19,24 +19,21 @@ const getPlayerServer = async ({id}: {id: string}) => {
 
 }
 
-game.get("/user/isTruckersmp/:username", async (ctx) => {
-    const {username} = ctx.params;
+game.post("/game/isTruckersMP", async (ctx) => {
+    const {username} = ctx.request.body as {username: string};
+
+    if(!username) return ctx.body = {error: "No username provided"};
 
     const playerSearch = await (await fetch(`${TRUCKERSMP_MAP}/playersearch?string=${username}`)).json();
     const isOnline = playerSearch.Data?.filter((player: any) => player.Name === username)[0];
     if(!isOnline) return ctx.body = {error: "Player isn't online!"}
 
     const servers = await getServers();
-    console.log(servers)
     if(servers.error) {
         return ctx.body = {error: "Unknown"};
     }
 
-    // console.log(isOnline.ServerId)
-
     const server = servers.servers.filter((server: any) => server.map === isOnline.ServerId)[0];
-
-    console.log(server);
 
     return ctx.body = {
         data: {
@@ -50,8 +47,4 @@ game.get("/user/isTruckersmp/:username", async (ctx) => {
             }
         }
     }
-    // console.log(player);
-    // if(player.error) return ctx.body = {error: "Invalid steam id!"};
-
-    // const servers = await getServers();
 });

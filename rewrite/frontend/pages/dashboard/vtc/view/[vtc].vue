@@ -27,7 +27,7 @@
             <tbody>
                 <tr v-for="member in data.members" :key="member.steam_id">
                     <th>{{data.members.indexOf(member) + 1}}</th>
-                    <th>{{member.username}} {{member.online ? `(Online)`: ""}} </th>
+                    <th>{{member.username}} {{member.online?.server ? `(${member.online.server.name})`: ""}} </th>
                     <th>{{member.distanceTraveled.toFixed(0)}}km</th>
                     <th>{{member.deliveryCount}}</th>
                 </tr>
@@ -52,6 +52,14 @@ const data = ref();
 
 (async () => {
     let fetchedVtc: any = await $fetch(`${API}/vtc`, {method: "POST", body: {id: route.params.vtc}});
+
+    for (let i in fetchedVtc.data.members) {
+        let member = fetchedVtc.data.members[i];
+
+        console.log(member.username)
+
+        member.online = (await $fetch(`${API}/game/isTruckersMP`, {method: "POST", body: {username: member.username}}) as any).data;
+    }
 
     fetchedVtc.data.members = fetchedVtc.data.members.sort((a: any, b: any) => b.deliveryCount - a.deliveryCount);
     data.value = fetchedVtc.data;

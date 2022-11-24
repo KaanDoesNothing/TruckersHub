@@ -89,8 +89,6 @@ main.post("/vtc", async (ctx) => {
                 }
             }
 
-            member.online = (await redis.exists(`gamedata_${user.username}`)) === 1;
-
             members.push({...member, deliveryCount: user.events.length, distanceTraveled: distance});
         }
     }));
