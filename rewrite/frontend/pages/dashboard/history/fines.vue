@@ -1,5 +1,4 @@
 <template>
-  <Loader v-if="events.length < 1"></Loader>
   <div class="grid flex justify-center md:grid-cols-4 md:gap-4 md:p-4">
       <div class="card w-80 bg-base-100 shadow-xl m-1 text-primary-content" v-for="event in events">
           <div class="card-body card-event" v-if="event.data.game">
@@ -25,8 +24,6 @@ const state = useGlobalStore();
 
 const events: any = ref([]);
 
-(async () => {
-    events.value = (await $fetch(`${API}/events`, {body: {token: state.token, type: "fine"}, method: "POST"}) as any).data;
-})();
+events.value = (await $fetch(`${API}/events`, {body: {token: state.token, type: "fine"}, method: "POST"}) as any).data;
 </script>
 
