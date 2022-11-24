@@ -4,7 +4,7 @@ import {join} from "path";
 import {readFile} from "fs/promises";
 
 export const getConfig = async () => {
-    const raw = await readFile(join(__dirname, "../../", "config.json"), "utf-8");
+    const raw = await readFile(join(__dirname, "../../../", "config.json"), "utf-8");
 
     return JSON.parse(raw);
 }

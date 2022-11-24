@@ -1,5 +1,5 @@
 import fs from "fs";
-import { TRUCKERSMP_API, TruckersMP_krashnz, TRUCKERSMP_MAP } from "./constants";
+import { TRUCKERSMP_API, TruckersMP_krashnz, TRUCKERSMP_MAP } from "../constants";
 
 const cities = JSON.parse(fs.readFileSync("./cities.json", "utf-8")).citiesList;
 const citiesPromods = JSON.parse(fs.readFileSync("./cities_promods.json", "utf-8")).citiesList;

@@ -2,7 +2,7 @@ import { randomUUID } from "crypto";
 import koaRouter from "koa-router";
 import { mpProfile } from "../db/entities/mpProfile";
 import { User } from "../db/entities/user";
-import { comparePassword, hashPassword } from "../utils";
+import { comparePassword, hashPassword } from "../utils/main";
 
 export const authentication = new koaRouter();
 

@@ -4,7 +4,7 @@ import { Event } from "./entities/event";
 import { VTC } from "./entities/vtc";
 import { mpProfile } from "./entities/mpProfile";
 import { Avatar } from "./entities/avatar";
-import { getConfig } from "../utils";
+import { getConfig } from "../utils/main";
 
 export const setup = async () => {
     const config = await getConfig();

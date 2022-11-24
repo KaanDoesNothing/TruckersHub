@@ -1,7 +1,7 @@
 import koaRouter from "koa-router";
 import SteamAuth from "node-steam-openid";
 import { User } from "../db/entities/user";
-import { getConfig } from "../utils";
+import { getConfig } from "../utils/main";
 import { isUser } from "./main";
 
 export const socials = new koaRouter();

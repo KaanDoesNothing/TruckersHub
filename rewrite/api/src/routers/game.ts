@@ -1,5 +1,5 @@
 import koaRouter from "koa-router";
-import { getPlayerServer } from "../game";
+import { getPlayerServer } from "../utils/game";
 export const game = new koaRouter();
 
 game.post("/game/getPlayerServer", async (ctx) => {
