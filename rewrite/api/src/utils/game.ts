@@ -1,5 +1,8 @@
 import fs from "fs";
 import { TRUCKERSMP_API, TruckersMP_krashnz, TRUCKERSMP_MAP } from "../constants";
+import {redis} from "../cache";
+import { User } from "../db/entities/user";
+import { Raw } from "typeorm";
 
 const cities = JSON.parse(fs.readFileSync("./cities.json", "utf-8")).citiesList;
 const citiesPromods = JSON.parse(fs.readFileSync("./cities_promods.json", "utf-8")).citiesList;
@@ -70,29 +73,59 @@ export const getPlayerServer = async (username: string) => {
 
     const playerSearch = await (await fetch(`${TRUCKERSMP_MAP}/playersearch?string=${username}`)).json();
     const isOnline = playerSearch.Data?.filter((player: any) => player.Name === username)[0];
-    if(!isOnline) return {error: "Player isn't online!"}
+    const user = await User.findOne({where: {truckersmp: {data: Raw(alias => `JSON_EXTRACT(${alias}, '$.name') = :username`, {username})}}, relations: {truckersmp: true}});
+    const cache = await redis.get(`gamedata_${user?.username}`);
 
-    const servers = await getServers();
-    if(servers.error) {
-        return {error: "Unknown"};
-    }
+    console.log(typeof isOnline, typeof user, typeof cache);
 
-    const server = servers.servers.filter((server: any) => server.map === isOnline.ServerId)[0];
+    if(user && cache && !isOnline) {
+        const parsedCache = JSON.parse(cache);
 
-    return {
-        data: {
-            player: {
-                username: isOnline.Name,
-                id: isOnline.MpId,
-                game_id: isOnline.PlayerId,
-                location: {
-                    x: isOnline.X,
-                    y: isOnline.Y
+        return {
+            data: {
+                player: {
+                    username,
+                    location: {
+                        x: parsedCache.truck.position.X,
+                        y: parsedCache.truck.position.Y,
+                        z: parsedCache.truck.position.Z
+                    }
+                },
+                server: {
+                    singleplayer: true,
+                    name: "Singeplayer"
                 }
-            },
-            server: {
-                ...server
+            }
+        }
+    }else if(isOnline) {
+        const servers = await getServers();
+        if(servers.error) {
+            return {error: "Unknown"};
+        }
+
+        const server = servers.servers.filter((server: any) => server.map === isOnline.ServerId)[0];
+
+        return {
+            data: {
+                player: {
+                    username: isOnline.Name,
+                    id: isOnline.MpId,
+                    game_id: isOnline.PlayerId,
+                    location: {
+                        x: isOnline.X,
+                        y: isOnline.Y
+                    }
+                },
+                server: {
+                    ...server
+                }
             }
         }
     }
+
+    return {error: "Player isn't online!"};
 }
+
+// export const getPlayerServerLocal = async (username: string) => {
+//     const user = await User.findOne({where: {truckersmp: {data: {username}}}, relations: {truckersmp: true}});
+// }

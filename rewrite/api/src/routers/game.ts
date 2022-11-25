@@ -14,6 +14,8 @@ game.post("/game/getPlayersNearby", async (ctx) => {
 
     const res = await getPlayerServer(username);
 
+    if(res.data?.server.singleplayer) return {error: "Player is in singleplayer"};
+
     if(res.error || !res.data) {
         return ctx.body = res;
     }

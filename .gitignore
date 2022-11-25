@@ -19,3 +19,5 @@ rewrite/*/node_modules/
 rewrite/*/build/
 rewrite/*/yarn.lock
 rewrite/frontend/constants.ts
+rewrite/map
+rewrite/overlay
