@@ -76,7 +76,7 @@ export const getPlayerServer = async (username: string) => {
     const user = await User.findOne({where: {truckersmp: {data: Raw(alias => `JSON_EXTRACT(${alias}, '$.name') = :username`, {username})}}, relations: {truckersmp: true}});
     const cache = await redis.get(`gamedata_${user?.username}`);
 
-    console.log(typeof isOnline, typeof user, typeof cache);
+    console.log(typeof isOnline, typeof user, cache);
 
     if(user && cache && !isOnline) {
         const parsedCache = JSON.parse(cache);
