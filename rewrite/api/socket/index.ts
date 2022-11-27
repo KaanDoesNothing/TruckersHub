@@ -1,18 +1,17 @@
-import SocketIO from "socket.io";
-import { redis } from "../cache";
-import { CacheExpireDate } from "../constants";
-import { Event } from "../db/entities/event";
-import { User } from "../db/entities/user";
-import {presetHandler} from "./presets";
-import { GearPreset, GearPresetResult, GetMap, SetBooleanMap } from "./types";
+import { Namespace, Server, Socket } from "https://deno.land/x/socket_io/mod.ts";
+import { CacheExpireDate } from "../constants.ts";
+import { cacheInstance } from "../lib/cache.ts";
+import { Event, User } from "../lib/db.ts";
+import {presetHandler} from "./presets.ts";
+import { GearPreset, GearPresetResult, GetMap, SetBooleanMap } from "./types.ts";
 
-redis.flushall();
+cacheInstance.flushall();
 
 export const game_data = new Map();
 export const handling = new Map();
 export const sockets = new Map();
 
-let server: SocketIO.Namespace;
+let server: Namespace;
 
 const sleep = (time: number) => new Promise(r => setTimeout(r, time));;
 
@@ -33,23 +32,23 @@ export function setHandling({id, value}: SetBooleanMap) {
 }
 
 async function getGameData({id}: GetMap) {
-    const data = await redis.get(`gamedata_${sockets.get(id).user.username}`);
+    const data = await cacheInstance.get(`gamedata_${sockets.get(id).user.username}`);
     if(data) return JSON.parse(data as string);
 }
 
 async function setGameData({id, value}: {id: string, value: any}) {
     const keyname = `gamedata_${sockets.get(id).user.username}`;
-    await redis.set(keyname, JSON.stringify(value));
-    await redis.expireat(`gamedata_${sockets.get(id).user.username}`, Date.now() + CacheExpireDate);
+    await cacheInstance.set(keyname, JSON.stringify(value));
+    // await cacheInstance.expireat(`gamedata_${sockets.get(id).user.username}`, Date.now() + CacheExpireDate);
 }
 
 function waitForShift({id}: {id: string}) {
     return new Promise((resolve, reject) => {
-        const client = sockets.get(id).client;
+        const client: Socket = sockets.get(id).client;
 
         const callback = (msg: any) => {
             if(msg.type === "gear_change") {
-                client.removeListener("message", callback);
+                client.once("message", callback);
                 resolve("Received");
             }
         }
@@ -142,13 +141,13 @@ async function handle({id}: {id: string}) {
     }
 }
 
-export const launchSocket = (socketServer: SocketIO.Server) => {
+export const launchSocket = (socketServer: Server) => {
     server = socketServer.of("/client");
     
     server.on("connection", async (client) => {
-        const userData: User = await new Promise((resolve) => {
+        const userData: any = await new Promise((resolve) => {
             client.once("authenticate", async (msg) => {
-                const user = await User.findOne({where: {token: msg.content}});
+                const user = await User.findOne({token: msg.content});
 
                 if(!user) return;
 
@@ -180,18 +179,7 @@ export const launchSocket = (socketServer: SocketIO.Server) => {
         client.on("event_create", async (data) => {
             const {event} = data;
         
-            const author = await User.findOne({where: {username: userData.username}, relations: {events: true}});
-            if(!author) {
-                return;
-            }
-        
-            const newEvent = Event.create({type: event.type, data: event.data});
-        
-            await newEvent.save();
-        
-            author.events.push(newEvent);
-        
-            await author.save();
+            await Event.create({author: userData.username, type: event.type, data: event.data});
         
             client.emit("message", {type: "log", content: "Event was saved to the database!"});
         });

@@ -1,0 +1,1 @@
+export default JSON.parse(await Deno.readTextFile("../config.json"));

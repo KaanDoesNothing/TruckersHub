@@ -53,14 +53,14 @@ const authenticateWithToken = async (token: string) => {
 }
 
 const authenticate = async () => {
-    const res: any = await $fetch(`${API}/auth/login`, {body: {username: username.value, password: password.value}, method: "POST"});
+    const res: any = await $fetch(`${API}/user/login`, {body: {username: username.value, password: password.value}, method: "POST"});
 
     if(res.error) {
         error.value = res.error;
     }else {
-        tokenCookie.value = res.data;
+        tokenCookie.value = res.data.token;
         
-        state.$patch({token: res.data});
+        state.$patch({token: res.data.token});
 
         await state.fetchUser();
 

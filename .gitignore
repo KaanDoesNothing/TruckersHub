@@ -21,3 +21,4 @@ rewrite/*/yarn.lock
 rewrite/frontend/constants.ts
 rewrite/map
 rewrite/overlay
+rewrite/api_old/

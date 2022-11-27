@@ -24,6 +24,6 @@ const state = useGlobalStore();
 
 const events: any = ref([]);
 
-events.value = (await $fetch(`${API}/events`, {body: {token: state.token, type: "refuel-paid"}, method: "POST"}) as any).data;
+events.value = (await $fetch(`${API}/user/events`, {body: {token: state.token, type: "refuel-paid"}, method: "POST"}) as any).data;
 </script>
 

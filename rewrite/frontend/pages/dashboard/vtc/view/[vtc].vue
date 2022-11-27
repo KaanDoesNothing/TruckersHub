@@ -28,7 +28,7 @@
                 <tr v-for="member in data.members" :key="member.steam_id">
                     <th>{{data.members.indexOf(member) + 1}}</th>
                     <th>{{member.username}} {{member.online.data ? `(${member.online.data?.server.name})`: ""}} </th>
-                    <th>{{member.distanceTraveled.toFixed(0)}}km</th>
+                    <th>{{member.distanceTraveled}}km</th>
                     <th>{{member.deliveryCount}}</th>
                 </tr>
             </tbody>
@@ -50,7 +50,7 @@ const route = useRoute();
 
 const data = ref();
 
-let fetchedVtc: any = await $fetch(`${API}/vtc`, {method: "POST", body: {id: route.params.vtc}});
+let fetchedVtc: any = await $fetch(`${API}/vtc`, {method: "POST", body: {name: route.params.vtc}});
 
 fetchedVtc.data.members = fetchedVtc.data.members.sort((a: any, b: any) => b.deliveryCount - a.deliveryCount);
 data.value = fetchedVtc.data;

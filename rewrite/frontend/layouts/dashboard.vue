@@ -54,7 +54,7 @@ authenticate();
                     </ul>
                     <label class="text-center normal-case text-xl">VTC</label>
                     <ul class="menu mt-2">
-                        <li><RouterLink class="rounded" :to="`/dashboard/vtc/view/${state.user.truckersmp.data.vtc.name}`" v-if="state.user?.truckersmp?.data?.vtc.inVTC">View</RouterLink></li>
+                        <li><RouterLink class="rounded" :to="`/dashboard/vtc/view/${state.user.linked?.truckersmp?.vtc?.name}`" v-if="state.user.linked?.truckersmp?.vtc?.inVTC">View</RouterLink></li>
                         <li><RouterLink class="rounded" to="/dashboard/vtc/list">List</RouterLink></li>
                     </ul>
                 </label>

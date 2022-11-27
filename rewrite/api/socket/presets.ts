@@ -1,5 +1,4 @@
-import { parentPort } from "worker_threads";
-import { GearPreset, GearPresetResult } from "./types";
+import { GearPreset, GearPresetResult } from "./types.ts";
 
 export const presets = {
     trailer: (speed: number): GearPresetResult => {
@@ -48,8 +47,6 @@ export const presetHandler = (gameData: any): GearPreset => {
     let presetToUse = "no_trailer";
 
     if(gameData.trailer.attached) presetToUse = "trailer";
-
-    parentPort?.postMessage({type: "preset_current", content: presetToUse});
 
     const preset: GearPreset = (presets as any)[presetToUse];
 

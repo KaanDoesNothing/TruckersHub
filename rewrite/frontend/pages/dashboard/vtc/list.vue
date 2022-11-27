@@ -11,11 +11,11 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="vtc in list" :key="vtc.vtc_name">
+                <tr v-for="vtc in list" :key="vtc.name">
                     <th>{{list.indexOf(vtc) + 1}}</th>
-                    <th>{{vtc.vtc_name}}</th>
+                    <th>{{vtc.name}}</th>
                     <th>{{vtc.memberCount}}</th>
-                    <th><router-link class="btn" :to="`/dashboard/vtc/view/${vtc.vtc_name}`">View</router-link></th>
+                    <th><router-link class="btn" :to="`/dashboard/vtc/view/${vtc.name}`">View</router-link></th>
                 </tr>
             </tbody>
         </table>
@@ -34,6 +34,6 @@ const list = ref();
 
 const fetchedList: any = await $fetch(`${API}/vtc/list`);
 if(fetchedList.data) {
-    list.value = fetchedList.data;
+    list.value = fetchedList.data.list;
 }
 </script>

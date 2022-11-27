@@ -8,7 +8,7 @@ definePageMeta({
 
 const state = useGlobalStore();
 
-const fetchedVtc: any = await $fetch(`${API}/vtc`, {method: "POST", body: {id: state.user.truckersmp.data.vtc.name}});
+const fetchedVtc: any = await $fetch(`${API}/vtc`, {method: "POST", body: {name: state.user.linked.truckersmp.vtc.name}}).catch(err => console.log(err));
 
 const onlineMembers = fetchedVtc.data.members.filter((member: any) => member.online.data).length;
 </script>
@@ -19,7 +19,6 @@ const onlineMembers = fetchedVtc.data.members.filter((member: any) => member.onl
             <div class="card-body">
             <h2 class="card-title">Statistics</h2>
             <p>Online VTC Members: {{onlineMembers === 0 ? "None": onlineMembers}}</p>
-            <!-- <p>Deliveries: {{state.user.events?.length}}</p> -->
             </div>
         </div>
     </div>

@@ -10,7 +10,7 @@ export const useGlobalStore = defineStore("global", {
             const res: any = await $fetch(`${API}/user`, {body: {token: this.token}, method: "POST"});
 
             if(res.data) {
-                this.user = res.data;
+                this.user = res.data.user;
             }
         }
     }

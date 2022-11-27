@@ -1,11 +1,9 @@
-import fs from "fs";
-import { TRUCKERSMP_API, TruckersMP_krashnz, TRUCKERSMP_MAP } from "../constants";
-import {redis} from "../cache";
-import { User } from "../db/entities/user";
-import { Raw } from "typeorm";
+import { TRUCKERSMP_API, TruckersMP_krashnz, TRUCKERSMP_MAP } from "../constants.ts";
+import { cacheInstance } from "../lib/cache.ts";
+import { User } from "../lib/db.ts";
 
-const cities = JSON.parse(fs.readFileSync("./cities.json", "utf-8")).citiesList;
-const citiesPromods = JSON.parse(fs.readFileSync("./cities_promods.json", "utf-8")).citiesList;
+const cities = JSON.parse(await Deno.readTextFile("./assets/cities.json")).citiesList;
+const citiesPromods = JSON.parse(await Deno.readTextFile("./assets/cities_promods.json")).citiesList;
 citiesPromods.forEach((row: any) => cities.push(row));
 
 const fuelPrices = {
@@ -73,10 +71,8 @@ export const getPlayerServer = async (username: string) => {
 
     const playerSearch = await (await fetch(`${TRUCKERSMP_MAP}/playersearch?string=${username}`)).json();
     const isOnline = playerSearch.Data?.filter((player: any) => player.Name === username)[0];
-    const user = await User.findOne({where: {truckersmp: {data: Raw(alias => `JSON_EXTRACT(${alias}, '$.name') = :username`, {username})}}, relations: {truckersmp: true}});
-    const cache = await redis.get(`gamedata_${user?.username}`);
-
-    console.log(typeof isOnline, typeof user, cache);
+    const user = await User.findOne({"linked.truckersmp.name": username});
+    const cache = await cacheInstance.get(`gamedata_${user?.username}`);
 
     if(user && cache && !isOnline) {
         const parsedCache = JSON.parse(cache);
@@ -126,6 +122,6 @@ export const getPlayerServer = async (username: string) => {
     return {error: "Player isn't online!"};
 }
 
-// export const getPlayerServerLocal = async (username: string) => {
-//     const user = await User.findOne({where: {truckersmp: {data: {username}}}, relations: {truckersmp: true}});
-// }
+// // export const getPlayerServerLocal = async (username: string) => {
+// //     const user = await User.findOne({where: {truckersmp: {data: {username}}}, relations: {truckersmp: true}});
+// // }
