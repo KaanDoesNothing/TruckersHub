@@ -74,8 +74,12 @@ export const getPlayerServer = async (username: string) => {
     const user = await User.findOne({"linked.truckersmp.name": username});
     const cache = await cacheInstance.get(`gamedata_${user?.username}`);
 
+    console.log(cache, `gamedata_${user?.username}`);
+
     if(user && cache && !isOnline) {
         const parsedCache = JSON.parse(cache);
+
+        console.log(parsedCache)
 
         return {
             data: {
