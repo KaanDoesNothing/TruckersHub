@@ -4,7 +4,27 @@ import config from "../config.ts";
 //@ts-ignore
 mongoose.connect(config.api.mongodb, {dbName: "TruckersHub"}, () => {
     console.log("Ready");
-})
+});
+
+export interface iUser {
+    token: string;
+    username: string;
+    password: string;
+    linked: {
+        steam?: {
+            id?: string;
+        },
+        truckersmp? :any;
+    },
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface iEvent {
+    author: iUser["username"];
+    type: string;
+    data: any;
+}
 
 const UserSchema = new mongoose.Schema({
     token: {type: String, required: true},
@@ -24,5 +44,5 @@ const EventSchema = new mongoose.Schema({
     data: {}
 }, {timestamps: true});
 
-export const User = mongoose.model("User", UserSchema);
+export const User = mongoose.model<iUser>("User", UserSchema);
 export const Event = mongoose.model("Event", EventSchema);
