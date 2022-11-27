@@ -38,6 +38,8 @@ UserRouter.post("/user", isUser, async (ctx) => {
     let user = await User.findOne({token});
     if(!user) return ctx.response.body = {error: "Invalid token!"};
 
+    ctx.response.body = {data: {user}};
+
     if(user.linked?.steam?.id) {
         try {
             const profile = await (await fetch(`https://api.truckersmp.com/v2/player/${user.linked?.steam?.id}`)).json();
@@ -54,8 +56,6 @@ UserRouter.post("/user", isUser, async (ctx) => {
             console.log("Failed to update user");
         }
     }
-
-    return ctx.response.body = {data: {user}};
 });
 
 UserRouter.post("/user/token/valid", isUser, async (ctx) => {

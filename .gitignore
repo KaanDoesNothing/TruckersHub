@@ -22,3 +22,4 @@ rewrite/frontend/constants.ts
 rewrite/map
 rewrite/overlay
 rewrite/api_old/
+dump.rdb
