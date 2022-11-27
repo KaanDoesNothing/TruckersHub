@@ -7,7 +7,6 @@ import { GearPreset, GearPresetResult, GetMap, SetBooleanMap } from "./types.ts"
 
 cacheInstance.flushall();
 
-export const game_data = new Map();
 export const handling = new Map();
 export const sockets = new Map();
 
@@ -184,8 +183,9 @@ export const launchSocket = (socketServer: Server) => {
             client.emit("message", {type: "log", content: "Event was saved to the database!"});
         });
 
-        client.on("disconnect", () => {
-            game_data.delete(id);
+        client.on("disconnect", async () => {
+            await setGameData({id, value: null});
+
             handling.delete(id);
             sockets.delete(id);
         });
