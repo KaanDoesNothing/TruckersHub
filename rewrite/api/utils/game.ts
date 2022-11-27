@@ -76,7 +76,7 @@ export const getPlayerServer = async (username: string) => {
 
     console.log(cache, `gamedata_${user?.username}`);
 
-    if(user && cache && !isOnline) {
+    if(user && cache !== null && !isOnline) {
         const parsedCache = JSON.parse(cache);
 
         console.log(parsedCache)
