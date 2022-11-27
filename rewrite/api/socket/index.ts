@@ -39,7 +39,7 @@ async function getGameData({id}: GetMap) {
 async function setGameData({id, value}: {id: string, value: any}) {
     const keyname = `gamedata_${sockets.get(id).user.username}`;
     await cacheInstance.set(keyname, JSON.stringify(value));
-    // await cacheInstance.expireat(`gamedata_${sockets.get(id).user.username}`, Date.now() + CacheExpireDate);
+    await cacheInstance.expireat(`gamedata_${sockets.get(id).user.username}`, (Date.now() + CacheExpireDate).toString());
 }
 
 function waitForShift({id}: {id: string}) {
