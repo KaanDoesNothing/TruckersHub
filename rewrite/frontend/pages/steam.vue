@@ -10,6 +10,8 @@ const route = useRoute();
 const router = useRouter();
 const state = useGlobalStore();
 
+console.log(route.query);
+
 const url = route.query["openid.identity"];
 
 if(url && state.token) {
