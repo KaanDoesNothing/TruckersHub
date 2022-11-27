@@ -35,6 +35,10 @@ async function getGameData({id}: GetMap) {
     if(data) return JSON.parse(data as string);
 }
 
+async function deleteGameData({id}: GetMap) {
+    await cacheInstance.del(`gamedata_${sockets.get(id).user.username}`);
+}
+
 async function setGameData({id, value}: {id: string, value: any}) {
     const keyname = `gamedata_${sockets.get(id).user.username}`;
     await cacheInstance.set(keyname, JSON.stringify(value));
@@ -184,7 +188,7 @@ export const launchSocket = (socketServer: Server) => {
         });
 
         client.on("disconnect", async () => {
-            await setGameData({id, value: null});
+            await deleteGameData({id});
 
             handling.delete(id);
             sockets.delete(id);
