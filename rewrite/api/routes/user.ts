@@ -13,7 +13,9 @@ UserRouter.post("/user/events", isUser, async (ctx) => {
 
     if(!user) return ctx.response.body = {error: "Invalid token!"};
 
+    console.time("Fetching events for: " + user.username);
     const userEvents = await Event.find({author: user.username, type}).sort({createdAt: "desc"});
+    console.timeEnd("Fetching events for: " + user.username);
 
     const events = userEvents.map((row: any) => {
         if(!row.data.game) return row;

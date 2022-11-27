@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
+        <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+    </head>
+    <body>
+        <div id="map" style="min-height: 100%; min-width: 100%; position: absolute;"></div>
+        <script>
+            (async () => {
+                let TileMapInfo = await (await fetch("http://185.205.246.23:8006/truckershub/map/TileMapInfo.json")).json();
+                TileMapInfo.tileSize = 256;
+
+                function convertCoordinates(xx, yy) {
+                    const MAX = Math.pow(2, 8) * TileMapInfo.tileSize;
+
+                    const xTot = TileMapInfo.x2 - TileMapInfo.x1;
+                    const yTot = TileMapInfo.y2 - TileMapInfo.y1;
+
+                    const xRel = (xx - TileMapInfo.x1) / xTot;
+                    const yRel = (yy - TileMapInfo.y1) / yTot;
+
+                    return [
+                        xRel * MAX,
+                        yRel * MAX
+                    ];
+                }
+                const map = L.map("map", {canvas: true, drawControl: true, corssOrigin: true});
+
+                const layer = L.tileLayer('http://185.205.246.23:8006/truckershub/map/Tiles/{z}/{x}/{y}.png', {
+                    minZoom: TileMapInfo.minZoom,
+                    maxZoom: TileMapInfo.maxZoom,
+                    tileSize: TileMapInfo.tileSize,
+                    center: [0, 0],
+                }).addTo(map);
+                
+                const amsterdam = convertCoordinates(-18562, -10630.2)
+                new L.marker(amsterdam).addTo(map);
+                map.setView(map.unproject(amsterdam, 8), 8)
+            })();
+        </script>
+    </body>
+</html>

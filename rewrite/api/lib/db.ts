@@ -44,5 +44,7 @@ const EventSchema = new mongoose.Schema({
     data: {}
 }, {timestamps: true});
 
+// EventSchema.index({author: 1, type: 1});
+
 export const User = mongoose.model<iUser>("User", UserSchema);
 export const Event = mongoose.model("Event", EventSchema);

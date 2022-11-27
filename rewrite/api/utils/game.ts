@@ -84,7 +84,7 @@ export const getPlayerServer = async (username: string) => {
                     location: {
                         x: parsedCache.truck.position.X,
                         y: parsedCache.truck.position.Y,
-                        z: parsedCache.truck.position.Z
+                        z: parsedCache.truck.position.Z,
                     }
                 },
                 server: {
@@ -99,6 +99,13 @@ export const getPlayerServer = async (username: string) => {
             return {error: "Unknown"};
         }
 
+        // let cityName = "";
+
+        // if(cache) {
+        //     const parsedCache = JSON.parse(cache);
+        //     cityName = `${closestCity(parsedCache.truck.position)}`;
+        // }
+
         const server = servers.servers.filter((server: any) => server.map === isOnline.ServerId)[0];
 
         return {
@@ -109,7 +116,8 @@ export const getPlayerServer = async (username: string) => {
                     game_id: isOnline.PlayerId,
                     location: {
                         x: isOnline.X,
-                        y: isOnline.Y
+                        y: isOnline.Y,
+                        // city: cityName
                     }
                 },
                 server: {
