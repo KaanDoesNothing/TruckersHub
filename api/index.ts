@@ -8,7 +8,7 @@ import { mapRouter } from "./routes/map.ts";
 
 const app = new Application();
 
-app.use(oakCors({origin: "https://truckershub.kaanlikesco", preflightContinue: true}));
+// app.use(oakCors({origin: "https://truckershub.kaanlikesco", preflightContinue: true}));
 
 // app.use(async (ctx, next) => {
 //     ctx.response.headers.set("Access-Control-Allow-Methods", "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS");
