@@ -36,7 +36,7 @@ VTCRouter.post("/vtc", async (ctx) => {
             }
 
             try {
-                member.online = await getPlayerServer(storedUser.linked.truckersmp.name).catch;
+                member.online = await getPlayerServer(storedUser.linked.truckersmp.name);
             }catch(err) {
                 member.online = {error: "Unable to fetch"};
             }
