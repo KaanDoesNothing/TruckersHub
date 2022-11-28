@@ -10,8 +10,9 @@ const app = new Application();
 
 app.use(oakCors({origin: "*", preflightContinue: true}));
 
-app.use((ctx, next) => {
-    ctx.response.headers.set("Access-Control-Allow-Methods", "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",)
+app.use(async (ctx, next) => {
+    ctx.response.headers.set("Access-Control-Allow-Methods", "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS");
+    await next();
 });
 
 app.use(UserRouter.routes()).use(UserRouter.allowedMethods());
