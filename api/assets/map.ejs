@@ -43,7 +43,7 @@
 
                 const amsterdam = convertCoordinates(-18562, -10630.2);
                 
-                const map = L.map("map", {canvas: true, drawControl: true, corssOrigin: true});
+                const map = L.map("map", {canvas: true, drawControl: true, corssOrigin: false});
 
                 const layer = L.tileLayer('https:/cdn.kaanlikescoding.me/truckershub/map/Tiles/{z}/{x}/{y}.png', {
                     minZoom: TileMapInfo.minZoom,
