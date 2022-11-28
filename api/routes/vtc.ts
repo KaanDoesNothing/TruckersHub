@@ -41,7 +41,9 @@ VTCRouter.post("/vtc", async (ctx) => {
         }
     }));
 
-    return ctx.response.body = {data: {vtc: fetchedVTC, members: members}};
+    ctx.response.body = {data: {vtc: fetchedVTC, members: members}};
+
+    console.log(ctx.response.body);
 });
 
 VTCRouter.get("/vtc/list", async (ctx) => {
