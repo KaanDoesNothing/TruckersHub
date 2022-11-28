@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { useGlobalStore } from "@/stores/global";
 
+const config = useRuntimeConfig();
+
 const layout = "dashboard";
 
 const state = useGlobalStore();
 const router = useRouter();
 
 const tokenCookie = useCookie("token");
+const isPlaying = ref(false);
 
 const authenticate = async () => {
     const token = tokenCookie.value;
@@ -14,10 +17,36 @@ const authenticate = async () => {
     if(!token) return router.push("/auth/login");
     state.$patch({token});
     await state.fetchUser();
+
+    const res: any = await $fetch(`${config.public.API}/api/getPlayerLocation`, {body: {username: state.user.username}, method: "POST"});
+
+    if(res.data && isPlaying.value !== true) isPlaying.value = true; 
+    
+    setInterval(async () => {
+        const res: any = await $fetch(`${config.public.API}/api/getPlayerLocation`, {body: {username: state.user.username}, method: "POST"});
+
+        console.log(res);
+
+        if(res.error && isPlaying.value !== false) isPlaying.value = false;
+        if(res.data && isPlaying.value !== true) isPlaying.value = true; 
+    }, 60000)
 }
 
 if(process.client) {
     state.$patch({phone: window?.innerWidth < 1080});
+
+    // const res: any = await $fetch(`${config.public.API}/api/getPlayerLocation`, {body: {username: state.user.username}, method: "POST"});
+
+    // if(res.data && isPlaying.value !== true) isPlaying.value = true; 
+
+    // setInterval(async () => {
+    //     const res: any = await $fetch(`${config.public.API}/api/getPlayerLocation`, {body: {username: state.user.username}, method: "POST"});
+
+    //     console.log(res);
+
+    //     if(res.error && isPlaying.value !== false) isPlaying.value = false;
+    //     if(res.data && isPlaying.value !== true) isPlaying.value = true; 
+    // }, 60000)
 }
 
 authenticate();
@@ -55,6 +84,7 @@ authenticate();
                     <label class="text-center normal-case text-xl">VTC</label>
                     <ul class="menu mt-2">
                         <li><RouterLink class="rounded" :to="`/dashboard/vtc/view/${state.user.linked?.truckersmp?.vtc?.name}`" v-if="state.user.linked?.truckersmp?.vtc?.inVTC">View</RouterLink></li>
+                        <li v-if="isPlaying"><RouterLink class="rounded" :to="`/dashboard/vtc/map`">Live Map</RouterLink></li>
                         <li><RouterLink class="rounded" to="/dashboard/vtc/list">List</RouterLink></li>
                     </ul>
                 </label>

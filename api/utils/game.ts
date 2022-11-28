@@ -66,6 +66,22 @@ const getPlayer = async ({id}: {id: string}) => {
     return res;
 }
 
+export const getPlayerLocation = async (username: string) => {
+    const cache = await cacheInstance.get(`gamedata_${username}`);
+
+    if(!cache) return {error: "User isn't online!"};
+
+    const parsedCache = JSON.parse(cache);
+
+    return {
+        data: {
+            x: parsedCache.truck.position.X,
+            y: parsedCache.truck.position.Y,
+            z: parsedCache.truck.position.Z
+        }
+    }
+}
+
 export const getPlayerServer = async (username: string) => {
     if(!username) return {error: "No username provided"};
 
@@ -84,7 +100,7 @@ export const getPlayerServer = async (username: string) => {
                     location: {
                         x: parsedCache.truck.position.X,
                         y: parsedCache.truck.position.Y,
-                        z: parsedCache.truck.position.Z,
+                        z: parsedCache.truck.position.Z
                     }
                 },
                 server: {

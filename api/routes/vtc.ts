@@ -20,7 +20,9 @@ VTCRouter.post("/vtc", async (ctx) => {
     await Promise.all(fetchedMembers.map(async (member: any) => {
         const storedUser = await User.findOne({"linked.truckersmp.steamID64": member.steam_id});
         if(!storedUser) return;
-        const storedEvents = await Event.find({author: storedUser?.username, type: "delivered"})
+        const storedEvents = await Event.find({author: storedUser?.username, type: "delivered"});
+
+        member.registeredName = storedUser.username;
         
         if(storedUser) {
             let distance = 0;
