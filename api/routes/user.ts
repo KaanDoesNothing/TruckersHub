@@ -35,7 +35,7 @@ UserRouter.post("/user/events", isUser, async (ctx) => {
     ctx.response.body = {data: events};
 });
 
-UserRouter.options("/user", oakCors()).post("/user", isUser, async (ctx) => {
+UserRouter.post("/user", isUser, async (ctx) => {
     const {token} = await ctx.request.body({type: "json"}).value;
 
     let user = await User.findOne({token});
