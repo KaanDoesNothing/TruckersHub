@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { useGlobalStore } from "@/stores/global";
-import { API } from "@/constants";
 
 definePageMeta({
   layout: "dashboard"
 });
 
+const config = useRuntimeConfig();
+
 const state = useGlobalStore();
 
-const fetchedVtc: any = await $fetch(`${API}/vtc`, {method: "POST", body: {name: state.user.linked.truckersmp.vtc.name}}).catch(err => console.log(err));
+const fetchedVtc: any = await $fetch(`${config.public.API}/vtc`, {method: "POST", body: {name: state.user.linked.truckersmp.vtc.name}}).catch(err => console.log(err));
 
 const onlineMembers = fetchedVtc.data.members.filter((member: any) => member.online.data).length;
 </script>

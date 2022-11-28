@@ -1,5 +1,4 @@
 import {defineStore} from "pinia";
-import { API } from "@/constants";
 
 export const useGlobalStore = defineStore("global", {
     state: (): any => {
@@ -7,7 +6,9 @@ export const useGlobalStore = defineStore("global", {
     },
     actions: {
         async fetchUser() {
-            const res: any = await $fetch(`${API}/user`, {body: {token: this.token}, method: "POST"});
+            const config = useRuntimeConfig();
+
+            const res: any = await $fetch(`${config.public.API}/user`, {body: {token: this.token}, method: "POST"});
 
             if(res.data) {
                 this.user = res.data.user;

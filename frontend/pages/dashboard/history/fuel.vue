@@ -14,16 +14,17 @@
 
 <script setup lang="ts">
 import { useGlobalStore } from "@/stores/global";
-import { API } from "@/constants";
 
 definePageMeta({
   layout: "dashboard"
 });
 
+const config = useRuntimeConfig();
+
 const state = useGlobalStore();
 
 const events: any = ref([]);
 
-events.value = (await $fetch(`${API}/user/events`, {body: {token: state.token, type: "refuel-paid"}, method: "POST"}) as any).data;
+events.value = (await $fetch(`${config.public.API}/user/events`, {body: {token: state.token, type: "refuel-paid"}, method: "POST"}) as any).data;
 </script>
 

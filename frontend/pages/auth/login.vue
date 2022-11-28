@@ -22,8 +22,9 @@
 </template>
 
 <script setup lang="ts">
-import {API} from "@/constants";
 import { useGlobalStore } from "@/stores/global";
+
+const config = useRuntimeConfig();
 
 const state = useGlobalStore();
 
@@ -37,7 +38,7 @@ const password = ref("");
 const tokenCookie = useCookie("token");
 
 const authenticateWithToken = async (token: string) => {
-    const res: any = await $fetch(`${API}/user/token/valid`, {body: {token}, method: "POST"});
+    const res: any = await $fetch(`${config.public.API}/user/token/valid`, {body: {token}, method: "POST"});
 
     if(res.error) {
         error.value = res.error;
@@ -53,7 +54,7 @@ const authenticateWithToken = async (token: string) => {
 }
 
 const authenticate = async () => {
-    const res: any = await $fetch(`${API}/user/login`, {body: {username: username.value, password: password.value}, method: "POST"});
+    const res: any = await $fetch(`${config.public.API}/user/login`, {body: {username: username.value, password: password.value}, method: "POST"});
 
     if(res.error) {
         error.value = res.error;

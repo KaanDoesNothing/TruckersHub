@@ -24,15 +24,16 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { API } from "@/constants";
 
 definePageMeta({
   layout: "dashboard"
 });
 
+const config = useRuntimeConfig();
+
 const list = ref();
 
-const fetchedList: any = await $fetch(`${API}/vtc/list`);
+const fetchedList: any = await $fetch(`${config.public.API}/vtc/list`);
 if(fetchedList.data) {
     list.value = fetchedList.data.list;
 }
