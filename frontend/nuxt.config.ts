@@ -6,5 +6,6 @@ export default defineNuxtConfig({
       API: process.env.API,
       SOCKET_API: process.env.SOCKET_API
     }
-  }
+  },
+  ssr: false
 });
