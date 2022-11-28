@@ -23,7 +23,7 @@
                 const vtcInfo = await (await fetch("/vtc", {method: "POST", body: JSON.stringify({name: vtcName})})).json();
                 console.log(userToTrack, vtcInfo);
 
-                let TileMapInfo = await (await fetch("https:/cdn.kaanlikescoding.me/truckershub/map/TileMapInfo.json")).json();
+                let TileMapInfo = JSON.parse(`<%- JSON.stringify(TileMapInfo) %>`);
                 TileMapInfo.tileSize = 256;
 
                 function convertCoordinates(xx, yy) {
