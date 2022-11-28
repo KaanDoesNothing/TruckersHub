@@ -45,7 +45,7 @@
                 
                 const map = L.map("map", {canvas: true, drawControl: true, corssOrigin: false});
 
-                const layer = L.tileLayer('https:/cdn.kaanlikescoding.me/truckershub/map/Tiles/{z}/{x}/{y}.png', {
+                const layer = L.tileLayer('/Tiles/{z}/{x}/{y}.png', {
                     minZoom: TileMapInfo.minZoom,
                     maxZoom: TileMapInfo.maxZoom,
                     tileSize: TileMapInfo.tileSize,
