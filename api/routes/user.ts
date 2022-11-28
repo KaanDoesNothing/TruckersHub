@@ -1,3 +1,4 @@
+import { oakCors } from "https://deno.land/x/cors@v1.2.2/oakCors.ts";
 import {Router} from "https://deno.land/x/oak/mod.ts";
 import { User, Event } from "../lib/db.ts";
 import { isUser } from "../middleware/isUser.ts";
@@ -34,7 +35,7 @@ UserRouter.post("/user/events", isUser, async (ctx) => {
     ctx.response.body = {data: events};
 });
 
-UserRouter.post("/user", isUser, async (ctx) => {
+UserRouter.options("/user", oakCors()).post("/user", isUser, async (ctx) => {
     const {token} = await ctx.request.body({type: "json"}).value;
 
     let user = await User.findOne({token});
