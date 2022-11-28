@@ -15,11 +15,13 @@ desktop/yarn-error.log
 desktop/yarn.lock
 desktop/config.json
 nwdesktop/
-rewrite/*/node_modules/
-rewrite/*/build/
-rewrite/*/yarn.lock
-rewrite/frontend/constants.ts
+*/node_modules/
+*/build/
+*/yarn.lock
+frontend/constants.ts
 rewrite/map
 rewrite/overlay
 rewrite/api_old/
 dump.rdb
+old/
+config.json

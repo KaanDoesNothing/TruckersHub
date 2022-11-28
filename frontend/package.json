@@ -1,28 +1,19 @@
 {
-  "name": "frontend",
   "private": true,
-  "version": "0.0.0",
-  "type": "module",
   "scripts": {
-    "dev": "vite",
-    "watch": "vue-tsc --noEmit && vite build --watch",
-    "build": "vue-tsc --noEmit && vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "daisyui": "^2.29.0",
-    "pinia": "^2.0.22",
-    "pug": "^3.0.2",
-    "pug-plain-loader": "^1.1.0",
-    "socket.io-client": "^4.5.2",
-    "vue": "^3.2.37",
-    "vue-router": "^4.1.5",
-    "vuex": "^4.0.2"
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^3.1.0",
-    "typescript": "^4.6.4",
-    "vite": "^3.1.0",
-    "vue-tsc": "^0.40.4"
+    "nuxt": "3.0.0"
+  },
+  "dependencies": {
+    "@nuxtjs/tailwindcss": "^6.1.3",
+    "@pinia/nuxt": "^0.4.4",
+    "daisyui": "^2.41.0",
+    "pinia": "^2.0.24"
   }
 }
