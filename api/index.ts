@@ -8,7 +8,7 @@ import { mapRouter } from "./routes/map.ts";
 
 const app = new Application();
 
-app.use(oakCors({origin: "*", preflightContinue: true}));
+app.use(oakCors({origin: "*", preflightContinue: false}));
 
 app.use(UserRouter.routes()).use(UserRouter.allowedMethods());
 app.use(VTCRouter.routes()).use(VTCRouter.allowedMethods());
