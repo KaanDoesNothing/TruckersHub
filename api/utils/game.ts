@@ -69,7 +69,7 @@ const getPlayer = async ({id}: {id: string}) => {
 export const getPlayerServer = async (username: string) => {
     if(!username) return {error: "No username provided"};
 
-    const playerSearch = await (await fetch(`${TRUCKERSMP_MAP}/playersearch?string=${username}`)).json();
+    const playerSearch = await (await fetch(`${TRUCKERSMP_MAP}/playersearch?string=${username}`)).json().catch(err => console.log(err));
     const isOnline = playerSearch.Data?.filter((player: any) => player.Name === username)[0];
     const user = await User.findOne({"linked.truckersmp.name": username});
     const cache = await cacheInstance.get(`gamedata_${user?.username}`);

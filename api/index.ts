@@ -1,4 +1,4 @@
-import {Application, Context} from "https://deno.land/x/oak/mod.ts";
+import {Application} from "https://deno.land/x/oak/mod.ts";
 import { oakCors } from "https://deno.land/x/cors/mod.ts";
 
 import { UserRouter } from "./routes/user.ts";
