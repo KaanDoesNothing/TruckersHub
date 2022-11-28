@@ -15,6 +15,14 @@ app.use(oakCors({origin: "https://truckershub.kaanlikesco", preflightContinue: t
 //     await next();
 // });
 
+import cors from "./cors.ts";
+
+app.use(cors());
+
+// app.use((ctx) => {
+//     ctx.response.headers.get
+// })
+
 app.use(UserRouter.routes()).use(UserRouter.allowedMethods());
 app.use(VTCRouter.routes()).use(VTCRouter.allowedMethods());
 app.use(socialsRouter.routes()).use(socialsRouter.allowedMethods());
