@@ -35,15 +35,17 @@ VTCRouter.post("/vtc", async (ctx) => {
                 }
             }
 
-            member.online = await getPlayerServer(storedUser.linked.truckersmp.name);
+            try {
+                member.online = await getPlayerServer(storedUser.linked.truckersmp.name).catch;
+            }catch(err) {
+                member.online = {error: "Unable to fetch"};
+            }
 
             members.push({...member, deliveryCount: storedEvents.length, distanceTraveled: distance.toFixed(0)});
         }
     }));
 
-    ctx.response.body = {data: {vtc: fetchedVTC, members: members}};
-
-    console.log(ctx.response.body);
+    return ctx.response.body = {data: {vtc: fetchedVTC, members: members}};
 });
 
 VTCRouter.get("/vtc/list", async (ctx) => {
