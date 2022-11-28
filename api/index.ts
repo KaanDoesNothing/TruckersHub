@@ -1,4 +1,4 @@
-import {Application} from "https://deno.land/x/oak/mod.ts";
+import {Application, Context} from "https://deno.land/x/oak/mod.ts";
 import { oakCors } from "https://deno.land/x/cors/mod.ts";
 
 import { UserRouter } from "./routes/user.ts";
@@ -8,7 +8,11 @@ import { mapRouter } from "./routes/map.ts";
 
 const app = new Application();
 
-app.use(oakCors({origin: "*", preflightContinue: false}));
+app.use(oakCors({origin: "*", preflightContinue: true}));
+
+app.use((ctx, next) => {
+    ctx.response.headers.set("Access-Control-Allow-Methods", "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",)
+});
 
 app.use(UserRouter.routes()).use(UserRouter.allowedMethods());
 app.use(VTCRouter.routes()).use(VTCRouter.allowedMethods());
