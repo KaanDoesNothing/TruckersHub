@@ -2,7 +2,7 @@ import { oakCors } from "https://deno.land/x/cors@v1.2.2/oakCors.ts";
 import {Router} from "https://deno.land/x/oak/mod.ts";
 import { User, Event } from "../lib/db.ts";
 import { isUser } from "../middleware/isUser.ts";
-import { comparePassword } from "../utils/authentication.ts";
+import { comparePassword, hashPassword } from "../utils/authentication.ts";
 import { closestCity } from "../utils/game.ts";
 
 export const UserRouter = new Router();
@@ -89,4 +89,20 @@ UserRouter.post("/user/login", async (ctx) => {
             token: user.token
         }
     };
+});
+
+UserRouter.post("/user/register", async (ctx) => {
+    const {username, password} = await ctx.request.body({type: "json"}).value;
+
+    if(!username || !password) return ctx.response.body = {error: "Provide a username and password!"};
+
+    const user = await User.findOne({username});
+    if(user) return ctx.response.body = {error: "User already exists!"};
+
+    const hashedPassword = await hashPassword(password);
+    if(!hashedPassword) return;
+
+    const newUser = await User.create({username, password: hashedPassword, token: crypto.randomUUID(), linked: {}}); 
+
+    return ctx.response.body = {data: newUser.token};
 });

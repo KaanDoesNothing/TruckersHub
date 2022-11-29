@@ -36,7 +36,7 @@ const username = ref("");
 const password = ref("");
 
 const register = async () => {
-    const res: any = await $fetch(`${config.public.API}/auth/register`, {body: {username: username.value, password: password.value}, method: "POST"});
+    const res: any = await $fetch(`${config.public.API}/user/register`, {body: {username: username.value, password: password.value}, method: "POST"});
 
     if(res.data) {
         router.push(`/auth/login/${res.data}`);
