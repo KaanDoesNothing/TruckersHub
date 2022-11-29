@@ -49,7 +49,6 @@ VTCRouter.post("/vtc", async (ctx) => {
 
     const response = {data: {vtc: fetchedVTC, members: members}};
 
-    console.log(response);
     return ctx.response.body = response;
 });
 
