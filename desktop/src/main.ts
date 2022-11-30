@@ -1,10 +1,7 @@
 import { app, BrowserWindow } from "electron";
 import * as path from "path";
-import * as fs from "fs";
 
-import "./game";
-
-const {token, shifter} = JSON.parse(fs.readFileSync(path.join(app.getAppPath(), "config.json"), "utf-8"));
+import { configExists, setConfig } from "./getConfig";
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -19,7 +16,37 @@ function createWindow() {
 
   mainWindow.maximize();
   mainWindow.show();
-  mainWindow.loadURL(`https://truckershub.kaanlikescoding.me/auth/login/${token}?shifter=${shifter}`);
+  mainWindow.loadURL(`https://truckershub.kaanlikescoding.me`);
+
+  try {
+    mainWindow.webContents.debugger.attach('1.3');
+  } catch (err) {
+    console.log('Debugger attach failed: ', err);
+  }
+  
+  mainWindow.webContents.debugger.on('detach', (event, reason) => {
+    console.log('Debugger detached due to: ', reason);
+  });
+  
+  mainWindow.webContents.debugger.on('message', (event, method, params) => {
+    if (method === 'Network.responseReceived') {
+      mainWindow.webContents.debugger.sendCommand('Network.getResponseBody', { requestId: params.requestId }).then(function(response) {
+        try {
+          const res = JSON.parse(response.body);
+          const exists = configExists();
+          if(!exists && res?.data?.user?.token) {
+            setConfig(JSON.stringify({token: res.data.user.token, shifter: false, api: "https://socket.truckershub.kaanlikescoding.me/api"}));
+          }
+
+          import("./game");
+        }catch(err) {
+          console.log(err);
+        }
+      });
+    }
+  })
+    
+  mainWindow.webContents.debugger.sendCommand('Network.enable');
 }
 app.whenReady().then(() => {
   createWindow();
