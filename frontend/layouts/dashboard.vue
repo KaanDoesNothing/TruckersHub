@@ -7,6 +7,7 @@ const layout = "dashboard";
 
 const state = useGlobalStore();
 const router = useRouter();
+const route = useRoute();
 
 const tokenCookie = useCookie("token");
 const isPlaying = ref(false);
@@ -21,15 +22,19 @@ const authenticate = async () => {
     const res: any = await $fetch(`${config.public.API}/api/getPlayerLocation`, {body: {username: state.user.username}, method: "POST"});
 
     if(res.data && isPlaying.value !== true) isPlaying.value = true; 
+
+    if(res.error && route.path.endsWith("/map")) router.push("/dashboard/statistics");
     
     setInterval(async () => {
         const res: any = await $fetch(`${config.public.API}/api/getPlayerLocation`, {body: {username: state.user.username}, method: "POST"});
 
-        console.log(res);
+        // console.log(res);
 
         if(res.error && isPlaying.value !== false) isPlaying.value = false;
         if(res.data && isPlaying.value !== true) isPlaying.value = true; 
-    }, 60000)
+
+        if(res.error && route.path.endsWith("/map")) router.push("/dashboard/statistics");
+    }, 30000)
 }
 
 if(process.client) {
