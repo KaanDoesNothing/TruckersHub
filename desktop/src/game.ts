@@ -1,10 +1,7 @@
-import { app } from "electron";
-import * as path from "path";
-import * as fs from "fs";
 import SocketIO from "socket.io-client";
 import tst, {EventFerry, EventsFine, EventsJobDeliveredVerbose, EventsRefuelPaid, EventTollgate, EventTrain, TruckDamage} from "trucksim-telemetry";
 import * as robotjs from "robotjs";
-import { getConfig } from "./getConfig";
+import { getConfig } from "./utils";
 
 const {api, token, shifter} = getConfig();
 console.log(api);

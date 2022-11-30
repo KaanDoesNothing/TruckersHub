@@ -1,9 +1,25 @@
 import { app, BrowserWindow } from "electron";
 import * as path from "path";
 
-import { configExists, setConfig } from "./getConfig";
+import { configExists, getConfig, makeSureInstalled, setConfig } from "./utils";
 
-function createWindow() {
+let isRunning = false;
+
+async function createWindow() {
+  console.time("Downloading dll");
+  await makeSureInstalled().catch(err => console.log("Game running"));
+  console.timeEnd("Downloading dll");
+
+  let url = "https://truckershub.kaanlikescoding.me";
+  const version = "0.1";
+
+  if(configExists()) {
+    const config = getConfig();
+    url+= `/auth/login/${config.token}`;
+  }
+
+  url+= `?version=${version}`;
+
   const mainWindow = new BrowserWindow({
     height: 720,
     webPreferences: {
@@ -16,7 +32,7 @@ function createWindow() {
 
   mainWindow.maximize();
   mainWindow.show();
-  mainWindow.loadURL(`https://truckershub.kaanlikescoding.me`);
+  mainWindow.loadURL(url);
 
   try {
     mainWindow.webContents.debugger.attach('1.3');
@@ -34,13 +50,22 @@ function createWindow() {
         try {
           const res = JSON.parse(response.body);
           const exists = configExists();
-          if(!exists && res?.data?.user?.token) {
-            setConfig(JSON.stringify({token: res.data.user.token, shifter: false, api: "https://socket.truckershub.kaanlikescoding.me/api"}));
+          if(!exists) {
+            if(res?.data?.user?.token) {
+              setConfig(JSON.stringify({token: res.data.user.token, shifter: false, api: "https://socket.truckershub.kaanlikescoding.me/api"}));
+              if(!isRunning) {
+                import("./game");
+                isRunning = true
+              }
+            }
+          }else {
+            if(!isRunning) {
+              import("./game");
+              isRunning = true
+            }
           }
-
-          import("./game");
         }catch(err) {
-          console.log(err);
+          // console.log(err);
         }
       });
     }
