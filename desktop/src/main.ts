@@ -5,25 +5,28 @@ import { configExists, getConfig, makeSureInstalled, setConfig } from "./utils";
 
 let isRunning = false;
 
-async function createWindow() {
-  console.time("Downloading dll");
-  await makeSureInstalled().catch(err => console.log("Game running"));
-  console.timeEnd("Downloading dll");
+console.time("Downloading dll");
+  // await makeSureInstalled().catch(err => console.log("Game running"));
+console.timeEnd("Downloading dll");
 
-  let url = "https://truckershub.kaanlikescoding.me";
-  const version = "0.1";
+let url = "https://truckershub.kaanlikescoding.me";
+const version = "0.1";
 
-  if(configExists()) {
-    const config = getConfig();
-    url+= `/auth/login/${config.token}`;
-  }
+if(configExists()) {
+  const config = getConfig();
+  url+= `/auth/login/${config.token}`;
+}
 
-  url+= `?version=${version}`;
+url+= `?version=${version}`;
 
+console.log(url);
+
+function createWindow() {
   const mainWindow = new BrowserWindow({
     height: 720,
     webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
+      // preload: path.join(__dirname, "preload.js"),
+      // sandbox: true
     },
     width: 1280,
     show: false,
@@ -54,18 +57,18 @@ async function createWindow() {
             if(res?.data?.user?.token) {
               setConfig(JSON.stringify({token: res.data.user.token, shifter: false, api: "https://socket.truckershub.kaanlikescoding.me/api"}));
               if(!isRunning) {
-                import("./game");
+                import("./game").catch(err => console.log(err));
                 isRunning = true
               }
             }
           }else {
             if(!isRunning) {
-              import("./game");
+              import("./game").catch(err => console.log(err));
               isRunning = true
             }
           }
         }catch(err) {
-          // console.log(err);
+          console.log(err);
         }
       });
     }

@@ -4,6 +4,8 @@ import * as robotjs from "robotjs";
 import { getConfig } from "./utils";
 
 const {api, token, shifter} = getConfig();
+console.log(api, token, shifter);
+
 console.log(api);
 if(!api || !token) console.log("Invalid config file.");
 

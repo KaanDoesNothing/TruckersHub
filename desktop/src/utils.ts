@@ -26,9 +26,10 @@ export const setConfig = (data: string): any => {
 }
 
 export const makeSureInstalled = async () => {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         const results = getGamePath(227300);
         if(!results.game) {
+            console.log("No game path");
             app.quit();
             process.exit();
         }
@@ -37,20 +38,25 @@ export const makeSureInstalled = async () => {
 
         const pluginsPath = path.join(gamePath, "bin", "win_x64", "plugins");
 
-        if (!fs.existsSync(pluginsPath)){
-            fs.mkdirSync(pluginsPath, {recursive: true});
-        }
-
-        const pluginPath = path.join(gamePath, "bin", "win_x64", "plugins", "scs-telemetry.dll");
-
-        const file = fs.createWriteStream(pluginPath);
-        const request = https.get("https://cdn.kaanlikescoding.me/truckershub/scs-telemetry.dll", function(response) {
-            response.pipe(file);
-
-            file.on("finish", () => {
-                file.close();
-                resolve(true)
+        try {
+            if (!fs.existsSync(pluginsPath)){
+                fs.mkdirSync(pluginsPath, {recursive: true});
+            }
+    
+            const pluginPath = path.join(gamePath, "bin", "win_x64", "plugins", "scs-telemetry.dll");
+    
+            const file = fs.createWriteStream(pluginPath);
+            const request = https.get("https://cdn.kaanlikescoding.me/truckershub/scs-telemetry.dll", function(response) {
+                response.pipe(file);
+    
+                file.on("finish", () => {
+                    file.close();
+                    resolve(true)
+                });
             });
-        });
+        }catch(err) {
+            console.log("Game already running");
+            reject(false);
+        }
     });
 }
