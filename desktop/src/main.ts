@@ -5,10 +5,6 @@ import { configExists, getConfig, makeSureInstalled, setConfig } from "./utils";
 
 let isRunning = false;
 
-console.time("Downloading dll");
-  // await makeSureInstalled().catch(err => console.log("Game running"));
-console.timeEnd("Downloading dll");
-
 let url = "https://truckershub.kaanlikescoding.me";
 const version = "0.1";
 
@@ -21,7 +17,14 @@ url+= `?version=${version}`;
 
 console.log(url);
 
-function createWindow() {
+async function createWindow() {
+  console.time("Downloading dll");
+  try {
+    await makeSureInstalled().catch(err => console.log("Game running"));
+  }catch(err) {
+    console.log(err);
+  }
+  console.timeEnd("Downloading dll");
   const mainWindow = new BrowserWindow({
     height: 720,
     webPreferences: {

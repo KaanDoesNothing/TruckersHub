@@ -3,6 +3,7 @@ import * as fs from "fs";
 import { app } from "electron";
 import { getGamePath } from "steam-game-path";
 import https from "https";
+import findProcess from "find-process";
 
 export const link = path.join(app.getAppPath(), "../", "config.json");
 
@@ -27,6 +28,9 @@ export const setConfig = (data: string): any => {
 
 export const makeSureInstalled = async () => {
     return new Promise(async (resolve, reject) => {
+        const list = await findProcess("name", "eurotrucks2.exe", true);
+        if(list.length > 0) return reject(false);
+        
         const results = getGamePath(227300);
         if(!results.game) {
             console.log("No game path");
