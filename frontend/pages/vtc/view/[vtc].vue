@@ -1,9 +1,11 @@
 <template>
+  <div class="md:p-20">
     <VtcView></VtcView>
+  </div>
 </template>
 <script>
 definePageMeta({
-  layout: "dashboard"
+  layout: "default"
 });
 </script>
 

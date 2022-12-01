@@ -6,6 +6,10 @@
                 <label class="text-2xl">Welcome to TruckersHub</label>
                 <br>
                 <label>TruckersHub is an open source & free to use LogBook for Euro Truck Simulator 2</label>
+
+                <br>
+                <br>
+                <RouterLink to="/vtc/list" class="font-bold">Browse VTCs</RouterLink>
             </div>
         </div>
     </div>
