@@ -1,4 +1,5 @@
 import { Router } from "https://deno.land/x/oak/mod.ts";
+import { getQuery } from "https://deno.land/x/oak@v11.1.0/helpers.ts";
 import { TRUCKERSMP_API } from "../constants.ts";
 import { User, Event } from "../lib/db.ts";
 import { getPlayerServer } from "../utils/game.ts";
@@ -53,7 +54,11 @@ VTCRouter.post("/vtc", async (ctx) => {
 });
 
 VTCRouter.get("/vtc/list", async (ctx) => {
-    const names: string[] = (await User.distinct("linked.truckersmp.vtc.name")).filter(vtc => vtc.length > 0);
+    const {q} = getQuery(ctx);
+    
+    let names: string[] = (await User.distinct("linked.truckersmp.vtc.name")).filter(vtc => vtc.length > 0);
+
+    if(q) names = names.filter(name => name.includes(q));
 
     const list = await Promise.all(names.map(async (name) => {
         return {
