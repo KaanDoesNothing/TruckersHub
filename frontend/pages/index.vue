@@ -1,7 +1,7 @@
 <template>
     <div id="holder" :style="{ backgroundImage: 'url(' + background.url + ')' }" style="background-position: center;" class="min-h-screen">
         <div class="lg:p-40">
-            <div class="h-40 bg-base-200 rounded">
+            <div class="h-40 bg-base-200 rounded rounded-none md:rounded">
                 <div class="text-center">
                     <br>
                     <label class="text-2xl">Welcome to TruckersHub</label>
