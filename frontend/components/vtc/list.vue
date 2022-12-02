@@ -1,5 +1,10 @@
 <template>
+    <Head>
+        <Title>TruckersHub - Browse VTCs</Title>
+    </Head>
+
     <Loader v-if="!list"></Loader>
+    
     <div class="flex justify-center">
         <input type="text" placeholder="Search a VTC" class="input input-bordered w-full max-w-xs" v-model="filter"/>
     </div>

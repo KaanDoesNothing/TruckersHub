@@ -1,4 +1,11 @@
 <template>
+    <Head>
+        <Title>TruckersHub - {{data.vtc.name}}</title>
+        <Meta :content="`TruckersHub - ${data.vtc.name}`" property="og:title"/>
+        <Meta :content="data.vtc.information" property="og:description"/>
+        <Meta :content="data.vtc.logo" property="og:image"></Meta>
+    </Head>
+
     <Loader v-if="!data"></Loader>
     <div class="card bg-base-200 shadow-xl m-4 text-primary-content" v-if="data">
         <div class="card-body card-event">

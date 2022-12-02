@@ -13,13 +13,6 @@
             </div>
         </div>
     </div>
-
-    <head>
-        <title>TruckersHub</title>
-        <meta content="TruckersHub" property="og:title"/>
-        <meta content="Truckbook for Euro Truck Simulator 2" property="og:description"/>
-        <meta content="https://truckershub.kaanlikescoding.me/" property="og:url"/>
-    </head>
     <!-- <div class="flex justify-center p-20"> -->
         <!-- <div class="p-10">
             <img src="@/assets/img/truck.png" class="w-64 ring rounded-full p-10 bg-gray-100" style="transform: translate(-50%, -50%);"/>

@@ -45,9 +45,9 @@ authenticate();
 </script>
 
 <template>
-    <head>
-        <title>TruckersHub - Dashboard</title>
-    </head>
+    <Head>
+        <Title>TruckersHub - Dashboard</Title>
+    </Head>
 
     <div v-if="state.user">
         <div class="drawer drawer-mobile">

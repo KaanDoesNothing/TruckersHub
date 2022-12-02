@@ -18,6 +18,12 @@ authenticate();
 </script>
 
 <template>
+    <Head>
+        <Title>TruckersHub</title>
+        <Meta content="TruckersHub" property="og:title"/>
+        <Meta content="Truckbook for Euro Truck Simulator 2" property="og:description"/>
+        <Meta content="https://truckershub.kaanlikescoding.me/" property="og:url"/>
+    </Head>
     <div>
         <slot></slot>
     </div>
