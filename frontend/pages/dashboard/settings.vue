@@ -1,7 +1,7 @@
 <template>
     <div class="flex justify-center mt-10">
         <div class="card w-100 bg-base-100 shadow-xl m-1 text-primary-content">
-            <div class="card-body">
+            <div class="card-body text-base-content">
               <h2 class="card-title">Settings</h2>
               <a class="btn" :href="steam_info.url" :class="{'btn-disabled': state.user.linked?.steam?.id}">Link your steam account</a>
               <a class="btn" :href="`${config.public.CDN}/TruckersHub.exe`">Download Client</a>

@@ -1,7 +1,7 @@
 <template>
   <div class="grid flex justify-center md:grid-cols-4 md:gap-4 md:p-4">
       <div class="card w-80 bg-base-100 shadow-xl m-1 text-primary-content" v-for="event in events">
-          <div class="card-body card-event" v-if="event.data.game">
+          <div class="card-body card-event text-base-content" v-if="event.data.game">
               <label class="card-title">Fine</label>
               <p>Reason: {{event.data.event.offence.name}}</p>
               <p>Location: {{event.data.location}}</p>

@@ -17,9 +17,9 @@ const onlineMembers = fetchedVtc.data.members.filter((member: any) => member.onl
 <template>
     <div class="flex justify-center mt-10">
         <div class="card w-80 bg-base-100 shadow-xl m-1 text-primary-content">
-            <div class="card-body">
-            <h2 class="card-title">Statistics</h2>
-            <p>Online VTC Members: {{onlineMembers === 0 ? "None": onlineMembers}}</p>
+            <div class="card-body text-base-content">
+                <h2 class="card-title">Statistics</h2>
+                <p>Online VTC Members: {{onlineMembers === 0 ? "None": onlineMembers}}</p>
             </div>
         </div>
     </div>

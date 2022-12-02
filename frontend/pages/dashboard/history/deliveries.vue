@@ -1,7 +1,7 @@
 <template>
     <div class="grid flex justify-center md:grid-cols-4 md:gap-4 md:p-4">
         <div class="card w-80 bg-base-100 shadow-xl m-1 text-primary-content" v-for="event in events">
-            <div class="card-body card-event">
+            <div class="card-body card-event text-base-content">
                 <label class="card-title">Delivery</label>
                 <template v-if="event.data.game">
                     <p>Revenue: ${{event.data.event.revenue}}</p>

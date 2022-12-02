@@ -45,10 +45,12 @@ authenticate();
 </script>
 
 <template>
-    <Head>
-        <Title>TruckersHub - Dashboard</Title>
-        <Link rel="icon" type="image/x-icon" href="/img/favicon.ico"/>
-    </Head>
+    <Html data-theme="night">
+        <Head>
+            <Title>TruckersHub - Dashboard</Title>
+            <Link rel="icon" type="image/x-icon" href="/img/favicon.ico"/>
+        </Head>
+    </Html>
 
     <div v-if="state.user">
         <div class="drawer drawer-mobile">

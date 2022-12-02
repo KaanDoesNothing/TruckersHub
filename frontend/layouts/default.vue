@@ -18,15 +18,17 @@ authenticate();
 </script>
 
 <template>
-    <Head>
-        <Title>TruckersHub</title>
-        <Meta content="TruckersHub" property="og:title"/>
-        <Meta content="Truckbook for Euro Truck Simulator 2" property="og:description"/>
-        <Meta content="https://truckershub.kaanlikescoding.me/" property="og:url"/>
-        <Meta charset="utf-8"/>
-        <Meta name="description" content="A full-fledged free to use logging book for Euro Truck Simulator 2"/>
-        <Link rel="icon" type="image/x-icon" href="/img/favicon.ico"/>
-    </Head>
+    <Html data-theme="night">
+        <Head>
+            <Title>TruckersHub</title>
+            <Meta content="TruckersHub" property="og:title"/>
+            <Meta content="Truckbook for Euro Truck Simulator 2" property="og:description"/>
+            <Meta content="https://truckershub.kaanlikescoding.me/" property="og:url"/>
+            <Meta charset="utf-8"/>
+            <Meta name="description" content="A full-fledged free to use logging book for Euro Truck Simulator 2"/>
+            <Link rel="icon" type="image/x-icon" href="/img/favicon.ico"/>
+        </Head>
+    </Html>
     <div>
         <slot></slot>
     </div>
