@@ -20,6 +20,9 @@ authenticate();
 <template>
     <head>
         <title>TruckersHub</title>
+        <meta content="TruckersHub" property="og:title"/>
+        <meta content="Truckbook for Euro Truck Simulator 2" property="og:description"/>
+        <meta content="https://truckershub.kaanlikescoding.me/" property="og:url"/>
     </head>
     <div>
         <slot></slot>
