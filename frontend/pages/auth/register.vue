@@ -1,4 +1,8 @@
 <template>
+    <Head>
+        <Title>TruckersHub - Register</Title>
+    </Head>
+
     <div class="flex justify-center mt-10">
         <div class="card w-80 bg-base-100 shadow-xl m-1 text-primary-content">
             <div class="card-body">
