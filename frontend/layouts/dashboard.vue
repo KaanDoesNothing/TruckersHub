@@ -25,7 +25,7 @@ const authenticate = async () => {
 
     if(res.error && route.path.endsWith("/map")) router.push("/dashboard/statistics");
     
-    if(process.browser) {
+    if(process.client) {
         setInterval(async () => {
             const res: any = await $fetch(`${config.public.API}/api/getPlayerLocation`, {body: {username: state.user.username}, method: "POST"});
 
