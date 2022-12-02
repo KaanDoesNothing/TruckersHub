@@ -6,7 +6,7 @@
     <Loader v-if="!list"></Loader>
     
     <div class="flex justify-center">
-        <input type="text" placeholder="Search a VTC" class="input input-bordered w-full max-w-xs" v-model="filter"/>
+        <input type="text" placeholder="Search a VTC" class="input input-sm input-bordered w-full max-w-xs" v-model="filter"/>
     </div>
     <div class="overflow-x-auto flex justify-center p-5 bg-base-100" v-if="list">
         <table class="table w-full">
