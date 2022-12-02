@@ -4,7 +4,7 @@
     </Head>
 
     <div class="flex justify-center mt-10">
-        <div class="card w-80 bg-base-100 shadow-xl m-1 text-primary-content">
+        <div class="card w-80 bg-base-100 shadow-xl m-1 text-base-content">
             <div class="card-body">
                 <h2 class="card-title">Register</h2>
                 <form class="form-control" @submit.prevent="register">
