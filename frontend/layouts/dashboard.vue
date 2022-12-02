@@ -47,6 +47,7 @@ authenticate();
 <template>
     <Head>
         <Title>TruckersHub - Dashboard</Title>
+        <Link rel="icon" type="image/x-icon" href="/img/favicon.ico"/>
     </Head>
 
     <div v-if="state.user">
