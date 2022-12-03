@@ -8,6 +8,9 @@
     <div class="flex justify-center">
         <input type="text" placeholder="Search a VTC" class="input input-sm input-bordered w-full max-w-xs" v-model="filter"/>
     </div>
+
+    <br>
+    
     <div class="overflow-x-auto flex justify-center p-5 bg-base-100" v-if="list">
         <table class="table w-full">
             <thead>

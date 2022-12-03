@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useGlobalStore } from "@/stores/global";
+import {backgrounds} from "../information";
 
 const layout = "default";
 
@@ -13,6 +14,10 @@ const authenticate = async () => {
     if(token) state.$patch({token});
     await state.fetchUser();
 }
+
+const config = useRuntimeConfig();
+
+const background = backgrounds[Math.floor(Math.random()*backgrounds.length)];
 
 authenticate();
 </script>
@@ -29,7 +34,13 @@ authenticate();
             <Link rel="icon" type="image/x-icon" href="/img/favicon.ico"/>
         </Head>
     </Html>
-    <div>
+    <div id="holder" :style="{ backgroundImage: 'url(' + background.url + ')' }" style="background-position: center;" class="min-h-screen">
         <slot></slot>
+    </div>
+
+    <div style="position: absolute; bottom: 5%; right: 5%;">
+        <a href="https://github.com/KaanDoesNothing/TruckersHub">GitHub</a>
+        <br>
+        <a :href="('https://discord.com/users/'+ background.author)">Background Author</a>
     </div>
 </template>

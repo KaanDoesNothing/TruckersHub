@@ -1,5 +1,5 @@
 <template>
-  <div class="md:p-20">
+  <div class="md:p-20 md:mx-60">
     <VtcView></VtcView>
   </div>
 </template>
