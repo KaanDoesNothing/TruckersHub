@@ -10,8 +10,8 @@
     </div>
 
     <br>
-    
-    <div class="overflow-x-auto flex justify-center p-5 bg-base-100" v-if="list">
+
+    <div class="overflow-x-auto flex justify-center bg-base-100" v-if="list">
         <table class="table w-full">
             <thead>
                 <tr>
