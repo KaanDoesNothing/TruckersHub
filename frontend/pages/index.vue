@@ -9,8 +9,8 @@
 
                 <br>
                 <div class="btn-group p-5">
-                    <RouterLink to="/features" class="btn font-bold">Features</RouterLink>
-                    <RouterLink to="/vtc/list" class="btn font-bold">Browse VTCs</RouterLink>
+                    <RouterLink to="/features" class="btn btn-ghost font-bold">Features</RouterLink>
+                    <RouterLink to="/vtc/list" class="btn btn-ghost font-bold">Browse VTCs</RouterLink>
                 </div>
             </div>
         </div>

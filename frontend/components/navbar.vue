@@ -20,11 +20,11 @@ const path = computed(() => route.path);
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                 </svg>
             </label>
-            <RouterLink class="btn" v-if="state.token && !path.startsWith('/dashboard')" to="/dashboard/statistics">Dashboard</RouterLink>
+            <RouterLink class="btn btn-ghost" v-if="state.token && !path.startsWith('/dashboard')" to="/dashboard/statistics">Dashboard</RouterLink>
             <template v-if="!state.token">
                 <div class="btn-group">
-                    <RouterLink class="btn" to="/auth/login">Login</RouterLink>
-                    <RouterLink class="btn" to="/auth/register">Register</RouterLink>
+                    <RouterLink class="btn btn-ghost" to="/auth/login">Login</RouterLink>
+                    <RouterLink class="btn btn-ghost" to="/auth/register">Register</RouterLink>
                 </div>
             </template>
         </div>
