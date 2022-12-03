@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, nativeTheme } from "electron";
 import * as path from "path";
 
 import { configExists, getConfig, makeSureInstalled, setConfig } from "./utils";
@@ -40,6 +40,8 @@ async function createWindow() {
   mainWindow.show();
   mainWindow.loadURL(url);
 
+  nativeTheme.themeSource = "dark";
+
   try {
     mainWindow.webContents.debugger.attach('1.3');
   } catch (err) {
@@ -56,20 +58,23 @@ async function createWindow() {
         try {
           const res = JSON.parse(response.body);
           const exists = configExists();
-          if(!exists) {
-            if(res?.data?.user?.token) {
-              setConfig(JSON.stringify({token: res.data.user.token, shifter: false, api: "https://socket.truckershub.kaanlikescoding.me/api"}));
-              if(!isRunning) {
-                import("./game").catch(err => console.log(err));
-                isRunning = true
-              }
-            }
-          }else {
-            if(!isRunning) {
-              import("./game").catch(err => console.log(err));
-              isRunning = true
-            }
-          }
+          setConfig(JSON.stringify({token: res.data.user.token, shifter: res.data.user.settings?.shifter, api: "https://socket.truckershub.kaanlikescoding.me/api"}));
+          import("./game").catch(err => console.log(err));
+          isRunning = true
+          // if(!exists) {
+          //   if(res?.data?.user?.token) {
+          //     setConfig(JSON.stringify({token: res.data.user.token, shifter: false, api: "https://socket.truckershub.kaanlikescoding.me/api"}));
+          //     if(!isRunning) {
+          //       import("./game").catch(err => console.log(err));
+          //       isRunning = true
+          //     }
+          //   }
+          // }else {
+          //   if(!isRunning) {
+          //     import("./game").catch(err => console.log(err));
+          //     isRunning = true
+          //   }
+          // }
         }catch(err) {
           console.log(err);
         }

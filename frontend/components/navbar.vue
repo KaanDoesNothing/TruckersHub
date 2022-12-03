@@ -12,6 +12,7 @@ const path = computed(() => route.path);
 <template>
     <div class="navbar bg-base-200">
         <div class="navbar-start">
+            <img src="/img/favicon.ico" class="h-8 w-8"/>
             <RouterLink class="btn btn-ghost normal-case text-xl" to="/">TruckersHub</RouterLink>
         </div>
         <div class="navbar-end">

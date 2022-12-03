@@ -34,6 +34,7 @@ authenticate();
             <Link rel="icon" type="image/x-icon" href="/img/favicon.ico"/>
         </Head>
     </Html>
+    
     <div id="holder" :style="{ backgroundImage: 'url(' + background.url + ')' }" style="background-position: center; background-repeat: no-repeat; object-fit: cover;" class="object-cover min-h-screen min-w-screen">
         <slot></slot>
     </div>
