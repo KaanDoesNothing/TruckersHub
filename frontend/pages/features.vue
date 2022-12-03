@@ -7,7 +7,7 @@
 
                 <div class="grid flex justify-center md:grid-cols-2 md:gap-4 md:p-4 p-5">
                     <div class="text-primary-content bg-gray-700 rounded-md m-1" v-for="feature in features">
-                        <div class="min-w-20 bg-primary min-h-40">
+                        <div class="min-w-20 bg-neutral-content min-h-40">
                             <label class="text-xl">{{feature.name}}</label>
                         </div>
 
