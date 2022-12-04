@@ -2,7 +2,7 @@ import { Router } from "https://deno.land/x/oak/mod.ts";
 import { getQuery } from "https://deno.land/x/oak@v11.1.0/helpers.ts";
 import { TRUCKERSMP_API } from "../constants.ts";
 import { User, Event } from "../lib/db.ts";
-import { getPlayerServer } from "../utils/game.ts";
+import { getPlayerServer, getVTC, getVTCMembers } from "../utils/game.ts";
 
 export const VTCRouter = new Router();
 
@@ -13,7 +13,10 @@ VTCRouter.post("/vtc", async (ctx) => {
 
     const storedVTC = await User.findOne({"linked.truckersmp.vtc.name": name}).cacheQuery();
 
-    const fetched = await Promise.all([await (await (await fetch(`${TRUCKERSMP_API}/vtc/${storedVTC?.linked.truckersmp?.vtc.id}`)).json()).response, (await (await (await fetch(`${TRUCKERSMP_API}/vtc/${storedVTC?.linked.truckersmp.vtc.id}/members`)).json())).response.members]);
+    const vtcID = storedVTC?.linked.truckersmp.vtc.id;
+
+    const fetched = await Promise.all([getVTC(vtcID), getVTCMembers(vtcID)]);
+    
     const fetchedVTC = fetched[0];
     const fetchedMembers = fetched[1];
     const members: any = [];
@@ -21,6 +24,7 @@ VTCRouter.post("/vtc", async (ctx) => {
     await Promise.all(fetchedMembers.map(async (member: any) => {
         const storedUser = await User.findOne({"linked.truckersmp.steamID64": member.steam_id}).cacheQuery();
         if(!storedUser) return;
+        
         const storedEvents = await Event.find({author: storedUser?.username, type: "delivered"}).cacheQuery();
 
         member.registeredName = storedUser.username;

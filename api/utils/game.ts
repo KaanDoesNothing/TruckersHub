@@ -1,4 +1,4 @@
-import { TRUCKERSMP_API, TruckersMP_krashnz, TRUCKERSMP_MAP } from "../constants.ts";
+import { CacheMPExpireDate, TRUCKERSMP_API, TruckersMP_krashnz, TRUCKERSMP_MAP } from "../constants.ts";
 import { cacheInstance } from "../lib/cache.ts";
 import { User } from "../lib/db.ts";
 
@@ -144,6 +144,32 @@ export const getPlayerServer = async (username: string) => {
     }
 
     return {error: "Player isn't online!"};
+}
+
+export const getVTC = async (id: string) => {
+    const stringName = `vtc_${id}`;
+    const cached = await cacheInstance.get(stringName);
+    if(cached) return JSON.parse(cached);
+
+    const data = await (await (await fetch(`${TRUCKERSMP_API}/vtc/${id}`)).json()).response;
+
+    await cacheInstance.set(stringName, JSON.stringify(data));
+    await cacheInstance.expireat(stringName, (Date.now() + CacheMPExpireDate).toString());
+
+    return data;
+}
+
+export const getVTCMembers = async (id: string) => {
+    const stringName = `vtc_members_${id}`;
+    const cached = await cacheInstance.get(stringName);
+    if(cached) return JSON.parse(cached);
+
+    const data = (await (await (await fetch(`${TRUCKERSMP_API}/vtc/${id}/members`)).json())).response.members;
+
+    await cacheInstance.set(stringName, JSON.stringify(data));
+    await cacheInstance.expireat(stringName, (Date.now() + CacheMPExpireDate).toString());
+
+    return data;
 }
 
 // // export const getPlayerServerLocal = async (username: string) => {

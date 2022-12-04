@@ -3,3 +3,4 @@ export const TRUCKERSMP_MAP = "https://tracker.ets2map.com/v3";
 export const TruckersMP_krashnz = "https://truckersmp.krashnz.com";
 
 export const CacheExpireDate = 30000;
+export const CacheMPExpireDate = 1000 * 60 * 60 * 24;
