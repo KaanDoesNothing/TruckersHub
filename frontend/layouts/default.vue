@@ -29,7 +29,7 @@ authenticate();
             <Meta content="TruckersHub" property="og:title"/>
             <Meta content="Truckbook for Euro Truck Simulator 2" property="og:description"/>
             <Meta content="https://truckershub.kaanlikescoding.me/" property="og:url"/>
-            <Meta content="https://truckershub.kaanlikescoding.me/img/favicon.ico" property="og:image"></Meta>
+            <Meta content="/img/favicon.png" property="og:image"></Meta>
             <Meta charset="utf-8"/>
             <Meta name="description" content="A full-fledged free to use logging book for Euro Truck Simulator 2"/>
             <Link rel="icon" type="image/x-icon" href="/img/favicon.ico"/>
