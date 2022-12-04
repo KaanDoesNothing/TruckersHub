@@ -1,6 +1,6 @@
 import { CacheMPExpireDate, TRUCKERSMP_API, TruckersMP_krashnz, TRUCKERSMP_MAP } from "../constants.ts";
 import { cacheInstance } from "../lib/cache.ts";
-import { User } from "../lib/db.ts";
+import { User, VTC } from "../lib/db.ts";
 
 const cities = JSON.parse(await Deno.readTextFile("./assets/cities.json")).citiesList;
 const citiesPromods = JSON.parse(await Deno.readTextFile("./assets/cities_promods.json")).citiesList;
@@ -146,30 +146,30 @@ export const getPlayerServer = async (username: string) => {
     return {error: "Player isn't online!"};
 }
 
-export const getVTC = async (id: string) => {
-    const stringName = `vtc_${id}`;
-    const cached = await cacheInstance.get(stringName);
-    if(cached) return JSON.parse(cached);
+export const getVTC = async (id: number) => {
+    const vtc = await VTC.findOne({"info.id": id});
 
-    const data = await (await (await fetch(`${TRUCKERSMP_API}/vtc/${id}`)).json()).response;
+    //@ts-ignore
+    if(vtc && (Date.now() - vtc.updatedAt) < CacheMPExpireDate) return vtc;
 
-    await cacheInstance.set(stringName, JSON.stringify(data));
-    await cacheInstance.expireat(stringName, (Date.now() + CacheMPExpireDate).toString());
+    console.log("Refetching vtc");
 
-    return data;
-}
+    const info = await (await (await fetch(`${TRUCKERSMP_API}/vtc/${id}`)).json()).response;
+    const members = (await (await (await fetch(`${TRUCKERSMP_API}/vtc/${id}/members`)).json())).response.members;
 
-export const getVTCMembers = async (id: string) => {
-    const stringName = `vtc_members_${id}`;
-    const cached = await cacheInstance.get(stringName);
-    if(cached) return JSON.parse(cached);
+    if(!info || !members) return;
 
-    const data = (await (await (await fetch(`${TRUCKERSMP_API}/vtc/${id}/members`)).json())).response.members;
+    if(vtc) {
+        vtc.info = info;
+        vtc.members = members;
 
-    await cacheInstance.set(stringName, JSON.stringify(data));
-    await cacheInstance.expireat(stringName, (Date.now() + CacheMPExpireDate).toString());
+        await vtc.save();
+        await vtc.update();
+    }else {
+        await VTC.create({info, members});
+    }
 
-    return data;
+    return {info, members};
 }
 
 // // export const getPlayerServerLocal = async (username: string) => {

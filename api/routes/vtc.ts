@@ -1,8 +1,8 @@
 import { Router } from "https://deno.land/x/oak/mod.ts";
 import { getQuery } from "https://deno.land/x/oak@v11.1.0/helpers.ts";
 import { TRUCKERSMP_API } from "../constants.ts";
-import { User, Event } from "../lib/db.ts";
-import { getPlayerServer, getVTC, getVTCMembers } from "../utils/game.ts";
+import { User, Event, VTC } from "../lib/db.ts";
+import { getPlayerServer, getVTC } from "../utils/game.ts";
 
 export const VTCRouter = new Router();
 
@@ -15,17 +15,19 @@ VTCRouter.post("/vtc", async (ctx) => {
 
     const vtcID = storedVTC?.linked.truckersmp.vtc.id;
 
-    const fetched = await Promise.all([getVTC(vtcID), getVTCMembers(vtcID)]);
-    
-    const fetchedVTC = fetched[0];
-    const fetchedMembers = fetched[1];
+    const fetched = await getVTC(vtcID);
+
+    if(!fetched) return ctx.response.body = {error: "Error fetching vtc!"};
+
+    const fetchedVTC = fetched.info;
+    const fetchedMembers = fetched.members;
     const members: any = [];
 
     await Promise.all(fetchedMembers.map(async (member: any) => {
         const storedUser = await User.findOne({"linked.truckersmp.steamID64": member.steam_id}).cacheQuery();
         if(!storedUser) return;
         
-        const storedEvents = await Event.find({author: storedUser?.username, type: "delivered"}).cacheQuery();
+        const storedEvents = await Event.find({author: storedUser.username, type: "delivered"}).cacheQuery();
 
         member.registeredName = storedUser.username;
         
@@ -60,14 +62,14 @@ VTCRouter.post("/vtc", async (ctx) => {
 VTCRouter.get("/vtc/list", async (ctx) => {
     const {q} = getQuery(ctx);
     
-    let names: string[] = (await User.distinct("linked.truckersmp.vtc.name").cacheQuery()).filter(vtc => vtc.length > 0);
+    let VTCs = await VTC.find();
     
-    if(q) names = names.filter(name => name.includes(q));
+    if(q) VTCs = VTCs.filter(vtc => vtc.info.name.includes(q));
 
-    const list = await Promise.all(names.map(async (name) => {
+    const list = await Promise.all(VTCs.map(async (vtc) => {
         return {
-            name,
-            memberCount: await User.count({"linked.truckersmp.vtc.name": name}).cacheQuery()
+            name: vtc.info.name,
+            memberCount: vtc.info.members_count
         }
     }));
 
