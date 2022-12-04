@@ -146,8 +146,13 @@ export const getPlayerServer = async (username: string) => {
     return {error: "Player isn't online!"};
 }
 
-export const getVTC = async (id: number) => {
-    const vtc = await VTC.findOne({"info.id": id});
+export const getVTC = async (id?: number, name?: string) => {
+    let vtc;
+    if(id) {
+        vtc = await VTC.findOne({"info.id": id});
+    }else if(name) {
+        vtc = await VTC.findOne({"info.name": name});
+    }
 
     //@ts-ignore
     if(vtc && (Date.now() - vtc.updatedAt) < CacheMPExpireDate) return vtc;

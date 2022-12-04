@@ -11,11 +11,7 @@ VTCRouter.post("/vtc", async (ctx) => {
 
     if(!name) return ctx.response.body = {error: "No vtc id provided!"};
 
-    const storedVTC = await User.findOne({"linked.truckersmp.vtc.name": name}).cacheQuery();
-
-    const vtcID = storedVTC?.linked.truckersmp.vtc.id;
-
-    const fetched = await getVTC(vtcID);
+    const fetched = await getVTC(null, name);
 
     if(!fetched) return ctx.response.body = {error: "Error fetching vtc!"};
 
