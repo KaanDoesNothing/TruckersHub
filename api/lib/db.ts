@@ -1,5 +1,8 @@
 import mongoose from "npm:mongoose";
+import {applySpeedGooseCacheLayer, SpeedGooseCacheAutoCleaner} from "npm:speedgoose";
 import config from "../config.ts";
+
+await applySpeedGooseCacheLayer(mongoose, {redisUri: "localhost:6379"});
 
 //@ts-ignore
 mongoose.connect(config.api.mongodb, {dbName: "TruckersHub"}, () => {
@@ -43,6 +46,8 @@ const EventSchema = new mongoose.Schema({
     type: {type: String, required: true},
     data: {}
 }, {timestamps: true});
+
+UserSchema.plugin(SpeedGooseCacheAutoCleaner);
 
 // EventSchema.index({author: 1, type: 1});
 

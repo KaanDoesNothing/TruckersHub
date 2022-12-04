@@ -11,7 +11,7 @@ VTCRouter.post("/vtc", async (ctx) => {
 
     if(!name) return ctx.response.body = {error: "No vtc id provided!"};
 
-    const storedVTC = await User.findOne({"linked.truckersmp.vtc.name": name});
+    const storedVTC = await User.findOne({"linked.truckersmp.vtc.name": name}).cacheQuery();
 
     const fetched = await Promise.all([await (await (await fetch(`${TRUCKERSMP_API}/vtc/${storedVTC?.linked.truckersmp?.vtc.id}`)).json()).response, (await (await (await fetch(`${TRUCKERSMP_API}/vtc/${storedVTC?.linked.truckersmp.vtc.id}/members`)).json())).response.members]);
     const fetchedVTC = fetched[0];
@@ -19,9 +19,9 @@ VTCRouter.post("/vtc", async (ctx) => {
     const members: any = [];
 
     await Promise.all(fetchedMembers.map(async (member: any) => {
-        const storedUser = await User.findOne({"linked.truckersmp.steamID64": member.steam_id});
+        const storedUser = await User.findOne({"linked.truckersmp.steamID64": member.steam_id}).cacheQuery();
         if(!storedUser) return;
-        const storedEvents = await Event.find({author: storedUser?.username, type: "delivered"});
+        const storedEvents = await Event.find({author: storedUser?.username, type: "delivered"}).cacheQuery();
 
         member.registeredName = storedUser.username;
         
@@ -56,14 +56,14 @@ VTCRouter.post("/vtc", async (ctx) => {
 VTCRouter.get("/vtc/list", async (ctx) => {
     const {q} = getQuery(ctx);
     
-    let names: string[] = (await User.distinct("linked.truckersmp.vtc.name")).filter(vtc => vtc.length > 0);
-
+    let names: string[] = (await User.distinct("linked.truckersmp.vtc.name").cacheQuery()).filter(vtc => vtc.length > 0);
+    
     if(q) names = names.filter(name => name.includes(q));
 
     const list = await Promise.all(names.map(async (name) => {
         return {
             name,
-            memberCount: await User.count({"linked.truckersmp.vtc.name": name})
+            memberCount: await User.count({"linked.truckersmp.vtc.name": name}).cacheQuery()
         }
     }));
 

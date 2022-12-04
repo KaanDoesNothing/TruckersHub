@@ -38,8 +38,10 @@ UserRouter.post("/user/events", isUser, async (ctx) => {
 UserRouter.post("/user", isUser, async (ctx) => {
     const {token} = await ctx.request.body({type: "json"}).value;
 
-    let user = await User.findOne({token});
+    let user = await User.findOne({token}).cacheQuery();
     if(!user) return ctx.response.body = {error: "Invalid token!"};
+
+    ctx.response.body = {data: {user}};
 
     if(user.linked?.steam?.id) {
         try {
@@ -57,8 +59,6 @@ UserRouter.post("/user", isUser, async (ctx) => {
             console.log("Failed to update user");
         }
     }
-
-    return ctx.response.body = {data: {user}};
 });
 
 UserRouter.post("/user/token/valid", isUser, async (ctx) => {
