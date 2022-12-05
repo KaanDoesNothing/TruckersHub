@@ -3,22 +3,12 @@
         <div class="card w-80 bg-base-100 shadow-xl m-1 text-primary-content" v-for="event in events">
             <div class="card-body card-event text-base-content">
                 <label class="card-title">Delivery</label>
-                <template v-if="event.data.game">
-                    <p>Revenue: ${{event.data.event.revenue}}</p>
-                    <p>Distance: {{event.data.event.distance.km}} km</p>
-                    <p>Cargo: {{event.data.event.cargo.name}}</p>
-                    <p>From: {{event.data.event.source.city.name}} - {{event.data.event.source.company.name}}</p>
-                    <p>To: {{event.data.event.destination.city.name}} - {{event.data.event.destination.company.name}}</p>
-                    <p>Date: {{new Date(event.createdAt).toLocaleString()}}</p>
-                </template>
-                <template v-if="!event.data.game">
-                    <p>Revenue: ${{event.data.revenue}}</p>
-                    <p>Distance: {{event.data.distance.km}} km</p>
-                    <p>Cargo: {{event.data.cargo.name}}</p>
-                    <p>From: {{event.data.source.city.name}} - {{event.data.source.company.name}}</p>
-                    <p>To: {{event.data.destination.city.name}} - {{event.data.destination.company.name}}</p>
-                    <p>Date: {{new Date(event.createdAt).toLocaleString()}}</p>
-                </template>
+                <p>Revenue: ${{event.revenue}}</p>
+                <p>Distance: {{event.distance}} km</p>
+                <p>Cargo: {{event.cargo}}</p>
+                <p>From: {{event.from.city}} - {{event.from.company}}</p>
+                <p>To: {{event.to.city}} - {{event.to.company}}</p>
+                <p>Date: {{new Date(event.createdAt).toLocaleString()}}</p>
             </div>
         </div>
     </div>
@@ -26,6 +16,8 @@
 
 <script setup lang="ts">
 import { useGlobalStore } from "@/stores/global";
+import {iEventDelivered} from "@/types";
+
 
 definePageMeta({
   layout: "dashboard"
@@ -34,8 +26,7 @@ definePageMeta({
 const config = useRuntimeConfig();
 
 const state = useGlobalStore();
-
-const events: any = ref([]);
+const events = ref<iEventDelivered[]>([]);
 
 events.value = (await $fetch(`${config.public.API}/user/events`, {body: {token: state.token, type: "delivered"}, method: "POST"}) as any).data;
 </script>

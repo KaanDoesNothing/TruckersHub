@@ -1,6 +1,5 @@
 import { Router } from "https://deno.land/x/oak/mod.ts";
 import { getQuery } from "https://deno.land/x/oak@v11.1.0/helpers.ts";
-import { TRUCKERSMP_API } from "../constants.ts";
 import { User, Event, VTC } from "../lib/db.ts";
 import { getPlayerServer, getVTC } from "../utils/game.ts";
 
@@ -11,7 +10,7 @@ VTCRouter.post("/vtc", async (ctx) => {
 
     if(!name) return ctx.response.body = {error: "No vtc id provided!"};
 
-    const fetched = await getVTC(null, name);
+    const fetched = await getVTC(undefined, name);
 
     if(!fetched) return ctx.response.body = {error: "Error fetching vtc!"};
 
@@ -62,7 +61,7 @@ VTCRouter.get("/vtc/list", async (ctx) => {
     
     if(q) VTCs = VTCs.filter(vtc => vtc.info.name.includes(q));
 
-    const list = await Promise.all(VTCs.map(async (vtc) => {
+    const list = await Promise.all(VTCs.map((vtc) => {
         return {
             name: vtc.info.name,
             memberCount: vtc.info.members_count
