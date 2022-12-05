@@ -86,7 +86,7 @@ async function ensureGear({id, gear}: {id: string, gear: number}) {
         server.sockets.get(id)?.emit("message", {type: "shift_up", amount: fixedNumber});
     }
 
-    await Promise.race([waitForShift({id}), sleep(2000)]);
+    await Promise.race([waitForShift({id}), sleep(1000)]);
 }
 
 async function handle({id}: {id: string}) {

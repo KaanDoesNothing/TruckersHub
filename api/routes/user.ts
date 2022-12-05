@@ -1,4 +1,3 @@
-import { oakCors } from "https://deno.land/x/cors@v1.2.2/oakCors.ts";
 import {Router} from "https://deno.land/x/oak/mod.ts";
 import { iEventDelivered, iEventFine, iEventFuel, iEventTollgate } from "../../frontend/types.ts";
 import { User, Event } from "../lib/db.ts";
