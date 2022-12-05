@@ -12,7 +12,7 @@ export const sockets = new Map();
 
 let server: Namespace;
 
-const sleep = (time: number) => new Promise(r => setTimeout(r, time));;
+const sleep = (time: number) => new Promise(r => setTimeout(r, time));
 
 export function getSocketByName({username}: {username: string}) {
     const keys = sockets.entries();
