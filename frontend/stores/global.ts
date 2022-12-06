@@ -10,7 +10,9 @@ export const useGlobalStore = defineStore("global", {
 
             const res: any = await $fetch(`${config.public.API}/user`, {body: {token: this.token}, method: "POST"}).catch(err => console.log("Unable to fetch user data"));
 
-            if(res?.data) {
+            if(!res) return;
+
+            if(res.data) {
                 this.user = res.data.user;
             }
         }
