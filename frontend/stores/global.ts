@@ -8,9 +8,9 @@ export const useGlobalStore = defineStore("global", {
         async fetchUser() {
             const config = useRuntimeConfig();
 
-            const res: any = await $fetch(`${config.public.API}/user`, {body: {token: this.token}, method: "POST"});
+            const res: any = await $fetch(`${config.public.API}/user`, {body: {token: this.token}, method: "POST"}).catch(err => console.log("Unable to fetch user data"));
 
-            if(res.data) {
+            if(res?.data) {
                 this.user = res.data.user;
             }
         }
