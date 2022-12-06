@@ -19,27 +19,31 @@ const authenticate = async () => {
     state.$patch({token});
     await state.fetchUser();
 
-    const res: any = await $fetch(`${config.public.API}/api/getPlayerLocation`, {body: {username: state.user.username}, method: "POST"});
-
-    if(res.data && isPlaying.value !== true) isPlaying.value = true; 
-
-    if(res.error && route.path.endsWith("/map")) router.push("/dashboard/statistics");
-    
     if(process.client) {
         setInterval(async () => {
-            const res: any = await $fetch(`${config.public.API}/api/getPlayerLocation`, {body: {username: state.user.username}, method: "POST"});
+            updatePlayerLocation();
+        }, 15000);
 
-            if(res.error && isPlaying.value !== false) isPlaying.value = false;
-            if(res.data && isPlaying.value !== true) isPlaying.value = true; 
-
-            if(res.error && route.path.endsWith("/map")) router.push("/dashboard/statistics");
-        }, 30000);
+        updatePlayerLocation();
     }
 }
 
-if(process.client) {
-    state.$patch({phone: window?.innerWidth < 1080});
+async function updatePlayerLocation() {
+    const res: any = await $fetch(`${config.public.API}/api/getPlayerLocation`, {body: {username: state.user.username}, method: "POST"}).catch(err => console.log(err));
+
+    if(!res) return;
+
+    if(res.error && isPlaying.value !== false) isPlaying.value = false;
+    if(res.data && isPlaying.value !== true) isPlaying.value = true; 
+
+    if(res.error && route.path.endsWith("/map")) router.push("/dashboard/statistics");
+
+    console.log(res);
 }
+
+// if(process.client) {
+//     state.$patch({phone: window?.innerWidth < 1080});
+// }
 
 authenticate();
 </script>
