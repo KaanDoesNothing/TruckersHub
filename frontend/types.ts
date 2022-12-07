@@ -16,25 +16,25 @@ export interface iEventDelivered {
         city: string;
         company: string;
     }
-    createdAt: Date,
+    createdAt?: Date,
 }
 
 export interface iEventFine {
     reason: string;
     location: string;
     price: number;
-    createdAt: Date
+    createdAt?: Date
 }
 
 export interface iEventFuel {
     location: string;
     amount: number;
     price: number;
-    createdAt: Date
+    createdAt?: Date
 }
 
 export interface iEventTollgate {
     location: string;
     price: number;
-    createdAt: Date
+    createdAt?: Date
 }

@@ -32,11 +32,12 @@ VTCRouter.post("/vtc", async (ctx) => {
             for (let i in storedEvents) {
                 const event = storedEvents[i];
 
-                if(event.data.game) {
-                    distance += event.data.event.distance.km;
-                }else {
-                    distance += event.data.distance.km;
-                }
+                distance += event.data.distance;
+                // if(event.data.game) {
+                //     distance += event.data.event.distance.km;
+                // }else {
+                //     distance += event.data.distance.km;
+                // }
             }
 
             try {
