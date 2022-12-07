@@ -1,7 +1,7 @@
 import { Namespace, Server, Socket } from "https://deno.land/x/socket_io/mod.ts";
 import { CacheExpireDate } from "../constants.ts";
 import { cacheInstance } from "../lib/cache.ts";
-import { Event, User } from "../lib/db.ts";
+import { convertEvent, processedEvent, Event, User } from "../lib/db.ts";
 import {presetHandler} from "./presets.ts";
 import { GearPreset, GearPresetResult, GetMap, SetBooleanMap } from "./types.ts";
 
@@ -182,7 +182,9 @@ export const launchSocket = (socketServer: Server) => {
         client.on("event_create", async (data) => {
             const {event} = data;
         
-            await Event.create({author: userData.username, type: event.type, data: event.data});
+            const eventRes = await Event.create({author: userData.username, type: event.type, data: event.data});
+            const converted = convertEvent(eventRes);
+            if(converted) await processedEvent.create({author: userData.username, type: event.type, data: converted});
         
             client.emit("message", {type: "log", content: "Event was saved to the database!"});
         });
