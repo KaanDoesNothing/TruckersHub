@@ -48,9 +48,9 @@
 import { ref } from "vue";
 import { useRoute } from "vue-router";
 
-definePageMeta({
-  layout: "dashboard"
-});
+// definePageMeta({
+//   layout: "dashboard"
+// });
 
 const config = useRuntimeConfig();
 
