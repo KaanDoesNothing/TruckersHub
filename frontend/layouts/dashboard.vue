@@ -41,10 +41,6 @@ async function updatePlayerLocation() {
     console.log(res);
 }
 
-// if(process.client) {
-//     state.$patch({phone: window?.innerWidth < 1080});
-// }
-
 authenticate();
 </script>
 
@@ -69,16 +65,13 @@ authenticate();
                     <ul class="menu mt-2">
                     <li><RouterLink class="rounded" to="/dashboard/statistics">Statistics</RouterLink></li>
                     <li> <RouterLink class="rounded" to="/dashboard/settings">Settings</RouterLink></li>
-                    <!-- <li> <RouterLink class="rounded" to="/dashboard/settings_game" v-if="state.socket.settings">Game Settings</RouterLink></li> -->
                     </ul>
                     <label class="text-center normal-case text-xl">History</label>
                     <ul class="menu mt-2">
                     <li><RouterLink class="rounded" to="/dashboard/history/deliveries">Deliveries</RouterLink></li>
                     <li><RouterLink class="rounded" to="/dashboard/history/fines">Fines</RouterLink></li>
                     <li><RouterLink class="rounded" to="/dashboard/history/tollgates">Tollgates</RouterLink></li>
-                    <!-- <li><RouterLink class="rounded" to="/dashboard/history/transport">Transport</RouterLink></li> -->
                     <li><RouterLink class="rounded" to="/dashboard/history/fuel">Fuel</RouterLink></li>
-                    <!-- <li><RouterLink class="rounded" to="/dashboard/history/damages">Damages</RouterLink></li> -->
                     </ul>
                     <label class="text-center normal-case text-xl">VTC</label>
                     <ul class="menu mt-2">
