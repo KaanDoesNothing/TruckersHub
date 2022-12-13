@@ -1,4 +1,4 @@
-import {Context} from "https://deno.land/x/oak/mod.ts";
+import {Context} from "../deps.ts";
 
 export const isUser = async (ctx: Context, next: any) => {
     const {token} = await ctx.request.body({type: "json"}).value;

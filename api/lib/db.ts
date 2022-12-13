@@ -1,6 +1,4 @@
-import mongoose from "npm:mongoose";
-
-import { config } from "https://deno.land/x/dotenv@v3.2.0/mod.ts";
+import {mongoose, config} from "../deps.ts";
 
 import { iEventDelivered, iEventFine, iEventFuel, iEventTollgate } from "../../frontend/types.ts";
 import { EventSchema, iEvent, iUser, iVTC, UserSchema, VTCSchema } from "./schemas.ts";

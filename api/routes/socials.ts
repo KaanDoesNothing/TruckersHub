@@ -1,13 +1,12 @@
-import {Router} from "https://deno.land/x/oak/mod.ts";
+import {Router, config} from "../deps.ts";
 import SteamAuth from "npm:node-steam-openid";
-import config from "../config.ts";
 import { User } from "../lib/db.ts";
 import { isUser } from "../middleware/isUser.ts";
 
 export const socialsRouter = new Router();
 
 const getSteamInstance = () => {
-    const steam = new SteamAuth(config.api.steam);
+    const steam = new SteamAuth(config().STEAM_API as any);
 
     return steam;
 }

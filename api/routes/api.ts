@@ -1,6 +1,7 @@
-import { Router } from "https://deno.land/x/oak@v11.1.0/router.ts";
 import { Event } from "../lib/db.ts";
 import { getPlayerLocation } from "../utils/game.ts";
+
+import {Router} from "../deps.ts";
 
 export const APIRouter = new Router();
 

@@ -1,4 +1,4 @@
-import { Namespace, Server, Socket } from "https://deno.land/x/socket_io/mod.ts";
+import { Namespace, Server, Socket } from "https://deno.land/x/socket_io@0.2.0/mod.ts";
 import { CacheExpireDate } from "../constants.ts";
 import { cacheInstance } from "../lib/cache.ts";
 import { convertEvent, processedEvent, Event, User } from "../lib/db.ts";

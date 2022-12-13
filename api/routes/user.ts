@@ -1,4 +1,4 @@
-import {Router} from "https://deno.land/x/oak/mod.ts";
+import {Router} from "../deps.ts";
 import { User, processedEvent } from "../lib/db.ts";
 import { isUser } from "../middleware/isUser.ts";
 import { comparePassword, hashPassword } from "../utils/authentication.ts";

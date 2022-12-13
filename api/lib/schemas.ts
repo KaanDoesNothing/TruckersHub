@@ -1,5 +1,4 @@
-import type {APICompany, APICompanyMembers} from "npm:@truckersmp_official/api-types";
-import mongoose from "npm:mongoose";
+import {mongoose, APICompany, APICompanyMembers} from "../deps.ts";
 
 export interface iUser {
     token: string;
