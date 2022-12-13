@@ -68,5 +68,9 @@ VTCRouter.get("/vtc/list", async (ctx) => {
         }
     }));
 
-    return ctx.response.body = {data: {list}};
+    ctx.response.body = {data: {list}};
+
+    VTCs.forEach(async vtc => {
+        await getVTC(vtc.info.id);
+    })
 });
