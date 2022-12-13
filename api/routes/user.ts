@@ -1,6 +1,5 @@
 import {Router} from "https://deno.land/x/oak/mod.ts";
-import { iEventDelivered, iEventFine, iEventFuel, iEventTollgate } from "../../frontend/types.ts";
-import { User, Event, processedEvent } from "../lib/db.ts";
+import { User, processedEvent } from "../lib/db.ts";
 import { isUser } from "../middleware/isUser.ts";
 import { comparePassword, hashPassword } from "../utils/authentication.ts";
 import { closestCity } from "../utils/game.ts";

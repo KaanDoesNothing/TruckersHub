@@ -1,5 +1,3 @@
-console.log(Deno.env.toObject());
-
 import {Application} from "https://deno.land/x/oak/mod.ts";
 import { oakCors } from "https://deno.land/x/cors/mod.ts";
 

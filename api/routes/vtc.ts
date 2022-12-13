@@ -1,6 +1,6 @@
 import { Router } from "https://deno.land/x/oak/mod.ts";
 import { getQuery } from "https://deno.land/x/oak@v11.1.0/helpers.ts";
-import { User, Event, VTC, processedEvent } from "../lib/db.ts";
+import { User, VTC, processedEvent } from "../lib/db.ts";
 import { getPlayerServer, getVTC } from "../utils/game.ts";
 
 export const VTCRouter = new Router();
