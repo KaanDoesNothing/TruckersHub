@@ -1,13 +1,15 @@
 import mongoose from "npm:mongoose";
-import {applySpeedGooseCacheLayer, SpeedGooseCacheAutoCleaner} from "npm:speedgoose";
-import config from "../config.ts";
+import {applySpeedGooseCacheLayer, SpeedGooseCacheAutoCleaner, SharedCacheStrategies} from "npm:speedgoose";
+
+import { config } from "https://deno.land/x/dotenv/mod.ts";
+
 import type {APICompany, APICompanyMembers} from "npm:@truckersmp_official/api-types";
 import { iEventDelivered, iEventFine, iEventFuel, iEventTollgate } from "../../frontend/types.ts";
 
-await applySpeedGooseCacheLayer(mongoose, {redisUri: "localhost:6379"});
+await applySpeedGooseCacheLayer(mongoose, {sharedCacheStrategy: SharedCacheStrategies.IN_MEMORY});
 
 //@ts-ignore
-mongoose.connect(config.api.mongodb, {dbName: "TruckersHub"}, () => {
+mongoose.connect(config().MONGODB, {dbName: "TruckersHub"}, () => {
     console.log("Ready");
 });
 

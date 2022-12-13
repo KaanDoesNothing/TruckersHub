@@ -25,3 +25,4 @@ rewrite/api_old/
 dump.rdb
 old/
 config.json
+*/.env
