@@ -14,7 +14,7 @@ UserRouter.post("/user/events", isUser, async (ctx) => {
     if(!user) return ctx.response.body = {error: "Invalid token!"};
 
     console.time("Fetching events");
-    const userEvents = await processedEvent.find({author: user.username, type}).sort({createdAt: "desc"}).cacheQuery();
+    const userEvents = await processedEvent.find({author: user.username, type}).sort({createdAt: "desc"});
     console.timeEnd("Fetching events");
 
     const events = userEvents.map((row: any) => {
@@ -39,7 +39,7 @@ UserRouter.post("/user/events", isUser, async (ctx) => {
 UserRouter.post("/user", isUser, async (ctx) => {
     const {token} = await ctx.request.body({type: "json"}).value;
 
-    let user = await User.findOne({token}).cacheQuery();
+    let user = await User.findOne({token});
     if(!user) return ctx.response.body = {error: "Invalid token!"};
 
     ctx.response.body = {data: {user}};

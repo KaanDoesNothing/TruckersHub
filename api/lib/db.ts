@@ -1,19 +1,14 @@
 import mongoose from "npm:mongoose";
-import {applySpeedGooseCacheLayer, SpeedGooseCacheAutoCleaner, SharedCacheStrategies} from "npm:speedgoose";
 
 import { config } from "https://deno.land/x/dotenv@v3.2.0/mod.ts";
 
 import { iEventDelivered, iEventFine, iEventFuel, iEventTollgate } from "../../frontend/types.ts";
 import { EventSchema, iEvent, iUser, iVTC, UserSchema, VTCSchema } from "./schemas.ts";
 
-await applySpeedGooseCacheLayer(mongoose, {sharedCacheStrategy: SharedCacheStrategies.IN_MEMORY});
-
 //@ts-ignore
 mongoose.connect(config().MONGODB, {dbName: "TruckersHub"}, () => {
     console.log("Ready");
 });
-
-UserSchema.plugin(SpeedGooseCacheAutoCleaner);
 
 export const User = mongoose.model<iUser>("User", UserSchema);
 export const Event = mongoose.model<iEvent>("Event", EventSchema);
