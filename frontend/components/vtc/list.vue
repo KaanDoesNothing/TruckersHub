@@ -2,8 +2,6 @@
     <Head>
         <Title>TruckersHub - Browse VTCs</Title>
     </Head>
-
-    <Loader v-if="!list"></Loader>
     
     <div class="flex justify-center">
         <input type="text" placeholder="Search a VTC" class="input input-sm input-bordered w-full max-w-xs" v-model="filter"/>
@@ -22,7 +20,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="vtc in list.filter(vtc => vtc.name.includes(filter))" :key="vtc.name">
+                <tr v-for="vtc in list.filter((vtc: any) => vtc.name.includes(filter))" :key="vtc.name">
                     <th>{{list.indexOf(vtc) + 1}}</th>
                     <th>{{vtc.name}}</th>
                     <th>{{vtc.memberCount}}</th>

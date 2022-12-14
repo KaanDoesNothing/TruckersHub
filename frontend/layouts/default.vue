@@ -8,18 +8,13 @@ const state = useGlobalStore();
 
 const tokenCookie = useCookie("token");
 
-const authenticate = async () => {
-    const token = tokenCookie.value;
-
-    if(token) state.$patch({token});
-    await state.fetchUser();
-}
+await state.authenticate();
 
 const config = useRuntimeConfig();
 
 const background = backgrounds[Math.floor(Math.random()*backgrounds.length)];
 
-authenticate();
+// authenticate();
 </script>
 
 <template>

@@ -5,6 +5,18 @@ export const useGlobalStore = defineStore("global", {
         return {token: undefined, user: undefined}
     },
     actions: {
+        async authenticate() {
+            const token = useCookie("token").value;
+
+            if(!token) return false;
+
+            if(token) this.token = token;
+            await this.fetchUser();
+
+            console.log("Authenticated!");
+
+            return true;
+        },
         async fetchUser() {
             const config = useRuntimeConfig();
 

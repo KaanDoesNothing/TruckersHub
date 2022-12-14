@@ -9,16 +9,13 @@ const state = useGlobalStore();
 const router = useRouter();
 const route = useRoute();
 
-const tokenCookie = useCookie("token");
 const isPlaying = ref(false);
 
-const authenticate = async () => {
-    const token = tokenCookie.value;
+const result = await state.authenticate();
 
-    if(!token) return router.push("/auth/login");
-    state.$patch({token});
-    await state.fetchUser();
-
+if(!result) {
+    router.push("/auth/login");
+}else {
     if(process.client) {
         setInterval(async () => {
             updatePlayerLocation();
@@ -41,7 +38,7 @@ async function updatePlayerLocation() {
     console.log(res);
 }
 
-authenticate();
+// authenticate();
 </script>
 
 <template>
