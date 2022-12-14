@@ -60,6 +60,7 @@ const authenticate = async () => {
 
     if(res.error) {
         error.value = res.error;
+        alert(res.error);
     }else {
         tokenCookie.value = res.data.token;
         

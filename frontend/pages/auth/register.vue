@@ -39,6 +39,8 @@ const register = async () => {
 
     if(res.data) {
         router.push(`/auth/login/${res.data}`);
+    }else {
+        alert(res.error);
     }
 }
 
