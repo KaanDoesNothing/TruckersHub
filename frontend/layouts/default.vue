@@ -6,15 +6,9 @@ const layout = "default";
 
 const state = useGlobalStore();
 
-const tokenCookie = useCookie("token");
-
 await state.authenticate();
 
-const config = useRuntimeConfig();
-
 const background = backgrounds[Math.floor(Math.random()*backgrounds.length)];
-
-// authenticate();
 </script>
 
 <template>
