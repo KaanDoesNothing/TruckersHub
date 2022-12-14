@@ -49,9 +49,7 @@ const authenticateWithToken = async (token: string) => {
     }else {
         tokenCookie.value = token;
         
-        state.$patch({token});
-
-        await state.fetchUser();
+        await state.authenticate();
 
         router.push("/dashboard/statistics");
     }
@@ -65,9 +63,7 @@ const authenticate = async () => {
     }else {
         tokenCookie.value = res.data.token;
         
-        state.$patch({token: res.data.token});
-
-        await state.fetchUser();
+        await state.authenticate();
 
         router.push("/dashboard/statistics");
     }

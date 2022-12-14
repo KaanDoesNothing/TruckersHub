@@ -26,14 +26,9 @@
 </template>
 
 <script setup lang="ts">
-import { useGlobalStore } from "@/stores/global";
-
 const config = useRuntimeConfig();
 
-const state = useGlobalStore();
-
 const router = useRouter();
-const route = useRoute();
 
 const error = ref(undefined);
 const username = ref("");
