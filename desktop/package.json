@@ -48,6 +48,6 @@
     "robotjs": "^0.6.0",
     "socket.io-client": "^4.5.2",
     "steam-game-path": "^2.2.0",
-    "trucksim-telemetry": "^0.16.1"
+    "trucksim-telemetry": "^0.19.1"
   }
 }

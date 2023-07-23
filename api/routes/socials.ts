@@ -1,4 +1,5 @@
-import {Router, config} from "../deps.ts";
+import { Router } from "oak/mod.ts";
+import { config } from "dotenv/mod.ts";
 import SteamAuth from "npm:node-steam-openid";
 import { User } from "../lib/db.ts";
 import { isUser } from "../middleware/isUser.ts";

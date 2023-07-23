@@ -20,7 +20,7 @@ console.log(url);
 async function createWindow() {
   console.time("Downloading dll");
   try {
-    await makeSureInstalled().catch(err => console.log("Game running"));
+    // await makeSureInstalled().catch(err => console.log("Game running"));
   }catch(err) {
     console.log(err);
   }
@@ -51,15 +51,25 @@ async function createWindow() {
   mainWindow.webContents.debugger.on('detach', (event, reason) => {
     console.log('Debugger detached due to: ', reason);
   });
+
+  mainWindow.webContents.debugger.sendCommand('Network.enable').catch(err => {
+    
+  });
   
   mainWindow.webContents.debugger.on('message', (event, method, params) => {
     if (method === 'Network.responseReceived') {
-      mainWindow.webContents.debugger.sendCommand('Network.getResponseBody', { requestId: params.requestId }).then(function(response) {
+      mainWindow.webContents.debugger.sendCommand('Network.getResponseBody', { requestId: params.requestId }).then(async (response) => {
         try {
+          if(isRunning) return;
+          
+          console.log(typeof response.body);
           const res = JSON.parse(response.body);
+          if(!res.data?.user) return;
+          console.log("User detected");
           const exists = configExists();
-          setConfig(JSON.stringify({token: res.data.user.token, shifter: res.data.user.settings?.shifter, api: "https://socket.truckershub.kaanlikescoding.me/api"}));
-          import("./game").catch(err => console.log(err));
+          setConfig(JSON.stringify({token: res.data.user.token, shifter: res.data.user.settings?.shifter, api: "http://localhost:7998/api"}));
+          console.log("Importing game");
+          await import("./game").catch(err => console.log(err));
           isRunning = true
           // if(!exists) {
           //   if(res?.data?.user?.token) {
@@ -82,7 +92,7 @@ async function createWindow() {
     }
   })
     
-  mainWindow.webContents.debugger.sendCommand('Network.enable');
+  // mainWindow.webContents.debugger.sendCommand('Network.enable');
 }
 app.whenReady().then(() => {
   createWindow();

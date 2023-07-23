@@ -1,12 +1,13 @@
-import {mongoose, config} from "../deps.ts";
+import {mongoose} from "../deps.ts";
+import {config} from "dotenv/mod.ts";
 
 import { iEventDelivered, iEventFine, iEventFuel, iEventTollgate } from "../../frontend/types.ts";
 import { EventSchema, iEvent, iUser, iVTC, UserSchema, VTCSchema } from "./schemas.ts";
 
+console.log("Connecting to database!");
 //@ts-ignore
-mongoose.connect(config().MONGODB, {dbName: "TruckersHub"}, () => {
-    console.log("Ready");
-});
+await mongoose.connect(config().MONGODB, {dbName: "TruckersHub"}).catch(err => console.log(err));
+console.log("Connected to database!");
 
 export const User = mongoose.model<iUser>("User", UserSchema);
 export const Event = mongoose.model<iEvent>("Event", EventSchema);

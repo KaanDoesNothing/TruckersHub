@@ -1,3 +1,5 @@
+console.log("Starting API");
+
 import {Application} from "https://deno.land/x/oak/mod.ts";
 import { oakCors } from "https://deno.land/x/cors/mod.ts";
 
@@ -17,4 +19,5 @@ app.use(socialsRouter.routes()).use(socialsRouter.allowedMethods());
 app.use(mapRouter.routes()).use(mapRouter.allowedMethods());
 app.use(APIRouter.routes()).use(APIRouter.allowedMethods());
 
+console.log("API Running!");
 await app.listen({ port: 5050 });

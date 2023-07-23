@@ -1,4 +1,5 @@
-import {Router, getQuery} from "../deps.ts";
+import { Router } from "oak/mod.ts";
+import { getQuery } from "oak/helpers.ts";
 import { User, VTC, processedEvent } from "../lib/db.ts";
 import { getPlayerServer, getVTC } from "../utils/game.ts";
 

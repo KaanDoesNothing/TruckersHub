@@ -3,6 +3,8 @@ import tst, {EventFerry, EventsFine, EventsJobDeliveredVerbose, EventsRefuelPaid
 import * as robotjs from "robotjs";
 import { getConfig } from "./utils";
 
+console.log("Starting game client");
+
 const {api, token, shifter} = getConfig();
 console.log(api, token, shifter);
 
@@ -54,14 +56,6 @@ tsclient.trailer.on("damage", (current: TruckDamage, previous: TruckDamage) => {
     handleEvent({type: "trailer_damage", data: {current, previous}});
 });
 
-tsclient.watch({interval: 10}, (data) => {
-    if(shifter) {
-        client.emit("message", {type: "game_data", content: data});
-    }
-
-    gameData = data;
-});
-
 if(shifter) {
     tsclient.truck.on("gear-change", (current: number) => {
         client.emit("message", {type: "gear_change", content: current});
@@ -90,5 +84,14 @@ client.on("connect", () => {
 
 client.on("authenticated", (msg) => {
     if(msg.content) {
+        console.log("Authenticated!");
     }
+});
+
+tsclient.watch({interval: 10}, (data) => {
+    if(shifter) {
+        client.emit("message", {type: "game_data", content: data});
+    }
+
+    gameData = data;
 });

@@ -1,0 +1,8 @@
+{
+    "imports": {
+        "dotenv/": "https://deno.land/x/dotenv@v3.2.0/",
+        "redis/": "https://deno.land/x/redis/",
+        "oak/": "https://deno.land/x/oak@v11.1.0/",
+        "dejs/": "https://deno.land/x/dejs@0.10.3/"
+    }
+}

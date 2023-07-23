@@ -4,6 +4,7 @@ import { cacheInstance } from "../lib/cache.ts";
 import { convertEvent, processedEvent, Event, User } from "../lib/db.ts";
 import {presetHandler} from "./presets.ts";
 import { GearPreset, GearPresetResult, GetMap, SetBooleanMap } from "./types.ts";
+import { log } from "../lib/logger.ts";
 
 cacheInstance.flushall();
 
@@ -96,6 +97,7 @@ async function handle({id}: {id: string}) {
     const isPaused = gameData.game.paused;
     const isSocketPaused = sockets.get(id).settings.paused;
 
+
     if(isPaused || isSocketPaused) return;
 
     const truckData = gameData.truck;
@@ -114,9 +116,19 @@ async function handle({id}: {id: string}) {
     //     console.log(socket.settings.rpm_shift);
     // } 
 
+    let airRefil = false;
+
+    // console.log(gameData.controls.input.brake, gameData.controls.input.brake, speed);
+
+    if(gameData.controls.input.brake > 0.5 && gameData.controls.input.throttle > 0.5) {
+        airRefil = true;
+    }
+
     if(gear < 0) return;
 
-    let socket = sockets.get(id);
+    // if(gear < 0 || !airRefil) return;
+
+    const socket = sockets.get(id);
 
     // if(socket.settings.rpm_shift) {
     //     let gearToShift;
@@ -136,9 +148,10 @@ async function handle({id}: {id: string}) {
     // }
 
     const preset: GearPreset = presetHandler(gameData);
-    const gearToShift: GearPresetResult = preset(speed);
+    const gearToShift: GearPresetResult = airRefil ? 1 : preset(speed);
 
     if(gearToShift) {
+        log("message", `Shifting Gear for ${socket.user.username}, preset: ${preset.name}, Gear: ${gearToShift}`);
         await ensureGear({id, gear: gearToShift});
         server.sockets.get(id)?.emit("message", {type: "preset_current", content: preset.name});
     }

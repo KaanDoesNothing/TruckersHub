@@ -1,4 +1,5 @@
-import {Router, renderFile} from "../deps.ts";
+import { renderFile } from "dejs/mod.ts";
+import { Router } from "oak/mod.ts";
 
 export const mapRouter = new Router();
 

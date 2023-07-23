@@ -1,7 +1,7 @@
 import { Event } from "../lib/db.ts";
 import { getPlayerLocation } from "../utils/game.ts";
 
-import {Router} from "../deps.ts";
+import { Router } from "oak/mod.ts";
 
 export const APIRouter = new Router();
 

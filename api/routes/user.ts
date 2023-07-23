@@ -1,4 +1,4 @@
-import {Router} from "../deps.ts";
+import { Router } from "oak/mod.ts";
 import { User, processedEvent } from "../lib/db.ts";
 import { isUser } from "../middleware/isUser.ts";
 import { comparePassword, hashPassword } from "../utils/authentication.ts";

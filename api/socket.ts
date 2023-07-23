@@ -4,6 +4,8 @@ import { launchSocket } from "./socket/index.ts";
 
 const io = new Server();
 
+console.log("Launching WebSocket Server");
+
 launchSocket(io);
 
 await serve(io.handler(), {

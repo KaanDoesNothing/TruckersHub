@@ -26,3 +26,5 @@ dump.rdb
 old/
 config.json
 */.env
+rewrite/
+*/deno.lock
