@@ -32,7 +32,11 @@ export function setHandling({id, value}: SetBooleanMap) {
 }
 
 async function getGameData({id}: GetMap) {
-    const data = await cacheInstance.get(`gamedata_${sockets.get(id).user.username}`);
+    const socket = sockets.get(id);
+    if(!socket) return;
+
+    const data = await cacheInstance.get(`gamedata_${socket.user.username}`);
+
     if(data) return JSON.parse(data as string);
 }
 
@@ -129,6 +133,10 @@ async function handle({id}: {id: string}) {
     // if(gear < 0 || !airRefil) return;
 
     const socket = sockets.get(id);
+    if(!socket) {
+        log("error", "Socket doesn't exist");
+        return;
+    }
 
     // if(socket.settings.rpm_shift) {
     //     let gearToShift;
@@ -169,7 +177,7 @@ export const launchSocket = (socketServer: Server) => {
 
                 client.emit("authenticated", {content: true});
 
-                console.log(`${user.username} connected via client`);
+                log("message", `${user.username} connected via client`);
 
                 resolve(user);
             });
@@ -207,6 +215,8 @@ export const launchSocket = (socketServer: Server) => {
 
             handling.delete(id);
             sockets.delete(id);
+
+            log("message", `${userData.username} has disconnected`);
         });
     });
 }
