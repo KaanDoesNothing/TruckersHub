@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std/http/server.ts";
-import { Server } from "https://deno.land/x/socket_io/mod.ts";
+import { Server } from "https://deno.land/x/socket_io@0.2.0/mod.ts";
 import { launchSocket } from "./socket/index.ts";
 
 const io = new Server();

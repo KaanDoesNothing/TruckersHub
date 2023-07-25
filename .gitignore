@@ -28,3 +28,4 @@ config.json
 */.env
 rewrite/
 */deno.lock
+test/

@@ -1,167 +1,21 @@
-import { Namespace, Server, Socket } from "https://deno.land/x/socket_io@0.2.0/mod.ts";
-import { CacheExpireDate } from "../constants.ts";
+import { Namespace, Server } from "https://deno.land/x/socket_io@0.2.0/mod.ts";
 import { cacheInstance } from "../lib/cache.ts";
 import { convertEvent, processedEvent, Event, User } from "../lib/db.ts";
-import {presetHandler} from "./presets.ts";
-import { GearPreset, GearPresetResult, GetMap, SetBooleanMap } from "./types.ts";
 import { log } from "../lib/logger.ts";
+import { clients, deleteGameData, sockets } from "./cache.ts";
+import { playerHandler } from "./playerHandler.ts";
 
 cacheInstance.flushall();
 
-export const handling = new Map();
-export const sockets = new Map();
-
 let server: Namespace;
 
-const sleep = (time: number) => new Promise(r => setTimeout(r, time));
+export const sleep = (time: number) => new Promise(r => setTimeout(r, time));
 
 export function getSocketByName({username}: {username: string}) {
     const keys = sockets.entries();
 
     for (let [key, value] of keys) {
         if(value.user.username === username) return value;
-    }
-}
-
-export function getHandling({id}: GetMap) {
-    return handling.get(id) || false;
-}
-
-export function setHandling({id, value}: SetBooleanMap) {
-    return handling.set(id, value);
-}
-
-async function getGameData({id}: GetMap) {
-    const socket = sockets.get(id);
-    if(!socket) return;
-
-    const data = await cacheInstance.get(`gamedata_${socket.user.username}`);
-
-    if(data) return JSON.parse(data as string);
-}
-
-async function deleteGameData({id}: GetMap) {
-    await cacheInstance.del(`gamedata_${sockets.get(id).user.username}`);
-}
-
-async function setGameData({id, value}: {id: string, value: any}) {
-    const keyname = `gamedata_${sockets.get(id).user.username}`;
-    await cacheInstance.set(keyname, JSON.stringify(value));
-    await cacheInstance.expireat(`gamedata_${sockets.get(id).user.username}`, (Date.now() + CacheExpireDate).toString());
-}
-
-function waitForShift({id}: {id: string}) {
-    return new Promise((resolve, reject) => {
-        const client: Socket = sockets.get(id).client;
-
-        const callback = (msg: any) => {
-            if(msg.type === "gear_change") {
-                client.once("message", callback);
-                resolve("Received");
-            }
-        }
-    
-        client.on("message", callback);
-    });
-}
-
-async function ensureGear({id, gear}: {id: string, gear: number}) {
-    const gameData = await getGameData({id});
-    if(!gameData) return;
-    
-    const socketSettings = sockets.get(id).settings;
-
-    const currentGear = gameData.truck.transmission.gear.displayed;
-    const pitch = gameData.truck.orientation.pitch;
-
-    const gearsToShift = currentGear - gear;
-    const fixedNumber = parseInt(gearsToShift.toString().replace("-", ""));
-
-    if(fixedNumber === 0 || gearsToShift === 0) return;
-
-    server.sockets.get(id)?.emit("message", {type: "log", content: `Shifting ${fixedNumber} Gears.`});
-
-    if(gearsToShift > 0) {
-        server.sockets.get(id)?.emit("message", {type: "shift_down", amount: gearsToShift});
-    }else {
-        if(pitch > 0.018 && socketSettings.hill_detection || gameData.controls.input.throttle < 0.75 && socketSettings.hold_gear) {
-            return;
-        }
-        
-        server.sockets.get(id)?.emit("message", {type: "shift_up", amount: fixedNumber});
-    }
-
-    await Promise.race([waitForShift({id}), sleep(1000)]);
-}
-
-async function handle({id}: {id: string}) {
-    const gameData = await getGameData({id});
-    if(!gameData) return;
-
-    const isPaused = gameData.game.paused;
-    const isSocketPaused = sockets.get(id).settings.paused;
-
-
-    if(isPaused || isSocketPaused) return;
-
-    const truckData = gameData.truck;
-    const gear = truckData.transmission.gear.displayed;
-    const speed = truckData.speed.kph;
-
-    // if(gameData.controls.input.throttle === 1 && gameData.truck.brakes.parking && gear < 0) {
-    //     let socket = sockets.get(id);
-
-    //     socket.settings.rpm_shift = !socket.settings.rpm_shift;
-
-    //     sockets.set(id, socket);
-
-    //     await sleep(2000);
-
-    //     console.log(socket.settings.rpm_shift);
-    // } 
-
-    let airRefil = false;
-
-    // console.log(gameData.controls.input.brake, gameData.controls.input.brake, speed);
-
-    if(gameData.controls.input.brake > 0.5 && gameData.controls.input.throttle > 0.5) {
-        airRefil = true;
-    }
-
-    if(gear < 0) return;
-
-    // if(gear < 0 || !airRefil) return;
-
-    const socket = sockets.get(id);
-    if(!socket) {
-        log("error", "Socket doesn't exist");
-        return;
-    }
-
-    // if(socket.settings.rpm_shift) {
-    //     let gearToShift;
-
-    //     if(truckData.engine.rpm.value < 1000) {
-    //         gearToShift = gear - 1;
-    //     }else if(truckData.engine.rpm.value > 1600) {
-    //         gearToShift = gear + 1;
-    //     }
-
-    //     if(gearToShift) {
-    //         await ensureGear({id, gear: gearToShift});
-    //         server.sockets.get(id)?.emit("message", {type: "preset_current", content: "RPM SHIFT"});
-    //     }
-        
-    //     return;
-    // }
-
-    const preset: GearPreset = presetHandler(gameData);
-    const gearToShift: GearPresetResult = airRefil ? 1 : preset(speed);
-
-    if(gearToShift) {
-        log("message", `Shifting Gear for ${socket.user.username}, preset: ${preset.name}, Gear: ${gearToShift}`);
-        await ensureGear({id, gear: gearToShift});
-        server.sockets.get(id)?.emit("message", {type: "preset_current", content: preset.name});
     }
 }
 
@@ -183,22 +37,11 @@ export const launchSocket = (socketServer: Server) => {
             });
         });
 
+        const playerInstance = new playerHandler({socket: client, userData});
+
+        clients.set(userData.username, playerInstance);
+
         const id = client.id;
-
-        sockets.set(id, {client, user: userData, settings: {paused: false, hill_detection: true, hold_gear: true, rpm_shift: false}});
-
-        client.on("message", async (msg) => {
-            if(msg.type === "game_data") {
-                if(getHandling({id})) return;
-        
-                setHandling({id, value: true});
-    
-                await setGameData({id, value: msg.content});
-                await handle({id});
-        
-                setHandling({id, value: false});
-            }
-        });
 
         client.on("event_create", async (data) => {
             const {event} = data;
@@ -211,10 +54,9 @@ export const launchSocket = (socketServer: Server) => {
         });
 
         client.on("disconnect", async () => {
-            await deleteGameData({id});
+            await deleteGameData({username: userData.username});
 
-            handling.delete(id);
-            sockets.delete(id);
+            clients.delete(userData.username);
 
             log("message", `${userData.username} has disconnected`);
         });

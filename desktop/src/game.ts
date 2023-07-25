@@ -57,23 +57,17 @@ tsclient.trailer.on("damage", (current: TruckDamage, previous: TruckDamage) => {
 });
 
 if(shifter) {
-    tsclient.truck.on("gear-change", (current: number) => {
-        client.emit("message", {type: "gear_change", content: current});
+    client.on("key", (msg) => {
+        for (let i = 0; i < msg.amount; i++) {
+            robotjs.keyTap(msg.key);
+        }
     });
     
     client.on("message", (msg) => {
-        if(msg.type === "log") {
-            
-        }else if(msg.type === "shift_up") {
-            for (let i = 0; i < msg.amount; i++) {
-                robotjs.keyTap("up");
-            }
-        }else if(msg.type === "shift_down") {
-            for (let i = 0; i < msg.amount; i++) {
-                robotjs.keyTap("down");
-            }
-        }else if(msg.type === "preset_current") {
-            cache.preset_current = msg.content;
+        if(msg.type === "preset_current") {
+                cache.preset_current = msg.content;
+
+                return;
         }
     });
 }
@@ -90,7 +84,7 @@ client.on("authenticated", (msg) => {
 
 tsclient.watch({interval: 10}, (data) => {
     if(shifter) {
-        client.emit("message", {type: "game_data", content: data});
+        client.emit("game_data", {content: data});
     }
 
     gameData = data;
