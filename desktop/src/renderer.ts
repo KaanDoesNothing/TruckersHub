@@ -4,3 +4,5 @@
 // nodeIntegration is set to true in webPreferences.
 // Use preload.js to selectively enable features
 // needed in the renderer process.
+const fs = require("fs");
+console.log(fs);

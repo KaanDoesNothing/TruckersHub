@@ -169,7 +169,7 @@ export const getVTC = async (id?: number, name?: string) => {
         vtc.members = members;
 
         await vtc.save();
-        await vtc.update();
+        // await vtc.update();
     }else {
         await VTC.create({info, members});
     }

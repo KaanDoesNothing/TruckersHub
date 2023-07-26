@@ -5,16 +5,24 @@ import { presetHandler } from "./presets.ts";
 import { GearPreset, GearPresetResult } from "./types.ts";
 import { log } from "../lib/logger.ts";
 import { sleep } from "./index.ts";
+import { iUser } from "../lib/schemas.ts";
+
+interface socketConfig {
+    paused: boolean;
+    hill_detection: boolean;
+    hold_gear: boolean;
+    rpm_shift: boolean;
+}
 
 export class playerHandler extends EventEmitter {
     socket: Socket;
-    config;
-    userData: any;
+    config: socketConfig;
+    userData: iUser;
     gameData: any;
     timers: any;
     handling: boolean;
 
-    constructor({socket, userData}: {socket: Socket, userData: any}) {
+    constructor({socket, userData}: {socket: Socket, userData: iUser}) {
         super();
         this.userData = userData;
 
@@ -30,7 +38,7 @@ export class playerHandler extends EventEmitter {
 
     waitForShift({gearToShift}: {gearToShift: number}) {
         return new Promise((resolve) => {
-            const callback = (msg) => {
+            const callback = (msg: {selected: number}) => {
                 if(gearToShift === msg.selected) {
                     resolve("Received");
                     this.removeListener("gear_change", callback);
@@ -65,14 +73,25 @@ export class playerHandler extends EventEmitter {
         await Promise.race([this.waitForShift({gearToShift: fixedNumber}), sleep(2000)]);
     }
 
-    async handle() {
-        if(!this.gameData) return;
-    
+    isPaused(): boolean {
         const isPaused = this.gameData.game.paused;
         const isSocketPaused = this.config.paused;
     
     
-        if(isPaused || isSocketPaused) return;
+        if(isPaused || isSocketPaused) return true;
+        return false;
+    }
+
+    getHandling() {
+        return this.handling;
+    }
+
+    setHandling(val: boolean) {
+        this.handling = val;
+    }
+
+    async handle() {
+        if(this.isPaused() || !this.gameData) return;
     
         const truckData = this.gameData.truck;
         const gear = truckData.transmission.gear.displayed;

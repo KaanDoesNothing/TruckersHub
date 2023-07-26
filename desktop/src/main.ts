@@ -6,14 +6,16 @@ import { configExists, getConfig, makeSureInstalled, setConfig } from "./utils";
 let isRunning = false;
 
 let url = "https://truckershub.kaanlikescoding.me";
+// let url = "http://localhost:3000";
 const version = "0.1";
 
 if(configExists()) {
   const config = getConfig();
-  url+= `/auth/login/${config.token}`;
+  console.log(config);
+  url+= `/auth/login?token=${config.token}`;
 }
 
-url+= `?version=${version}`;
+// url+= `?version=${version}`;
 
 console.log(url);
 
@@ -61,13 +63,22 @@ async function createWindow() {
       mainWindow.webContents.debugger.sendCommand('Network.getResponseBody', { requestId: params.requestId }).then(async (response) => {
         try {
           if(isRunning) return;
+
+          let res;
+
+          try {
+            res = JSON.parse(response.body);
+          }catch(err) {
+            
+          }
+
           
           console.log(typeof response.body);
-          const res = JSON.parse(response.body);
+          // const res = JSON.parse(response.body);
           if(!res.data?.user) return;
           console.log("User detected");
           const exists = configExists();
-          setConfig(JSON.stringify({token: res.data.user.token, shifter: res.data.user.settings?.shifter, api: "http://localhost:7998/api"}));
+          setConfig(JSON.stringify({token: res.data.user.token, shifter: res.data.user.settings?.shifter, api: "https://socket.truckershub.kaanlikescoding.me/api"}));
           console.log("Importing game");
           await import("./game").catch(err => console.log(err));
           isRunning = true

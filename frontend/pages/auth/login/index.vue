@@ -44,6 +44,8 @@ const tokenCookie = useCookie("token");
 const authenticateWithToken = async (token: string) => {
     const res: any = await $fetch(`${config.public.API}/user/token/valid`, {body: {token}, method: "POST"});
 
+    console.log(token, res);
+
     if(res.error) {
         error.value = res.error;
     }else {
@@ -51,7 +53,7 @@ const authenticateWithToken = async (token: string) => {
         
         await state.authenticate();
 
-        router.push("/dashboard/statistics");
+        await router.push("/dashboard/statistics");
     }
 }
 
@@ -70,8 +72,8 @@ const authenticate = async () => {
     }
 }
 
-if(route.params.token) {
-    authenticateWithToken(route.params.token as string);
+if(route.query.token) {
+    authenticateWithToken(route.query.token as string);
 }
 
 </script>

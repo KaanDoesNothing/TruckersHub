@@ -65,7 +65,7 @@ UserRouter.post("/user", isUser, async (ctx) => {
 UserRouter.post("/user/token/valid", isUser, async (ctx) => {
     const {token} = await ctx.request.body({type: "json"}).value;
 
-    const user = await User.findOne({where: {token}, relations: {truckersmp: true}});
+    const user = await User.findOne({token});
 
     if(!user) return ctx.response.body = {error: "Invalid token!"};
 
