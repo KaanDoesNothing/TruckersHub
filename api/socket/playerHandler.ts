@@ -6,6 +6,8 @@ import { GearPreset, GearPresetResult } from "./types.ts";
 import { log } from "../lib/logger.ts";
 import { sleep } from "./index.ts";
 import { iUser } from "../lib/schemas.ts";
+import { Event, convertEvent, processedEvent } from "../lib/db.ts";
+import { tst } from "../deps.ts";
 
 interface socketConfig {
     paused: boolean;
@@ -18,7 +20,7 @@ export class playerHandler extends EventEmitter {
     socket: Socket;
     config: socketConfig;
     userData: iUser;
-    gameData: any;
+    gameData: tst.TelemetryData;
     timers: any;
     handling: boolean;
 
@@ -27,12 +29,14 @@ export class playerHandler extends EventEmitter {
         this.userData = userData;
 
         this.socket = socket;
-        this.gameData = {};
+        // this.gameData = {};
         this.config = {paused: false, hill_detection: true, hold_gear: true, rpm_shift: false};
 
         this.handling = false;
 
         this.socket.on("game_data", (msg) => this.eventGameData(msg));
+        this.socket.on("event_create", (data) => this.createEventData(data));
+
         this.timers = {};
     }
 
@@ -98,7 +102,7 @@ export class playerHandler extends EventEmitter {
         const speed = truckData.speed.kph;
         const roundSpeed = Math.round(speed);
         const brakePower = this.gameData.controls.input.brake;
-        const throttlePower = this.gameData.controls.input.throttle;
+        const _throttlePower = this.gameData.controls.input.throttle;
     
         if(gear < 0) return;
     
@@ -128,7 +132,7 @@ export class playerHandler extends EventEmitter {
     }
 
     async eventGameData(msg: any) {
-        if(this.gameData.truck) {
+        if(this.gameData?.truck) {
             if(this.gameData.truck.transmission.gear.selected !== msg.content.truck.transmission.gear.selected) {
                 this.emit("gear_change", msg.content.truck.transmission.gear);
             }
@@ -144,5 +148,15 @@ export class playerHandler extends EventEmitter {
         await this.handle();
 
         this.handling = false;
+    }
+
+    async createEventData(data: any) {
+        const {event} = data;
+        
+        const eventRes = await Event.create({author: this.userData.username, type: event.type, data: event.data});
+        const converted = convertEvent(eventRes);
+        if(converted) await processedEvent.create({author: this.userData.username, type: event.type, data: converted});
+    
+        this.socket.emit("message", {type: "log", content: "Event was saved to the database!"});
     }
 }

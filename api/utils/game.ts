@@ -1,4 +1,4 @@
-import { CacheMPExpireDate, TRUCKERSMP_API, TruckersMP_krashnz, TRUCKERSMP_MAP } from "../constants.ts";
+import { TRUCKERSMP_API, TruckersMP_krashnz, TRUCKERSMP_MAP } from "../constants.ts";
 import { cacheInstance } from "../lib/cache.ts";
 import { User, VTC } from "../lib/db.ts";
 
@@ -147,34 +147,52 @@ export const getPlayerServer = async (username: string) => {
 }
 
 export const getVTC = async (id?: number, name?: string) => {
-    let vtc;
-    if(id) {
-        vtc = await VTC.findOne({"info.id": id});
-    }else if(name) {
-        vtc = await VTC.findOne({"info.name": name});
-    }
-
-    //@ts-ignore
-    if(vtc && (Date.now() - vtc.updatedAt) < CacheMPExpireDate) return vtc;
-
-    console.log("Refetching vtc");
-
-    const info = await (await (await fetch(`${TRUCKERSMP_API}/vtc/${id}`)).json()).response;
-    const members = (await (await (await fetch(`${TRUCKERSMP_API}/vtc/${id}/members`)).json())).response.members;
-
-    if(!info || !members) return;
-
+    const vtc = (id ? await VTC.findOne({"info.id": id}) : await VTC.findOne({"info.name": name}));
     if(vtc) {
-        vtc.info = info;
-        vtc.members = members;
-
-        await vtc.save();
-        // await vtc.update();
+        return vtc;
     }else {
-        await VTC.create({info, members});
+        const userEntry = id ? await User.findOne({"linked.truckersmp.vtc.id": id}) : await User.findOne({"linked.truckersmp.vtc.name": name});
+        if(!userEntry) return;
+
+        const vtcID = userEntry.linked.truckersmp.vtc.id;
+
+        const info = await (await (await fetch(`${TRUCKERSMP_API}/vtc/${vtcID}`)).json()).response;
+        const fetchedMembers = await (await fetch(`${TRUCKERSMP_API}/vtc/${vtcID}/members`)).json();
+        const members = fetchedMembers?.response?.members || [];
+
+        await VTC.create({info: {name: info.name, logo: info.logo, id: info.id}, members});
+
+        return {info, members};
     }
 
-    return {info, members};
+    // const vtcID = id || vtc?.info?.id;
+    // //@ts-ignore
+    // if(vtc && (Date.now() - vtc.updatedAt) < CacheMPExpireDate) return vtc;
+
+    // console.log("Refetching vtc");
+
+    // const info = await (await (await fetch(`${TRUCKERSMP_API}/vtc/${vtcID}`)).json()).response;
+    // const fetchedMembers = await (await fetch(`${TRUCKERSMP_API}/vtc/${vtcID}/members`)).json();
+    // console.log(fetchedMembers);
+    // const members = fetchedMembers?.response?.members || [];
+
+    // if(!info || !members) return;
+
+    // if(vtc) {
+    //     vtc.info = {
+    //         id: info.id,
+    //         name: info.name,
+    //         logo: info.logo
+    //     }
+    //     // vtc.info = JSON.stringify(info);
+    //     vtc.members = members;
+
+    //     await vtc.save();
+    // }else {
+    //     await VTC.create({info, members});
+    // }
+
+    // return {info, members};
 }
 
 // // export const getPlayerServerLocal = async (username: string) => {

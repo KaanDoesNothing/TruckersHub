@@ -5,8 +5,8 @@ import { configExists, getConfig, makeSureInstalled, setConfig } from "./utils";
 
 let isRunning = false;
 
-let url = "https://truckershub.kaanlikescoding.me";
-// let url = "http://localhost:3000";
+// let url = "https://truckershub.kaanlikescoding.me";
+let url = "http://localhost:3000";
 const version = "0.1";
 
 if(configExists()) {

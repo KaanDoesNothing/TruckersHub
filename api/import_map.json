@@ -4,6 +4,7 @@
         "redis/": "https://deno.land/x/redis/",
         "oak/": "https://deno.land/x/oak@v11.1.0/",
         "dejs/": "https://deno.land/x/dejs@0.10.3/",
-        "socketIO/": "https://deno.land/x/socket_io@0.2.0/"
+        "socketIO/": "https://deno.land/x/socket_io@0.2.0/",
+        "bcrypt/": "https://deno.land/x/bcrypt@v0.4.1/"
     }
 }
