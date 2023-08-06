@@ -2,7 +2,7 @@ import {defineStore} from "pinia";
 
 export const useGlobalStore = defineStore("global", {
     state: (): any => {
-        return {token: undefined, user: undefined}
+        return {token: undefined, user: undefined, isElectron: false}
     },
     actions: {
         async authenticate() {

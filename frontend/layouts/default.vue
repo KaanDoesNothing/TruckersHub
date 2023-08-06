@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useGlobalStore } from "@/stores/global";
 import {backgrounds} from "../information";
+import { isElectron } from "~~/utils";
 
 const layout = "default";
 
@@ -9,6 +10,8 @@ const state = useGlobalStore();
 await state.authenticate();
 
 const background = backgrounds[Math.floor(Math.random()*backgrounds.length)];
+
+state.$patch({isElectron: isElectron()});
 </script>
 
 <template>

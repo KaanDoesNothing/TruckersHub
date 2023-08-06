@@ -21,7 +21,13 @@ const path = computed(() => route.path);
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                 </svg>
             </label>
-            <RouterLink class="btn btn-ghost" v-if="state.token && !path.startsWith('/dashboard')" to="/dashboard/statistics">Dashboard</RouterLink>
+            <template v-if="!state.user?.blacklisted">
+                <RouterLink class="btn btn-ghost" v-if="state.token && !path.startsWith('/dashboard')" to="/dashboard/vtc/list">Dashboard</RouterLink>
+                <RouterLink class="btn btn-ghost" v-if="state.token && !path.startsWith('/client') && state.isElectron" to="/client">Client</RouterLink>
+            </template>
+            <template v-if="state.user?.blacklisted">
+                <RouterLink class="btn btn-ghost" to="/appeal">Your account has been blocked (Appeal)</RouterLink>
+            </template>
             <template v-if="!state.token">
                 <div class="btn-group">
                     <RouterLink class="btn btn-ghost" to="/auth/login">Login</RouterLink>

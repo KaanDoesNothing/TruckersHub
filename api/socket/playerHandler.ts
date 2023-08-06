@@ -21,7 +21,8 @@ export class playerHandler extends EventEmitter {
     config: socketConfig;
     userData: iUser;
     gameData: tst.TelemetryData;
-    timers: any;
+    // deno-lint-ignore ban-types
+    timers: {};
     handling: boolean;
 
     constructor({socket, userData}: {socket: Socket, userData: iUser}) {
@@ -139,6 +140,7 @@ export class playerHandler extends EventEmitter {
         }
 
         if(this.handling || !this.userData.username) return;
+        if(!this.userData.settings.shifter) return;
 
         this.handling = true;
 

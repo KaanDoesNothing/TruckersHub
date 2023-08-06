@@ -10,6 +10,10 @@ export interface iUser {
         },
         truckersmp? :any;
     },
+    settings: {
+        shifter: boolean;
+    },
+    blacklisted: boolean;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -37,7 +41,11 @@ export const UserSchema = new mongoose.Schema({
             id: {type: String, required: false},
         },
         truckersmp: {}
-    }
+    },
+    settings: {
+        shifter: {type: Boolean, required: false, default: true}
+    },
+    blacklisted: {type: Boolean, required: false, default: true}
 }, {timestamps: true});
 
 export const EventSchema = new mongoose.Schema({

@@ -75,10 +75,11 @@ async function createWindow() {
           
           console.log(typeof response.body);
           // const res = JSON.parse(response.body);
-          if(!res.data?.user) return;
+          if(!res?.data?.user) return;
           console.log("User detected");
           const exists = configExists();
-          setConfig(JSON.stringify({token: res.data.user.token, shifter: res.data.user.settings?.shifter, api: "https://socket.truckershub.kaanlikescoding.me/api"}));
+          setConfig(JSON.stringify({token: res.data.user.token, shifter: res.data.user.settings?.shifter, api: "http://localhost:7998/api"}));
+          // setConfig(JSON.stringify({token: res.data.user.token, shifter: res.data.user.settings?.shifter, api: "https://socket.truckershub.kaanlikescoding.me/api"}));
           console.log("Importing game");
           await import("./game").catch(err => console.log(err));
           isRunning = true

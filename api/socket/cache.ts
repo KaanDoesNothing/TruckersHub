@@ -16,8 +16,8 @@ export const clients = new Map();
 // }
 
 export async function getGameData({username}: GetMap) {
-    const socket = sockets.get(username);
-    if(!socket) return;
+    // const socket = sockets.get(username);
+    // if(!socket) return;
 
     const data = await cacheInstance.get(`gamedata_${username}`);
 

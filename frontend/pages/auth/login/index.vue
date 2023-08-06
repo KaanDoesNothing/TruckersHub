@@ -53,7 +53,8 @@ const authenticateWithToken = async (token: string) => {
         
         await state.authenticate();
 
-        await router.push("/dashboard/statistics");
+        await router.push("/client");
+        // await router.push("/dashboard/statistics");
     }
 }
 
