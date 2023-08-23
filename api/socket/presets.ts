@@ -21,15 +21,15 @@ export const presets = {
         }
     },
     no_trailer: (speed: number): GearPresetResult => {
-        if(speed > 98) {
+        if(speed > 95) {
             return 14;
         }
         
-        if(speed > 78) {
+        if(speed > 75) {
             return 13;
         }
 
-        if(speed > 48) {
+        if(speed > 45) {
             return 12;
         }
 
