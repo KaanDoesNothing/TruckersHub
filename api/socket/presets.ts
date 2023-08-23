@@ -2,9 +2,9 @@ import { GearPreset, GearPresetResult } from "./types.ts";
 
 export const presets = {
     trailer: (speed: number): GearPresetResult => {
-        if(speed > 98) {
+        if(speed > 95) {
             return 14;
-        }else if(speed > 78) {
+        }else if(speed > 75) {
             return 13;
         } else if(speed > 60) {
             return 12;
