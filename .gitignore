@@ -30,3 +30,4 @@ rewrite/
 */deno.lock
 test/
 desktopClient/
+denoDesktop/
